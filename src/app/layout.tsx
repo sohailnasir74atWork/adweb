@@ -72,6 +72,9 @@ export const metadata: Metadata = {
     ],
     apple: "/logo.webp",
   },
+  other: {
+    "p:domain_verify": "955b6494657c81a62dcad3a3c68caafb",
+  },
 };
 
 export default function RootLayout({
@@ -96,8 +99,7 @@ export default function RootLayout({
             __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-NXXEKW69PT');`,
           }}
         />
-        {/* Pinterest Domain Verification */}
-        <meta name="p:domain_verify" content="955b6494657c81a62dcad3a3c68caafb" />
+
         {/* Google AdSense */}
         <script
           async
