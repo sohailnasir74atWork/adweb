@@ -16,6 +16,7 @@ import { searchPets, filterPetsByRarity, getOnlyPets } from '@/lib/utils/petHelp
 import { cn } from '@/lib/utils';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { type BadgeValueType, calculateItemValue } from '@/lib/utils/tradeHelpers';
+import { useLocale } from 'next-intl';
 
 interface PetSelectorProps {
   open: boolean;
@@ -54,15 +55,16 @@ export function PetSelector({ open, onClose, pets, onSelect, side }: PetSelector
   const [isFly, setIsFly] = useState(false);
   const [isRide, setIsRide] = useState(false);
   const debouncedQuery = useDebounce(query, 200);
+  const locale = useLocale();
 
   const onlyPets = useMemo(() => getOnlyPets(pets), [pets]);
 
   const filtered = useMemo(() => {
     let result = onlyPets;
-    result = searchPets(result, debouncedQuery);
+    result = searchPets(result, debouncedQuery, locale);
     result = filterPetsByRarity(result, rarity);
     return result;
-  }, [onlyPets, debouncedQuery, rarity]);
+  }, [onlyPets, debouncedQuery, rarity, locale]);
 
   const handleSelect = useCallback(
     (pet: Pet) => {

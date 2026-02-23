@@ -1,4 +1,5 @@
 import { type Pet, type PetRaw, normalizePet, getPetDefaultValue } from '@/lib/types/pet';
+import { matchesPetSearch } from '@/i18n/petNames';
 
 export { getPetDefaultValue };
 
@@ -16,10 +17,10 @@ export function getPetHighestValue(pet: Pet): number {
   return allValues.length > 0 ? Math.max(...allValues) : 0;
 }
 
-export function searchPets(pets: Pet[], query: string): Pet[] {
+export function searchPets(pets: Pet[], query: string, locale?: string): Pet[] {
   if (!query.trim()) return pets;
-  const lowerQuery = query.toLowerCase().trim();
-  return pets.filter((pet) => pet.name.toLowerCase().includes(lowerQuery));
+  const loc = locale || 'en';
+  return pets.filter((pet) => matchesPetSearch(pet.name, query, loc));
 }
 
 export function filterPetsByType(pets: Pet[], type: string): Pet[] {

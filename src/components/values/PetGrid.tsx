@@ -8,6 +8,7 @@ import { FilterBar } from './FilterBar';
 import { searchPets, filterPetsByRarity, sortPetsByValue, sortPetsByName, sortPetsByScore, getOnlyPets } from '@/lib/utils/petHelpers';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { Button } from '@/components/ui/button';
+import { useLocale } from 'next-intl';
 
 interface PetGridProps {
   pets: Pet[];
@@ -20,13 +21,14 @@ export function PetGrid({ pets }: PetGridProps) {
   const [rarity, setRarity] = useState('All');
   const [sort, setSort] = useState('score');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const locale = useLocale();
 
   const debouncedSearch = useDebounce(search, 200);
 
   const filteredPets = useMemo(() => {
     // Only show actual pets (not vehicles, food, etc.)
     let result = getOnlyPets(pets);
-    result = searchPets(result, debouncedSearch);
+    result = searchPets(result, debouncedSearch, locale);
     result = filterPetsByRarity(result, rarity);
 
     switch (sort) {
@@ -46,7 +48,7 @@ export function PetGrid({ pets }: PetGridProps) {
     }
 
     return result;
-  }, [pets, debouncedSearch, rarity, sort]);
+  }, [pets, debouncedSearch, rarity, sort, locale]);
 
   const visiblePets = filteredPets.slice(0, visibleCount);
   const hasMore = visibleCount < filteredPets.length;
