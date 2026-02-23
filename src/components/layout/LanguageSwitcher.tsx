@@ -15,8 +15,6 @@ import { Globe } from 'lucide-react';
 const FLAGS: Record<Locale, string> = {
     en: '🇺🇸',
     es: '🇪🇸',
-    pt: '🇧🇷',
-    tr: '🇹🇷',
     fr: '🇫🇷',
     ar: '🇸🇦',
     de: '🇩🇪',
