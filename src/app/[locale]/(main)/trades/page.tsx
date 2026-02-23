@@ -2,16 +2,23 @@ import Link from 'next/link';
 import { Handshake, Plus, Search, Shield } from 'lucide-react';
 import { TradeList } from '@/components/trades/TradeList';
 import { fetchTradesServer } from '@/lib/data/trades';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-export const metadata = {
-  title: 'Adopt Me Trading 2026 — Trade Pets & Find Fair Trades',
-  description:
-    'Browse and post Adopt Me trades on Roblox. Find fair trades for your pets, check trading values, and connect with other players. Real-time trade listings updated daily in 2026.',
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'metadata' });
+  return {
+    title: t('tradesTitle'),
+    description: t('tradesDescription'),
+  };
+}
 
 export const revalidate = 120; // ISR: 2 minutes
 
-export default async function TradesPage() {
+export default async function TradesPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale });
   const initialTrades = await fetchTradesServer();
 
   return (
@@ -20,9 +27,9 @@ export default async function TradesPage() {
         <div className="flex items-center gap-3">
           <Handshake className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">Trade Hub</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">{t('trades.title')}</h1>
             <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">
-              Browse active trades and post your own offers.
+              {t('trades.subtitle')}
             </p>
           </div>
         </div>
@@ -31,13 +38,13 @@ export default async function TradesPage() {
           className="inline-flex items-center gap-1.5 rounded-xl bg-app-primary px-4 py-2.5 text-sm font-bold text-white hover:bg-app-primary/90 transition-colors shadow-sm"
         >
           <Plus className="h-4 w-4" />
-          <span className="hidden sm:inline">Post Trade</span>
+          <span className="hidden sm:inline">{t('trades.createTrade')}</span>
         </Link>
       </div>
 
       <TradeList initialTrades={initialTrades} />
 
-      {/* SEO card — kid-friendly */}
+      {/* SEO card */}
       <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-950/40 dark:to-indigo-950/40 ring-1 ring-blue-200 dark:ring-blue-800 p-4 sm:p-6 mt-2">
         <div className="flex items-center gap-2.5 mb-3">
           <div className="rounded-2xl bg-blue-200 dark:bg-blue-800/50 p-2.5">

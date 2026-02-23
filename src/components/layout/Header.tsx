@@ -4,10 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
+import { useTranslations } from 'next-intl';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { useIsMobile } from '@/lib/hooks/useMediaQuery';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { LanguageSwitcher } from '@/components/layout/LanguageSwitcher';
 import {
   Calculator,
   Menu,
@@ -27,31 +29,32 @@ import { UserMenu } from '@/components/auth/UserMenu';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
-const NAV_LINKS = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/values', label: 'Values', icon: TrendingUp },
-  { href: '/calculator', label: 'Calculator', icon: Calculator },
-  { href: '/trades', label: 'Trades', icon: Handshake },
-  { href: '/feed', label: 'Feed', icon: ImageIcon },
-  { href: '/chat', label: 'Chat', icon: MessageCircle },
-  { href: '/analytics', label: 'Trending', icon: BarChart3 },
-  { href: '/scammer', label: 'Scammer DB', icon: ShieldAlert },
-  { href: '/news', label: 'News', icon: Newspaper },
-];
-
 export function Header() {
   const { theme, setTheme } = useTheme();
   const user = useAuthStore((s) => s.user);
   const isMobile = useIsMobile();
   const pathname = usePathname();
   const [sheetOpen, setSheetOpen] = useState(false);
+  const t = useTranslations();
+
+  const NAV_LINKS = [
+    { href: '/', label: t('nav.home'), icon: Home },
+    { href: '/values', label: t('nav.values'), icon: TrendingUp },
+    { href: '/calculator', label: t('nav.calculator'), icon: Calculator },
+    { href: '/trades', label: t('nav.trades'), icon: Handshake },
+    { href: '/feed', label: t('nav.feed'), icon: ImageIcon },
+    { href: '/chat', label: t('nav.chat'), icon: MessageCircle },
+    { href: '/analytics', label: 'Trending', icon: BarChart3 },
+    { href: '/scammer', label: 'Scammer DB', icon: ShieldAlert },
+    { href: '/news', label: 'News', icon: Newspaper },
+  ];
 
   const toggleTheme = () => {
     setTheme(theme === 'dark' ? 'light' : 'dark');
   };
 
   const isActive = (href: string) =>
-    href === '/' ? pathname === '/' : pathname.startsWith(href);
+    href === '/' ? pathname === '/' || (pathname.split('/').length === 2 && pathname !== '/') : pathname.includes(href);
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -143,13 +146,15 @@ export function Header() {
             <span className="sr-only">Toggle theme</span>
           </Button>
 
+          <LanguageSwitcher />
+
           {user ? (
             <UserMenu />
           ) : (
             <Link href="/login">
               <Button className="tap-target rounded-xl bg-app-primary hover:bg-app-primary/90 text-white font-bold px-5">
                 <LogIn className="h-4 w-4 mr-1.5" />
-                Sign In
+                {t('common.signIn')}
               </Button>
             </Link>
           )}

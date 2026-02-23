@@ -1,0 +1,77 @@
+{
+    "common": {
+        "signIn": "Iniciar Sesión",
+        "signOut": "Cerrar Sesión",
+        "search": "Buscar",
+        "loading": "Cargando...",
+        "loadMore": "Cargar Más",
+        "close": "Cerrar",
+        "submit": "Enviar",
+        "cancel": "Cancelar",
+        "downloadApp": "Descargar la App"
+    },
+    "nav": {
+        "home": "Inicio",
+        "values": "Valores",
+        "calculator": "Calcular",
+        "trades": "Intercambios",
+        "chat": "Chat",
+        "feed": "Feed"
+    },
+    "home": {
+        "heroTitle": "Adopt Me Valores",
+        "heroSubtitle": "Lista de Valores de Mascotas y Calculadora de Intercambios Gratis",
+        "searchPlaceholder": "Buscar una mascota..."
+    },
+    "values": {
+        "title": "Valores de Mascotas de Adopt Me",
+        "subtitle": "Todos los valores de intercambio de Adopt Me actualizados diariamente para 2026. Haz clic en cualquier mascota para ver detalles completos incluyendo precios Neón, Mega Neón, Fly y Ride.",
+        "searchPlaceholder": "Buscar una mascota...",
+        "filterAll": "Todos",
+        "noResults": "No se encontraron mascotas con tu búsqueda."
+    },
+    "calculator": {
+        "title": "Calculadora de Intercambios",
+        "subtitle": "Agrega mascotas a cada lado y verifica si tu intercambio es justo.",
+        "yourPets": "Tus Mascotas",
+        "theirPets": "Sus Mascotas",
+        "addPet": "Agregar Mascota",
+        "result": "Resultado",
+        "fairTrade": "Intercambio Justo",
+        "win": "Ganancia",
+        "loss": "Pérdida",
+        "bigWin": "Gran Ganancia",
+        "bigLoss": "Gran Pérdida"
+    },
+    "trades": {
+        "title": "Listado de Intercambios",
+        "subtitle": "Explora intercambios o crea el tuyo.",
+        "createTrade": "Crear Intercambio",
+        "offering": "Ofreciendo",
+        "lookingFor": "Buscando"
+    },
+    "chat": {
+        "title": "Chat",
+        "subtitle": "Chatea con otros jugadores en tiempo real.",
+        "groups": "Grupos",
+        "inbox": "Bandeja",
+        "signInToSend": "Inicia sesión para enviar mensajes",
+        "typeMessage": "Escribe un mensaje..."
+    },
+    "feed": {
+        "title": "Feed de la Comunidad",
+        "createPost": "Crear Publicación"
+    },
+    "metadata": {
+        "homeTitle": "Adopt Me Valores — Lista de Valores de Mascotas y Calculadora Gratis 2026",
+        "homeDescription": "Consulta los valores de intercambio de Adopt Me y usa nuestra calculadora gratuita para ver si tu intercambio en Roblox Adopt Me es justo. Actualizado diariamente.",
+        "valuesTitle": "Valores de Mascotas de Adopt Me 2026 — Valores Actualizados Diariamente",
+        "valuesDescription": "Explora todos los valores de intercambio de Adopt Me para cada mascota de Roblox. Mascotas Legendarias, Ultra Raras, Raras con precios Neón, Mega Neón, Fly y Ride.",
+        "calculatorTitle": "Calculadora de Intercambios Adopt Me 2026 — Verificador de Valores",
+        "calculatorDescription": "Usa nuestra calculadora gratuita de intercambios de Adopt Me para verificar si tu intercambio es justo.",
+        "tradesTitle": "Intercambios de Adopt Me 2026 — Encuentra y Publica Intercambios",
+        "tradesDescription": "Explora y crea intercambios de Adopt Me. Encuentra intercambios justos con otros jugadores de Roblox.",
+        "chatTitle": "Chat y Grupos de Adopt Me 2026 — Chatea con Jugadores",
+        "chatDescription": "Chatea con otros jugadores de Roblox Adopt Me en tiempo real. Únete a grupos de intercambio."
+    }
+}

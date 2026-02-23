@@ -1,0 +1,77 @@
+{
+    "common": {
+        "signIn": "Anmelden",
+        "signOut": "Abmelden",
+        "search": "Suchen",
+        "loading": "Laden...",
+        "loadMore": "Mehr laden",
+        "close": "Schließen",
+        "submit": "Absenden",
+        "cancel": "Abbrechen",
+        "downloadApp": "App herunterladen"
+    },
+    "nav": {
+        "home": "Startseite",
+        "values": "Werte",
+        "calculator": "Rechner",
+        "trades": "Tausche",
+        "chat": "Chat",
+        "feed": "Feed"
+    },
+    "home": {
+        "heroTitle": "Adopt Me Werte",
+        "heroSubtitle": "Kostenlose Haustier-Werteliste und Tauschrechner",
+        "searchPlaceholder": "Suche ein Haustier..."
+    },
+    "values": {
+        "title": "Adopt Me Haustierwerte",
+        "subtitle": "Alle Adopt Me Tauschwerte täglich aktualisiert für 2026. Klicke auf ein Haustier für vollständige Wertdetails einschließlich Neon, Mega Neon, Fly und Ride Preise.",
+        "searchPlaceholder": "Suche ein Haustier...",
+        "filterAll": "Alle",
+        "noResults": "Keine Haustiere gefunden, die deiner Suche entsprechen."
+    },
+    "calculator": {
+        "title": "Tauschrechner",
+        "subtitle": "Füge Haustiere auf jeder Seite hinzu und prüfe, ob dein Tausch fair ist.",
+        "yourPets": "Deine Haustiere",
+        "theirPets": "Ihre Haustiere",
+        "addPet": "Haustier hinzufügen",
+        "result": "Ergebnis",
+        "fairTrade": "Fairer Tausch",
+        "win": "Gewinn",
+        "loss": "Verlust",
+        "bigWin": "Großer Gewinn",
+        "bigLoss": "Großer Verlust"
+    },
+    "trades": {
+        "title": "Tauschliste",
+        "subtitle": "Durchsuche Tausche oder erstelle deinen eigenen.",
+        "createTrade": "Tausch erstellen",
+        "offering": "Bietet an",
+        "lookingFor": "Sucht nach"
+    },
+    "chat": {
+        "title": "Chat",
+        "subtitle": "Chatte in Echtzeit mit anderen Spielern.",
+        "groups": "Gruppen",
+        "inbox": "Posteingang",
+        "signInToSend": "Melde dich an, um Nachrichten zu senden",
+        "typeMessage": "Nachricht eingeben..."
+    },
+    "feed": {
+        "title": "Community Feed",
+        "createPost": "Beitrag erstellen"
+    },
+    "metadata": {
+        "homeTitle": "Adopt Me Werte — Kostenlose Haustier-Werteliste und Tauschrechner 2026",
+        "homeDescription": "Überprüfe Adopt Me Tauschwerte und nutze unseren kostenlosen Tauschrechner um zu sehen, ob dein Roblox Adopt Me Tausch fair ist. Täglich aktualisiert.",
+        "valuesTitle": "Adopt Me Haustierwerte 2026 — Tauschwerte Täglich Aktualisiert",
+        "valuesDescription": "Durchsuche alle Adopt Me Tauschwerte für jedes Roblox Haustier. Legendäre, Ultra Seltene, Seltene Haustiere mit Neon, Mega Neon, Fly und Ride Preisen.",
+        "calculatorTitle": "Adopt Me Tauschrechner 2026 — Werte-Prüfer",
+        "calculatorDescription": "Nutze unseren kostenlosen Adopt Me Tauschrechner um zu prüfen, ob dein Tausch fair ist.",
+        "tradesTitle": "Adopt Me Tausche 2026 — Finde und Erstelle Tausche",
+        "tradesDescription": "Durchsuche und erstelle Adopt Me Tausche. Finde faire Tausche mit anderen Roblox Spielern.",
+        "chatTitle": "Adopt Me Chat und Gruppen 2026 — Chatte mit Spielern",
+        "chatDescription": "Chatte in Echtzeit mit anderen Roblox Adopt Me Spielern. Tritt Tauschgruppen bei."
+    }
+}

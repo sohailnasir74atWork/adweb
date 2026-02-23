@@ -2,20 +2,22 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { Calculator, Handshake, Home, Image as ImageIcon, MessageCircle, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const TABS = [
-  { href: '/', label: 'Home', icon: Home },
-  { href: '/values', label: 'Values', icon: TrendingUp },
-  { href: '/calculator', label: 'Check', icon: Calculator },
-  { href: '/trades', label: 'Trade', icon: Handshake },
-  { href: '/feed', label: 'Feed', icon: ImageIcon },
-  { href: '/chat', label: 'Chat', icon: MessageCircle },
+  { href: '/', key: 'home', icon: Home },
+  { href: '/values', key: 'values', icon: TrendingUp },
+  { href: '/calculator', key: 'calculator', icon: Calculator },
+  { href: '/trades', key: 'trades', icon: Handshake },
+  { href: '/feed', key: 'feed', icon: ImageIcon },
+  { href: '/chat', key: 'chat', icon: MessageCircle },
 ];
 
 export function MobileNav() {
   const pathname = usePathname();
+  const t = useTranslations('nav');
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden safe-area-bottom" aria-label="Bottom navigation">
@@ -23,8 +25,8 @@ export function MobileNav() {
         {TABS.map((tab) => {
           const isActive =
             tab.href === '/'
-              ? pathname === '/'
-              : pathname.startsWith(tab.href);
+              ? pathname === '/' || pathname === `/${pathname.split('/')[1]}` && pathname.split('/').length === 2
+              : pathname.includes(tab.href);
           const Icon = tab.icon;
 
           return (
@@ -39,7 +41,7 @@ export function MobileNav() {
               )}
             >
               <Icon className={cn('h-5 w-5', isActive && 'text-app-primary')} />
-              <span>{tab.label}</span>
+              <span>{t(tab.key)}</span>
             </Link>
           );
         })}

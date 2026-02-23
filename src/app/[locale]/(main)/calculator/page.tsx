@@ -1,12 +1,16 @@
 import { CalculatorBoard } from '@/components/calculator/CalculatorBoard';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { ListOrdered, HelpCircle, Sparkles, BarChart3 } from 'lucide-react';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-export const metadata = {
-  title: 'Adopt Me Trade Calculator 2026 — Value Checker & Trade Checker',
-  description:
-    'Use our free Adopt Me trade calculator and value checker to check pet trading values and see if your Roblox trade is a win, lose, or fair. Updated daily with the latest 2026 values.',
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'metadata' });
+  return {
+    title: t('calculatorTitle'),
+    description: t('calculatorDescription'),
+  };
+}
 
 const calculatorJsonLd = {
   '@context': 'https://schema.org',
@@ -24,25 +28,26 @@ const calculatorJsonLd = {
   },
 };
 
-export default function CalculatorPage() {
+export default async function CalculatorPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale });
+
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
       <JsonLd data={calculatorJsonLd} />
-      {/* SEO shell — server rendered */}
       <section>
         <h1 className="text-2xl sm:text-3xl font-bold">
-          Adopt Me Trade Calculator — Check if Your Trade is Fair
+          {t('calculator.title')}
         </h1>
         <p className="text-muted-foreground text-sm sm:text-base mt-1">
-          Add pets to each side and instantly see if your Roblox Adopt Me trade is a Win, Lose, or Fair.
-          All trading values updated daily for 2026.
+          {t('calculator.subtitle')}
         </p>
       </section>
 
-      {/* Interactive calculator — client component */}
       <CalculatorBoard />
 
-      {/* How to Use — kid-friendly card */}
+      {/* How to Use */}
       <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-rose-100 to-orange-100 dark:from-rose-950/40 dark:to-orange-950/40 ring-1 ring-rose-200 dark:ring-rose-800 p-4 sm:p-6 mt-4 sm:mt-6">
         <div className="flex items-center gap-2.5 mb-4">
           <div className="rounded-2xl bg-rose-200 dark:bg-rose-800/50 p-2.5">
@@ -68,7 +73,7 @@ export default function CalculatorPage() {
         </div>
       </div>
 
-      {/* FAQ — kid-friendly cards */}
+      {/* FAQ */}
       <div className="mt-4 space-y-3">
         <h2 className="text-lg sm:text-xl font-extrabold flex items-center gap-2 px-1">
           <HelpCircle className="h-5 w-5 text-violet-500" />
@@ -92,9 +97,9 @@ export default function CalculatorPage() {
             <h3 className="font-bold text-sm sm:text-base">What does Win, Lose, and Fair mean?</h3>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            <strong>Win</strong> means you receive more value than you give.{' '}
-            <strong>Lose</strong> means you give more value than you receive.{' '}
-            <strong>Fair</strong> means the trade is roughly equal (within 10% difference).
+            <strong>{t('calculator.win')}</strong> means you receive more value than you give.{' '}
+            <strong>{t('calculator.loss')}</strong> means you give more value than you receive.{' '}
+            <strong>{t('calculator.fairTrade')}</strong> means the trade is roughly equal (within 10% difference).
           </p>
         </div>
 

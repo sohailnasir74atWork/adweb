@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { MessageCircle, Smartphone, Search, Inbox as InboxIcon, Users, X } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
+import { useTranslations } from 'next-intl';
 import { config } from '@/lib/constants/config';
 import { cn } from '@/lib/utils';
 
@@ -28,28 +29,29 @@ export function ChatPageClient() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const [mobileTab, setMobileTab] = useState<MobileTab>('chat');
   const [hasMounted, setHasMounted] = useState(false);
+  const t = useTranslations('chat');
 
   useEffect(() => { setHasMounted(true); }, []);
 
   if (!hasMounted) return null;
 
   if (isDesktop) {
-    return <DesktopLayout />;
+    return <DesktopLayout t={t} />;
   }
 
-  return <MobileLayout activeTab={mobileTab} onTabChange={setMobileTab} />;
+  return <MobileLayout activeTab={mobileTab} onTabChange={setMobileTab} t={t} />;
 }
 
 /* ─── Desktop — same three-panel layout ─── */
-function DesktopLayout() {
+function DesktopLayout({ t }: { t: ReturnType<typeof useTranslations<'chat'>> }) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
         <MessageCircle className="h-8 w-8 text-purple-500" />
         <div>
-          <h1 className="text-3xl font-bold">Chat</h1>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
           <p className="text-muted-foreground text-sm mt-0.5">
-            Chat with other traders in real-time.
+            {t('subtitle')}
           </p>
         </div>
       </div>
@@ -95,9 +97,11 @@ function DesktopLayout() {
 function MobileLayout({
   activeTab,
   onTabChange,
+  t,
 }: {
   activeTab: MobileTab;
   onTabChange: (tab: MobileTab) => void;
+  t: ReturnType<typeof useTranslations<'chat'>>;
 }) {
   return (
     <div className={cn(
@@ -110,7 +114,7 @@ function MobileLayout({
           <div className="rounded-xl bg-purple-500/15 p-2">
             <MessageCircle className="h-5 w-5 text-purple-500" />
           </div>
-          <h1 className="text-xl font-extrabold">Chat</h1>
+          <h1 className="text-xl font-extrabold">{t('title')}</h1>
         </div>
         <div className="flex items-center gap-1">
           <button
@@ -150,7 +154,7 @@ function MobileLayout({
           )}
         >
           <MessageCircle className="h-4 w-4" />
-          Chat
+          {t('title')}
         </button>
         <button
           onClick={() => onTabChange('groups')}
@@ -162,7 +166,7 @@ function MobileLayout({
           )}
         >
           <Users className="h-4 w-4" />
-          Groups
+          {t('groups')}
         </button>
       </div>
 

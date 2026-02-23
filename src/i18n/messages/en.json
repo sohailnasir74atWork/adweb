@@ -1,0 +1,77 @@
+{
+    "common": {
+        "signIn": "Sign In",
+        "signOut": "Sign Out",
+        "search": "Search",
+        "loading": "Loading...",
+        "loadMore": "Load More",
+        "close": "Close",
+        "submit": "Submit",
+        "cancel": "Cancel",
+        "downloadApp": "Download the App"
+    },
+    "nav": {
+        "home": "Home",
+        "values": "Values",
+        "calculator": "Check",
+        "trades": "Trade",
+        "chat": "Chat",
+        "feed": "Feed"
+    },
+    "home": {
+        "heroTitle": "Adopt Me Values",
+        "heroSubtitle": "Free Pet Value List & Trade Calculator",
+        "searchPlaceholder": "Search for a pet..."
+    },
+    "values": {
+        "title": "Adopt Me Pet Values",
+        "subtitle": "All Adopt Me trading values updated daily for 2026. Click any pet to see full value details including Neon, Mega Neon, Fly, and Ride prices.",
+        "searchPlaceholder": "Search for a pet...",
+        "filterAll": "All",
+        "noResults": "No pets found matching your search."
+    },
+    "calculator": {
+        "title": "Trade Calculator",
+        "subtitle": "Add pets to each side and check if your trade is fair.",
+        "yourPets": "Your Pets",
+        "theirPets": "Their Pets",
+        "addPet": "Add Pet",
+        "result": "Result",
+        "fairTrade": "Fair Trade",
+        "win": "Win",
+        "loss": "Loss",
+        "bigWin": "Big Win",
+        "bigLoss": "Big Loss"
+    },
+    "trades": {
+        "title": "Trade Listings",
+        "subtitle": "Browse trades or create your own.",
+        "createTrade": "Create Trade",
+        "offering": "Offering",
+        "lookingFor": "Looking For"
+    },
+    "chat": {
+        "title": "Chat",
+        "subtitle": "Chat with other traders in real-time.",
+        "groups": "Groups",
+        "inbox": "Inbox",
+        "signInToSend": "Sign in to send messages",
+        "typeMessage": "Type a message..."
+    },
+    "feed": {
+        "title": "Community Feed",
+        "createPost": "Create Post"
+    },
+    "metadata": {
+        "homeTitle": "Adopt Me Values — Free Pet Value List & Trade Calculator 2026",
+        "homeDescription": "Check Adopt Me trading values and use our free trade calculator to see if your Roblox Adopt Me trade is fair. Updated daily with every pet value.",
+        "valuesTitle": "Adopt Me Pet Values 2026 — Trading Values Updated Daily",
+        "valuesDescription": "Browse all Adopt Me trading values for every Roblox pet. Legendary, Ultra Rare, Rare, Uncommon, and Common pets with Neon, Mega Neon, Fly, and Ride prices.",
+        "calculatorTitle": "Adopt Me Trade Calculator 2026 — Value Checker & Trade Checker",
+        "calculatorDescription": "Use our free Adopt Me trade calculator to check if your trade is fair. Compare pet values instantly.",
+        "tradesTitle": "Adopt Me Trades 2026 — Find & Post Trades",
+        "tradesDescription": "Browse and create Adopt Me trades. Find fair trades with other Roblox players.",
+        "chatTitle": "Adopt Me Chat & Trading Groups 2026 — Chat with Traders",
+        "chatDescription": "Chat with other Roblox Adopt Me players in real-time. Join trading groups and find trades."
+    }
+}
