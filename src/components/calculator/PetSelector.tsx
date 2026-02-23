@@ -12,11 +12,11 @@ import { Input } from '@/components/ui/input';
 import { PetImage } from '@/components/shared/PetImage';
 import { formatNumber } from '@/lib/utils/formatters';
 import { type Pet, getPetDefaultValue } from '@/lib/types/pet';
-import { searchPets, filterPetsByRarity, getOnlyPets } from '@/lib/utils/petHelpers';
+import { searchPets, filterPetsByRarity, filterPetsByType, isPetType, ITEM_TYPES } from '@/lib/utils/petHelpers';
 import { cn } from '@/lib/utils';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { type BadgeValueType, calculateItemValue } from '@/lib/utils/tradeHelpers';
-import { useLocale } from 'next-intl';
+
 
 interface PetSelectorProps {
   open: boolean;
@@ -50,31 +50,44 @@ const MODIFIER_BADGES: { key: 'F' | 'R'; label: string; emoji: string; activeCla
 
 export function PetSelector({ open, onClose, pets, onSelect, side }: PetSelectorProps) {
   const [query, setQuery] = useState('');
+  const [type, setType] = useState('pets');
   const [rarity, setRarity] = useState('All');
   const [valueType, setValueType] = useState<BadgeValueType>('d');
   const [isFly, setIsFly] = useState(false);
   const [isRide, setIsRide] = useState(false);
   const debouncedQuery = useDebounce(query, 200);
-  const locale = useLocale();
 
-  const onlyPets = useMemo(() => getOnlyPets(pets), [pets]);
+  const isPet = isPetType(type);
 
   const filtered = useMemo(() => {
-    let result = onlyPets;
-    result = searchPets(result, debouncedQuery, locale);
+    let result = filterPetsByType(pets, type);
+    result = searchPets(result, debouncedQuery);
     result = filterPetsByRarity(result, rarity);
     return result;
-  }, [onlyPets, debouncedQuery, rarity, locale]);
+  }, [pets, type, debouncedQuery, rarity]);
 
   const handleSelect = useCallback(
     (pet: Pet) => {
-      onSelect(pet, valueType, isFly, isRide);
+      // For non-pet items, always use default value type with no modifiers
+      onSelect(pet, isPet ? valueType : 'd', isPet ? isFly : false, isPet ? isRide : false);
     },
-    [onSelect, valueType, isFly, isRide],
+    [onSelect, valueType, isFly, isRide, isPet],
   );
+
+  const handleTypeChange = useCallback((t: string) => {
+    setType(t);
+    setRarity('All');
+    // Reset pet-specific badges when switching away from pets
+    if (!isPetType(t)) {
+      setValueType('d');
+      setIsFly(false);
+      setIsRide(false);
+    }
+  }, []);
 
   const handleClose = useCallback(() => {
     setQuery('');
+    setType('pets');
     setRarity('All');
     setValueType('d');
     setIsFly(false);
@@ -99,7 +112,7 @@ export function PetSelector({ open, onClose, pets, onSelect, side }: PetSelector
         {/* Header */}
         <SheetHeader className="px-5 pt-1 pb-2">
           <SheetTitle className="text-center text-lg font-extrabold tracking-tight">
-            Pick a pet for{' '}
+            Pick an item for{' '}
             <span
               className={cn(
                 'inline-block px-2.5 py-0.5 rounded-lg text-white text-base font-extrabold',
@@ -116,7 +129,7 @@ export function PetSelector({ open, onClose, pets, onSelect, side }: PetSelector
           <div className="relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
-              placeholder="Search for a pet..."
+              placeholder={`Search for ${isPet ? 'a pet' : 'an item'}...`}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               className="pl-10 pr-9 h-11 rounded-2xl text-sm bg-muted/50 border-0 focus-visible:ring-2 focus-visible:ring-app-primary/30 placeholder:text-muted-foreground/60"
@@ -132,34 +145,40 @@ export function PetSelector({ open, onClose, pets, onSelect, side }: PetSelector
           </div>
         </div>
 
-        {/* Badge buttons — D/N/M + F/R */}
-        <div className="px-5 pb-3">
-          <div className="flex items-center justify-center gap-2">
-            {VALUE_BADGES.map((b) => (
+        {/* Type filter tabs */}
+        <div className="px-5 pb-2">
+          <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            {ITEM_TYPES.map((t) => (
               <button
-                key={b.key}
-                onClick={() => setValueType(b.key)}
+                key={t.value}
+                onClick={() => handleTypeChange(t.value)}
                 className={cn(
-                  'h-10 px-4 text-sm font-extrabold rounded-xl transition-all duration-200 flex items-center gap-1.5',
-                  valueType === b.key
-                    ? `${b.activeClass} shadow-lg scale-105`
-                    : 'bg-muted text-muted-foreground hover:bg-accent hover:scale-105 active:scale-95',
+                  'whitespace-nowrap text-xs font-bold px-3 py-1.5 rounded-full border transition-all duration-150 shrink-0',
+                  type === t.value
+                    ? cn(
+                      'text-white border-transparent shadow-sm scale-105',
+                      isHas ? 'bg-app-has' : 'bg-app-want',
+                    )
+                    : 'bg-card text-muted-foreground border-border hover:bg-accent active:scale-95',
                 )}
               >
-                <span className="text-base">{b.emoji}</span>
-                {b.label}
+                {t.label}
               </button>
             ))}
-            <div className="w-px h-8 bg-border mx-0.5" />
-            {MODIFIER_BADGES.map((b) => {
-              const isActive = b.key === 'F' ? isFly : isRide;
-              return (
+          </div>
+        </div>
+
+        {/* Badge buttons — D/N/M + F/R (pets only) */}
+        {isPet && (
+          <div className="px-5 pb-3">
+            <div className="flex items-center justify-center gap-2">
+              {VALUE_BADGES.map((b) => (
                 <button
                   key={b.key}
-                  onClick={() => (b.key === 'F' ? setIsFly(!isFly) : setIsRide(!isRide))}
+                  onClick={() => setValueType(b.key)}
                   className={cn(
                     'h-10 px-4 text-sm font-extrabold rounded-xl transition-all duration-200 flex items-center gap-1.5',
-                    isActive
+                    valueType === b.key
                       ? `${b.activeClass} shadow-lg scale-105`
                       : 'bg-muted text-muted-foreground hover:bg-accent hover:scale-105 active:scale-95',
                   )}
@@ -167,10 +186,29 @@ export function PetSelector({ open, onClose, pets, onSelect, side }: PetSelector
                   <span className="text-base">{b.emoji}</span>
                   {b.label}
                 </button>
-              );
-            })}
+              ))}
+              <div className="w-px h-8 bg-border mx-0.5" />
+              {MODIFIER_BADGES.map((b) => {
+                const isActive = b.key === 'F' ? isFly : isRide;
+                return (
+                  <button
+                    key={b.key}
+                    onClick={() => (b.key === 'F' ? setIsFly(!isFly) : setIsRide(!isRide))}
+                    className={cn(
+                      'h-10 px-4 text-sm font-extrabold rounded-xl transition-all duration-200 flex items-center gap-1.5',
+                      isActive
+                        ? `${b.activeClass} shadow-lg scale-105`
+                        : 'bg-muted text-muted-foreground hover:bg-accent hover:scale-105 active:scale-95',
+                    )}
+                  >
+                    <span className="text-base">{b.emoji}</span>
+                    {b.label}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Rarity filter pills */}
         <div className="px-5 pb-3">
@@ -200,7 +238,7 @@ export function PetSelector({ open, onClose, pets, onSelect, side }: PetSelector
           {filtered.length === 0 ? (
             <div className="py-16 text-center">
               <p className="text-4xl mb-3">🔍</p>
-              <p className="text-muted-foreground text-sm font-medium">No pets found</p>
+              <p className="text-muted-foreground text-sm font-medium">No items found</p>
               <p className="text-muted-foreground/60 text-xs mt-1">Try a different search or filter</p>
             </div>
           ) : (

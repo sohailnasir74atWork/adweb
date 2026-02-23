@@ -1,7 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { fetchPetDataServer } from '@/lib/data/pets';
 import { slugify } from '@/lib/utils/slugify';
-import { getOnlyPets } from '@/lib/utils/petHelpers';
 import { locales, defaultLocale } from '@/i18n/config';
 
 const DOMAIN = 'https://adoptmevalues.app';
@@ -23,8 +22,7 @@ function alternatesForPath(path: string): Record<string, string> {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = ['/', '/values', '/calculator', '/trades', '/feed', '/chat', '/analytics', '/scammer', '/news'];
 
-  const pets = await fetchPetDataServer();
-  const onlyPets = getOnlyPets(pets);
+  const allItems = await fetchPetDataServer();
 
   const entries: MetadataRoute.Sitemap = [];
 
@@ -41,16 +39,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // Pet pages — one entry per locale
-  for (const pet of onlyPets) {
-    const petPath = `/values/${slugify(pet.name)}`;
+  // All item pages — one entry per locale
+  for (const item of allItems) {
+    const itemPath = `/values/${slugify(item.name)}`;
     for (const locale of locales) {
       entries.push({
-        url: localizedUrl(petPath, locale),
+        url: localizedUrl(itemPath, locale),
         lastModified: BUILD_DATE,
         changeFrequency: 'daily',
-        priority: 0.8,
-        alternates: { languages: alternatesForPath(petPath) },
+        priority: item.type === 'pets' ? 0.8 : 0.7,
+        alternates: { languages: alternatesForPath(itemPath) },
       });
     }
   }

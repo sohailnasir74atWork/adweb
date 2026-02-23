@@ -4,34 +4,37 @@ export interface PetRaw {
   name: string;
   image: string;            // Relative path like "/images/pets/Hedgehog.png"
   rarity: string;           // "legendary", "ultra rare", "rare", "uncommon", "common", "none"
-  type: string;             // "pets", "vehicles", "pet wear", "food", "eggs", "strollers", "toys", "gifts", "other"
-  categoryd: string;        // Category for default (e.g., "Classy", "Exotic", "2019")
-  categoryn: string;        // Category for neon
-  categorym: string;        // Category for mega
-  categorypreppyd: string;  // Stringified bool
-  categorypreppyn: string;
-  categorypreppym: string;
-  'fly&ride?': string;      // Stringified bool
+  raity?: string;           // Typo in source data for some pet wear items
+  type: string;             // "pets", "vehicles", "pet wear", "Pet Wear", "food", "eggs", "strollers", "toys", "gifts", "other"
+  categoryd?: string;       // Category for default (e.g., "Classy", "Exotic", "2019")
+  categoryn?: string;       // Category for neon
+  categorym?: string;       // Category for mega
+  categorypreppyd?: string; // Stringified bool
+  categorypreppyn?: string;
+  categorypreppym?: string;
+  'fly&ride?'?: string;     // Stringified bool
   score: number;            // Ranking/demand score (lower = higher demand)
   status: string;           // "Ready"
-  // Regular (default) values
-  rvalue: number;
-  'rvalue - fly': number;
-  'rvalue - ride': number;
-  'rvalue - fly&ride': number;
-  'rvalue - nopotion': number;
-  // Neon values
-  nvalue: number;
-  'nvalue - fly': number;
-  'nvalue - ride': number;
-  'nvalue - fly&ride': number;
-  'nvalue - nopotion': number;
-  // Mega neon values
-  mvalue: number;
-  'mvalue - fly': number;
-  'mvalue - ride': number;
-  'mvalue - fly&ride': number;
-  'mvalue - nopotion': number;
+  // Single value field (used by non-pet items: toys, vehicles, strollers, etc.)
+  value?: number;
+  // Regular (default) values (pets only)
+  rvalue?: number;
+  'rvalue - fly'?: number;
+  'rvalue - ride'?: number;
+  'rvalue - fly&ride'?: number;
+  'rvalue - nopotion'?: number;
+  // Neon values (pets only)
+  nvalue?: number;
+  'nvalue - fly'?: number;
+  'nvalue - ride'?: number;
+  'nvalue - fly&ride'?: number;
+  'nvalue - nopotion'?: number;
+  // Mega neon values (pets only)
+  mvalue?: number;
+  'mvalue - fly'?: number;
+  'mvalue - ride'?: number;
+  'mvalue - fly&ride'?: number;
+  'mvalue - nopotion'?: number;
 }
 
 // Normalized pet for app use
@@ -70,19 +73,26 @@ export const CDN_BASE = 'https://adoptme.b-cdn.net';
 
 export function buildPetImageUrl(relativePath: string, imageBase: string): string {
   if (!relativePath || !imageBase) return '';
-  return `${imageBase.replace(/\/$/,'')}/${relativePath.replace(/^\//, '')}`;
+  return `${imageBase.replace(/\/$/, '')}/${relativePath.replace(/^\//, '')}`;
 }
 
 export function normalizePet(raw: PetRaw, imageBase?: string): Pet {
+  // Normalize type: "Pet Wear" → "pet wear"
+  const type = raw.type.toLowerCase();
+  // Normalize rarity: some pet wear items have 'none' rarity with actual rarity in 'raity' (typo)
+  const rarity = (raw.rarity === 'none' && raw.raity) ? raw.raity : (raw.rarity || 'common');
+  // For non-pet items, use single `value` field as rvalue
+  const singleValue = raw.value ?? 0;
+
   return {
     id: raw.id,
     name: raw.name,
     image: imageBase ? buildPetImageUrl(raw.image, imageBase) : raw.image,
-    rarity: raw.rarity,
-    type: raw.type,
+    rarity,
+    type,
     category: String(raw.categoryd || ''),
     score: raw.score,
-    rvalue: raw.rvalue ?? 0,
+    rvalue: raw.rvalue ?? singleValue,
     rvalueFly: raw['rvalue - fly'] ?? 0,
     rvalueRide: raw['rvalue - ride'] ?? 0,
     rvalueFlyRide: raw['rvalue - fly&ride'] ?? 0,

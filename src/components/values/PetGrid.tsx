@@ -5,10 +5,9 @@ import { type Pet } from '@/lib/types/pet';
 import { PetValueCard } from './PetValueCard';
 import { SearchBar } from './SearchBar';
 import { FilterBar } from './FilterBar';
-import { searchPets, filterPetsByRarity, sortPetsByValue, sortPetsByName, sortPetsByScore, getOnlyPets } from '@/lib/utils/petHelpers';
+import { searchPets, filterPetsByRarity, filterPetsByType, sortPetsByValue, sortPetsByName, sortPetsByScore } from '@/lib/utils/petHelpers';
 import { useDebounce } from '@/lib/hooks/useDebounce';
 import { Button } from '@/components/ui/button';
-import { useLocale } from 'next-intl';
 
 interface PetGridProps {
   pets: Pet[];
@@ -18,17 +17,16 @@ const PAGE_SIZE = 60;
 
 export function PetGrid({ pets }: PetGridProps) {
   const [search, setSearch] = useState('');
+  const [type, setType] = useState('pets');
   const [rarity, setRarity] = useState('All');
   const [sort, setSort] = useState('score');
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const locale = useLocale();
 
   const debouncedSearch = useDebounce(search, 200);
 
   const filteredPets = useMemo(() => {
-    // Only show actual pets (not vehicles, food, etc.)
-    let result = getOnlyPets(pets);
-    result = searchPets(result, debouncedSearch, locale);
+    let result = filterPetsByType(pets, type);
+    result = searchPets(result, debouncedSearch);
     result = filterPetsByRarity(result, rarity);
 
     switch (sort) {
@@ -48,7 +46,7 @@ export function PetGrid({ pets }: PetGridProps) {
     }
 
     return result;
-  }, [pets, debouncedSearch, rarity, sort, locale]);
+  }, [pets, type, debouncedSearch, rarity, sort]);
 
   const visiblePets = filteredPets.slice(0, visibleCount);
   const hasMore = visibleCount < filteredPets.length;
@@ -57,7 +55,13 @@ export function PetGrid({ pets }: PetGridProps) {
     setVisibleCount((prev) => prev + PAGE_SIZE);
   };
 
-  // Reset visible count when filters change
+  // Reset visible count and rarity when type changes
+  const handleTypeChange = (t: string) => {
+    setType(t);
+    setRarity('All');
+    setVisibleCount(PAGE_SIZE);
+  };
+
   const handleRarityChange = (r: string) => {
     setRarity(r);
     setVisibleCount(PAGE_SIZE);
@@ -72,6 +76,8 @@ export function PetGrid({ pets }: PetGridProps) {
     <div className="flex flex-col gap-4">
       <SearchBar value={search} onChange={setSearch} />
       <FilterBar
+        activeType={type}
+        onTypeChange={handleTypeChange}
         activeRarity={rarity}
         onRarityChange={handleRarityChange}
         activeSort={sort}
@@ -81,7 +87,7 @@ export function PetGrid({ pets }: PetGridProps) {
 
       {visiblePets.length === 0 ? (
         <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
-          No pets found matching your search.
+          No items found matching your search.
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3">

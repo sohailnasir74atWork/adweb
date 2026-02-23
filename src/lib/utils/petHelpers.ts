@@ -1,7 +1,23 @@
 import { type Pet, type PetRaw, normalizePet, getPetDefaultValue } from '@/lib/types/pet';
-import { matchesPetSearch } from '@/i18n/petNames';
 
 export { getPetDefaultValue };
+
+// All item types in display order
+export const ITEM_TYPES = [
+  { value: 'pets', label: 'Pets' },
+  { value: 'toys', label: 'Toys' },
+  { value: 'vehicles', label: 'Vehicles' },
+  { value: 'pet wear', label: 'Pet Wear' },
+  { value: 'strollers', label: 'Strollers' },
+  { value: 'eggs', label: 'Eggs' },
+  { value: 'gifts', label: 'Gifts' },
+  { value: 'food', label: 'Food' },
+  { value: 'other', label: 'Other' },
+] as const;
+
+export function isPetType(type: string): boolean {
+  return type === 'pets';
+}
 
 export function normalizePetData(rawData: PetRaw[], imageBase?: string): Pet[] {
   return rawData.map((r) => normalizePet(r, imageBase));
@@ -17,10 +33,10 @@ export function getPetHighestValue(pet: Pet): number {
   return allValues.length > 0 ? Math.max(...allValues) : 0;
 }
 
-export function searchPets(pets: Pet[], query: string, locale?: string): Pet[] {
+export function searchPets(pets: Pet[], query: string): Pet[] {
   if (!query.trim()) return pets;
-  const loc = locale || 'en';
-  return pets.filter((pet) => matchesPetSearch(pet.name, query, loc));
+  const lowerQuery = query.toLowerCase().trim();
+  return pets.filter((pet) => pet.name.toLowerCase().includes(lowerQuery));
 }
 
 export function filterPetsByType(pets: Pet[], type: string): Pet[] {
@@ -61,7 +77,7 @@ export function sortPetsByScore(pets: Pet[]): Pet[] {
 export function getSimilarPets(allPets: Pet[], targetPet: Pet, count = 8): Pet[] {
   const targetValue = getPetDefaultValue(targetPet);
   return allPets
-    .filter((p) => p.name !== targetPet.name && p.type === 'pets')
+    .filter((p) => p.name !== targetPet.name && p.type === targetPet.type)
     .sort((a, b) => {
       const aDiff = Math.abs(getPetDefaultValue(a) - targetValue);
       const bDiff = Math.abs(getPetDefaultValue(b) - targetValue);

@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { fetchPetDataServer } from '@/lib/data/pets';
 import { slugify } from '@/lib/utils/slugify';
-import { getOnlyPets } from '@/lib/utils/petHelpers';
 
 const DOMAIN = 'https://adoptmevalues.app';
 const INDEXNOW_KEY = 'b4d7e2a1c8f5039d';
@@ -26,7 +25,7 @@ const STATIC_PAGES = [
  * 
  * Optional body: { urls?: string[] }
  * - If urls provided, submit only those specific URLs
- * - If no urls provided, submit all static pages + all pet pages
+ * - If no urls provided, submit all static pages + all item pages
  */
 export async function POST(request: NextRequest) {
     try {
@@ -47,14 +46,13 @@ export async function POST(request: NextRequest) {
             // Add static pages
             const staticUrls = STATIC_PAGES.map((path) => `${DOMAIN}${path}`);
 
-            // Add pet pages
-            const pets = await fetchPetDataServer();
-            const onlyPets = getOnlyPets(pets);
-            const petUrls = onlyPets.map(
-                (pet) => `${DOMAIN}/values/${slugify(pet.name)}`
+            // Add all item pages (pets, toys, vehicles, etc.)
+            const allItems = await fetchPetDataServer();
+            const itemUrls = allItems.map(
+                (item) => `${DOMAIN}/values/${slugify(item.name)}`
             );
 
-            urlList = [...staticUrls, ...petUrls];
+            urlList = [...staticUrls, ...itemUrls];
         }
 
         // Submit to IndexNow

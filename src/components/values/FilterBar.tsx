@@ -2,6 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { ITEM_TYPES } from '@/lib/utils/petHelpers';
 
 const RARITIES = ['All', 'legendary', 'ultra rare', 'rare', 'uncommon', 'common'];
 const SORT_OPTIONS = [
@@ -12,6 +13,8 @@ const SORT_OPTIONS = [
 ];
 
 interface FilterBarProps {
+  activeType: string;
+  onTypeChange: (type: string) => void;
   activeRarity: string;
   onRarityChange: (rarity: string) => void;
   activeSort: string;
@@ -20,6 +23,8 @@ interface FilterBarProps {
 }
 
 export function FilterBar({
+  activeType,
+  onTypeChange,
   activeRarity,
   onRarityChange,
   activeSort,
@@ -28,6 +33,25 @@ export function FilterBar({
 }: FilterBarProps) {
   return (
     <div className="flex flex-col gap-3">
+      {/* Type filter tabs */}
+      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide -mx-1 px-1">
+        {ITEM_TYPES.map((type) => (
+          <Button
+            key={type.value}
+            variant="outline"
+            size="sm"
+            onClick={() => onTypeChange(type.value)}
+            className={cn(
+              'h-8 text-xs whitespace-nowrap shrink-0',
+              activeType === type.value &&
+              'bg-app-primary text-white border-app-primary hover:bg-app-primary/90 hover:text-white',
+            )}
+          >
+            {type.label}
+          </Button>
+        ))}
+      </div>
+
       {/* Rarity filters */}
       <div className="flex flex-wrap gap-1.5">
         {RARITIES.map((rarity) => (
@@ -39,10 +63,10 @@ export function FilterBar({
             className={cn(
               'h-8 text-xs capitalize',
               activeRarity === rarity &&
-                'bg-app-primary text-white border-app-primary hover:bg-app-primary/90 hover:text-white',
+              'bg-app-primary text-white border-app-primary hover:bg-app-primary/90 hover:text-white',
             )}
           >
-            {rarity}
+            {rarity === 'All' ? 'All' : rarity}
           </Button>
         ))}
       </div>
@@ -65,7 +89,7 @@ export function FilterBar({
             </Button>
           ))}
         </div>
-        <span className="text-xs text-muted-foreground">{totalCount} pets</span>
+        <span className="text-xs text-muted-foreground">{totalCount} items</span>
       </div>
     </div>
   );

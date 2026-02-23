@@ -5,7 +5,7 @@ import { ChevronRight } from 'lucide-react';
 import { fetchPetDataServer } from '@/lib/data/pets';
 import { slugify } from '@/lib/utils/slugify';
 import { formatNumber } from '@/lib/utils/formatters';
-import { getSimilarPets, getOnlyPets } from '@/lib/utils/petHelpers';
+import { getSimilarPets, isPetType } from '@/lib/utils/petHelpers';
 import { getPetDefaultValue, type Pet } from '@/lib/types/pet';
 import { PetImage } from '@/components/shared/PetImage';
 import { PetValueCard } from '@/components/values/PetValueCard';
@@ -13,12 +13,12 @@ import { Badge } from '@/components/ui/badge';
 import { JsonLd } from '@/components/seo/JsonLd';
 
 export const revalidate = 300;
+export const dynamicParams = true; // Allow ISR for items not generated at build
 
-// Generate static pages for ALL pets at build time
+// Generate static pages for all items at build time
 export async function generateStaticParams() {
-  const pets = await fetchPetDataServer();
-  const onlyPets = getOnlyPets(pets);
-  return onlyPets.map((pet) => ({ slug: slugify(pet.name) }));
+  const items = await fetchPetDataServer();
+  return items.map((item) => ({ slug: slugify(item.name) }));
 }
 
 // Dynamic SEO metadata per pet
@@ -36,12 +36,15 @@ export async function generateMetadata({
   }
 
   const value = getPetDefaultValue(pet);
+  const isPet = isPetType(pet.type);
+  const neonInfo = isPet ? ` See Neon (${formatNumber(pet.nvalue)}), Mega Neon (${formatNumber(pet.mvalue)}), Fly, Ride prices and demand.` : '';
+  const ogNeon = isPet ? ` Neon: ${formatNumber(pet.nvalue)}, Mega: ${formatNumber(pet.mvalue)}.` : '';
   return {
-    title: `${pet.name} Value in Adopt Me 2026 — Trading Value, Neon & Mega Prices`,
-    description: `Check the latest ${pet.name} trading value in Roblox Adopt Me. Current value: ${formatNumber(value)}. See Neon (${formatNumber(pet.nvalue)}), Mega Neon (${formatNumber(pet.mvalue)}), Fly, Ride prices and demand. Rarity: ${pet.rarity}. Updated daily in 2026.`,
+    title: `${pet.name} Value in Adopt Me 2026 — Trading Value${isPet ? ', Neon & Mega Prices' : ''}`,
+    description: `Check the latest ${pet.name} trading value in Roblox Adopt Me. Current value: ${formatNumber(value)}.${neonInfo} Rarity: ${pet.rarity}. Updated daily in 2026.`,
     openGraph: {
       title: `${pet.name} Trading Value | Adopt Me Values 2026`,
-      description: `${pet.name} is worth ${formatNumber(value)} in Adopt Me. Neon: ${formatNumber(pet.nvalue)}, Mega: ${formatNumber(pet.mvalue)}. Check trading values daily.`,
+      description: `${pet.name} is worth ${formatNumber(value)} in Adopt Me.${ogNeon} Check trading values daily.`,
       images: [pet.image],
     },
     alternates: {
@@ -131,9 +134,10 @@ export default async function PetDetailPage({
     notFound();
   }
 
-  const onlyPets = getOnlyPets(allPets);
-  const similarPets = getSimilarPets(onlyPets, pet, 8);
+  const similarPets = getSimilarPets(allPets, pet, 8);
   const value = getPetDefaultValue(pet);
+  const isPet = isPetType(pet.type);
+  const typeLabel = pet.type.replace(/\b\w/g, (c) => c.toUpperCase());
   const rarityClass = RARITY_COLORS[pet.rarity.toLowerCase()] || RARITY_COLORS.common;
 
   const jsonLdData = {
@@ -180,7 +184,7 @@ export default async function PetDetailPage({
               <Badge variant="outline" className={`capitalize ${rarityClass}`}>
                 {pet.rarity}
               </Badge>
-              <Badge variant="outline">{pet.category || pet.type}</Badge>
+              <Badge variant="outline">{pet.category || typeLabel}</Badge>
               {pet.score <= 10 && (
                 <Badge className="bg-green-500/15 text-green-700 dark:text-green-400 border-green-500/30" variant="outline">
                   High Demand
@@ -192,14 +196,18 @@ export default async function PetDetailPage({
               <p className="text-4xl font-bold text-app-primary">{formatNumber(value)}</p>
             </div>
             <div className="flex gap-6 mt-3">
-              <div>
-                <p className="text-xs text-muted-foreground">Neon</p>
-                <p className="text-xl font-semibold">{formatNumber(pet.nvalue)}</p>
-              </div>
-              <div>
-                <p className="text-xs text-muted-foreground">Mega Neon</p>
-                <p className="text-xl font-semibold">{formatNumber(pet.mvalue)}</p>
-              </div>
+              {isPet && pet.nvalue > 0 && (
+                <div>
+                  <p className="text-xs text-muted-foreground">Neon</p>
+                  <p className="text-xl font-semibold">{formatNumber(pet.nvalue)}</p>
+                </div>
+              )}
+              {isPet && pet.mvalue > 0 && (
+                <div>
+                  <p className="text-xs text-muted-foreground">Mega Neon</p>
+                  <p className="text-xl font-semibold">{formatNumber(pet.mvalue)}</p>
+                </div>
+              )}
               <div>
                 <p className="text-xs text-muted-foreground">Demand Rank</p>
                 <p className="text-xl font-semibold">#{pet.score}</p>
@@ -208,13 +216,15 @@ export default async function PetDetailPage({
           </div>
         </div>
 
-        {/* Value Table */}
-        <section>
-          <h2 className="text-xl font-bold mb-3">All Values</h2>
-          <div className="rounded-lg border bg-card p-4">
-            <ValueTable pet={pet} />
-          </div>
-        </section>
+        {/* Value Table — only for pets with multiple value variants */}
+        {isPet && (
+          <section>
+            <h2 className="text-xl font-bold mb-3">All Values</h2>
+            <div className="rounded-lg border bg-card p-4">
+              <ValueTable pet={pet} />
+            </div>
+          </section>
+        )}
 
         {/* CTA */}
         <div className="flex gap-3">
@@ -228,14 +238,14 @@ export default async function PetDetailPage({
             href="/values"
             className="inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-medium hover:bg-accent transition-colors text-sm"
           >
-            Browse All Pets
+            Browse All Items
           </Link>
         </div>
 
         {/* Similar Pets — internal linking for SEO */}
         {similarPets.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold mb-3">Similar Pets</h2>
+            <h2 className="text-xl font-bold mb-3">Similar {typeLabel}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {similarPets.map((p) => (
                 <PetValueCard key={p.id} pet={p} />
@@ -247,22 +257,35 @@ export default async function PetDetailPage({
         {/* SEO Content */}
         <section className="prose dark:prose-invert max-w-none">
           <h2>About {pet.name} in Adopt Me</h2>
-          <p>
-            The {pet.name} is a {pet.rarity} pet in Roblox Adopt Me.
-            Its current trading value is <strong>{formatNumber(value)}</strong>,
-            with the Neon version worth <strong>{formatNumber(pet.nvalue)}</strong> and
-            the Mega Neon version worth <strong>{formatNumber(pet.mvalue)}</strong>.
-            {pet.score <= 10
-              ? ` The ${pet.name} is currently in high demand among Adopt Me traders in 2026.`
-              : ` The ${pet.name} has a demand rank of #${pet.score} in the Adopt Me trading values list.`}
-          </p>
-          <p>
-            Trading values can vary based on potion status. A No Potion {pet.name} is worth{' '}
-            <strong>{formatNumber(pet.rvalueNoPotion)}</strong>, while Fly ({formatNumber(pet.rvalueFly)}),
-            Ride ({formatNumber(pet.rvalueRide)}), and Fly Ride ({formatNumber(pet.rvalueFlyRide)})
-            versions each have their own distinct trading values. Use our{' '}
-            <a href="/calculator">trade calculator</a> to check if your {pet.name} trade is fair.
-          </p>
+          {isPet ? (
+            <>
+              <p>
+                The {pet.name} is a {pet.rarity} pet in Roblox Adopt Me.
+                Its current trading value is <strong>{formatNumber(value)}</strong>,
+                with the Neon version worth <strong>{formatNumber(pet.nvalue)}</strong> and
+                the Mega Neon version worth <strong>{formatNumber(pet.mvalue)}</strong>.
+                {pet.score <= 10
+                  ? ` The ${pet.name} is currently in high demand among Adopt Me traders in 2026.`
+                  : ` The ${pet.name} has a demand rank of #${pet.score} in the Adopt Me trading values list.`}
+              </p>
+              <p>
+                Trading values can vary based on potion status. A No Potion {pet.name} is worth{' '}
+                <strong>{formatNumber(pet.rvalueNoPotion)}</strong>, while Fly ({formatNumber(pet.rvalueFly)}),
+                Ride ({formatNumber(pet.rvalueRide)}), and Fly Ride ({formatNumber(pet.rvalueFlyRide)})
+                versions each have their own distinct trading values. Use our{' '}
+                <a href="/calculator">trade calculator</a> to check if your {pet.name} trade is fair.
+              </p>
+            </>
+          ) : (
+            <p>
+              The {pet.name} is a {pet.rarity} {pet.type} item in Roblox Adopt Me.
+              Its current trading value is <strong>{formatNumber(value)}</strong>.
+              {pet.score <= 10
+                ? ` The ${pet.name} is currently in high demand among Adopt Me traders in 2026.`
+                : ` The ${pet.name} has a demand rank of #${pet.score} in the Adopt Me trading values list.`}{' '}
+              Use our <a href="/calculator">trade calculator</a> to check if your trade is fair.
+            </p>
+          )}
         </section>
       </div>
     </>
