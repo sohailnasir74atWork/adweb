@@ -36,7 +36,14 @@ export function getPetHighestValue(pet: Pet): number {
 export function searchPets(pets: Pet[], query: string): Pet[] {
   if (!query.trim()) return pets;
   const lowerQuery = query.toLowerCase().trim();
-  return pets.filter((pet) => pet.name.toLowerCase().includes(lowerQuery));
+  return pets.filter((pet) => {
+    const lowerName = pet.name.toLowerCase();
+    // Normal substring match (e.g. "dragon" → "Shadow Dragon")
+    if (lowerName.includes(lowerQuery)) return true;
+    // Acronym match — first letter of each word (e.g. "sbd" → "Shadow Bat Dragon")
+    const initials = pet.name.split(/[\s\-]+/).map((w) => w[0]?.toLowerCase()).join('');
+    return initials.includes(lowerQuery);
+  });
 }
 
 export function filterPetsByType(pets: Pet[], type: string): Pet[] {

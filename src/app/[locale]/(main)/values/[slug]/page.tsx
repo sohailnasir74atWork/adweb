@@ -18,7 +18,8 @@ export const dynamicParams = true; // Allow ISR for items not generated at build
 // Generate static pages for all items at build time
 export async function generateStaticParams() {
   const items = await fetchPetDataServer();
-  return items.map((item) => ({ slug: slugify(item.name) }));
+  // Only pre-build pet pages (690). Non-pets use ISR via dynamicParams=true
+  return items.filter((i) => i.type === 'pets').map((item) => ({ slug: slugify(item.name) }));
 }
 
 // Dynamic SEO metadata per pet
