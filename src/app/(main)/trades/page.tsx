@@ -1,22 +1,27 @@
 import Link from 'next/link';
 import { Handshake, Plus, Search, Shield } from 'lucide-react';
 import { TradeList } from '@/components/trades/TradeList';
+import { fetchTradesServer } from '@/lib/data/trades';
 
 export const metadata = {
-  title: 'Adopt Me Trading — Find Trades & Trade Pets',
+  title: 'Adopt Me Trading 2026 — Trade Pets & Find Fair Trades',
   description:
-    'Browse and post Adopt Me trades. Find fair trades for your pets and connect with other players. Real-time trade listings updated instantly.',
+    'Browse and post Adopt Me trades on Roblox. Find fair trades for your pets, check trading values, and connect with other players. Real-time trade listings updated daily in 2026.',
 };
 
-export default function TradesPage() {
+export const revalidate = 120; // ISR: 2 minutes
+
+export default async function TradesPage() {
+  const initialTrades = await fetchTradesServer();
+
   return (
-    <div className="flex flex-col gap-6 max-w-3xl mx-auto w-full">
+    <div className="flex flex-col gap-4 sm:gap-6 max-w-3xl mx-auto w-full">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Handshake className="h-8 w-8 text-blue-500" />
+          <Handshake className="h-6 w-6 sm:h-8 sm:w-8 text-blue-500" />
           <div>
-            <h1 className="text-3xl font-bold">Trade Hub</h1>
-            <p className="text-muted-foreground text-sm mt-0.5">
+            <h1 className="text-2xl sm:text-3xl font-bold">Trade Hub</h1>
+            <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">
               Browse active trades and post your own offers.
             </p>
           </div>
@@ -30,10 +35,10 @@ export default function TradesPage() {
         </Link>
       </div>
 
-      <TradeList />
+      <TradeList initialTrades={initialTrades} />
 
       {/* SEO card — kid-friendly */}
-      <div className="rounded-3xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-950/40 dark:to-indigo-950/40 ring-1 ring-blue-200 dark:ring-blue-800 p-5 sm:p-6 mt-2">
+      <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-blue-100 to-indigo-100 dark:from-blue-950/40 dark:to-indigo-950/40 ring-1 ring-blue-200 dark:ring-blue-800 p-4 sm:p-6 mt-2">
         <div className="flex items-center gap-2.5 mb-3">
           <div className="rounded-2xl bg-blue-200 dark:bg-blue-800/50 p-2.5">
             <Search className="h-6 w-6 text-blue-600 dark:text-blue-400" />
@@ -41,9 +46,9 @@ export default function TradesPage() {
           <h2 className="text-lg sm:text-xl font-extrabold">Adopt Me Trading</h2>
         </div>
         <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-          Find the best Adopt Me trades in our real-time trade hub. Browse trades from other players,
+          Find the best Adopt Me trades in our real-time Roblox trade hub. Browse trading values from other players,
           filter by <strong>Win</strong>, <strong>Lose</strong>, or <strong>Fair</strong>, and post your own trades.
-          All trades show accurate value comparisons so you know exactly what you&apos;re getting.
+          All trades show accurate trading values so you know exactly what you&apos;re getting in 2026.
         </p>
         <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
           <Shield className="h-3.5 w-3.5 text-emerald-500" />

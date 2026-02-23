@@ -79,7 +79,6 @@ export default async function PostDetailPage({
                 width={36}
                 height={36}
                 className="object-cover rounded-full"
-                unoptimized
               />
             ) : (
               post.displayName?.charAt(0)?.toUpperCase() || '?'
@@ -123,7 +122,6 @@ export default async function PostDetailPage({
               fill
               className="object-cover"
               sizes="(max-width: 672px) 100vw, 672px"
-              unoptimized
             />
           </div>
         )}
@@ -137,7 +135,6 @@ export default async function PostDetailPage({
                   fill
                   className="object-cover"
                   sizes="(max-width: 672px) 50vw, 336px"
-                  unoptimized
                 />
               </div>
             ))}

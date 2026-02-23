@@ -6,15 +6,20 @@ import { ImagePlus, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useAuthStore } from '@/lib/store/useAuthStore';
+import type { ServerPost } from '@/lib/data/posts';
 
 const PostFeed = dynamic(() => import('@/components/feed/PostFeed').then(m => ({ default: m.PostFeed })), {
-  loading: () => <div className="flex flex-col gap-4 max-w-lg mx-auto w-full">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="aspect-[4/5] rounded-2xl" />)}</div>,
+  loading: () => <div className="flex flex-col gap-4 max-w-3xl mx-auto w-full">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="aspect-[4/5] rounded-2xl" />)}</div>,
 });
 const CreatePostModal = dynamic(() => import('@/components/feed/CreatePostModal').then(m => ({ default: m.CreatePostModal })), {
   ssr: false,
 });
 
-export function FeedPageClient() {
+interface FeedPageClientProps {
+  initialPosts?: ServerPost[];
+}
+
+export function FeedPageClient({ initialPosts }: FeedPageClientProps) {
   const user = useAuthStore((s) => s.user);
   const [showCreate, setShowCreate] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
@@ -43,7 +48,7 @@ export function FeedPageClient() {
         )}
       </div>
 
-      <PostFeed key={refreshKey} />
+      <PostFeed key={refreshKey} initialPosts={initialPosts} />
 
       <CreatePostModal
         open={showCreate}

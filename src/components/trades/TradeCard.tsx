@@ -1,17 +1,22 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Star, Zap, ThumbsUp } from 'lucide-react';
+import { ArrowRight, Star, Zap, ThumbsUp, Trash2, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { PetImage } from '@/components/shared/PetImage';
 import { formatNumber } from '@/lib/utils/formatters';
 import { formatTimeAgo } from '@/lib/utils/formatters';
+import { deleteTrade } from '@/lib/firebase/firestore';
+import { useAuthStore } from '@/lib/store/useAuthStore';
 import type { Trade, TradeItem, TradeStatus } from '@/lib/types/trade';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 
 interface TradeCardProps {
   trade: Trade;
+  onDeleted?: (tradeId: string) => void;
 }
 
 const STATUS_STYLES: Record<TradeStatus, { bg: string; text: string; label: string }> = {
@@ -22,21 +27,43 @@ const STATUS_STYLES: Record<TradeStatus, { bg: string; text: string; label: stri
 
 function parseVariantBadges(item: TradeItem) {
   const badges: { label: string; className: string }[] = [];
-  // Parse valueType like "n_fly", "m_ride", "r_flyride"
-  const vt = item.valueType || '';
-  const variant = vt.split('_')[0];
-  if (variant === 'n') badges.push({ label: 'Ne', className: 'bg-amber-500 text-white' });
-  else if (variant === 'm') badges.push({ label: 'M', className: 'bg-fuchsia-500 text-white' });
-  if (item.isFly && item.isRide) badges.push({ label: 'FR', className: 'bg-purple-500 text-white' });
-  else if (item.isFly) badges.push({ label: 'F', className: 'bg-blue-500 text-white' });
-  else if (item.isRide) badges.push({ label: 'R', className: 'bg-green-500 text-white' });
+  const vt = (item.valueType || 'd').split('_')[0];
+  // Value type badge — D (default), N (neon), M (mega)
+  if (vt === 'n') badges.push({ label: 'N', className: 'bg-green-500 text-white' });
+  else if (vt === 'm') badges.push({ label: 'M', className: 'bg-purple-500 text-white' });
+  else badges.push({ label: 'D', className: 'bg-emerald-500 text-white' });
+  // Modifier badges — F (fly), R (ride) shown separately
+  if (item.isFly) badges.push({ label: 'F', className: 'bg-blue-500 text-white' });
+  if (item.isRide) badges.push({ label: 'R', className: 'bg-amber-500 text-white' });
   return badges;
 }
 
 function TradeItemsRow({ items, total, side }: { items: Trade['hasItems']; total: number; side: 'has' | 'wants' }) {
+  // Empty side — show "Give Offer" instead of 0
+  if (!items || items.length === 0) {
+    return (
+      <div className="flex-1 min-w-0 flex flex-col items-center justify-center py-2">
+        <p className="text-xs font-bold text-app-primary bg-app-primary/10 px-3 py-1.5 rounded-full">
+          Give Offer
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex-1 min-w-0">
-      <div className="flex flex-wrap gap-1.5">
+    <div className="flex-1 min-w-0 flex flex-col items-center gap-2">
+      {/* Total chip — above images */}
+      <span className={cn(
+        'text-xs font-extrabold px-3 py-1 rounded-full',
+        side === 'has'
+          ? 'bg-app-has/10 text-app-has'
+          : 'bg-app-want/10 text-app-want',
+      )}>
+        {formatNumber(total)}
+      </span>
+
+      {/* Pet images row */}
+      <div className="flex flex-wrap gap-1.5 justify-center">
         {items.slice(0, 4).map((item, i) => {
           const badges = parseVariantBadges(item);
           return (
@@ -59,19 +86,47 @@ function TradeItemsRow({ items, total, side }: { items: Trade['hasItems']; total
           </div>
         )}
       </div>
-      <p className={cn(
-        'text-xs font-bold mt-1.5',
-        side === 'has' ? 'text-app-has' : 'text-app-want',
-      )}>
-        {formatNumber(total)}
-      </p>
     </div>
   );
 }
 
-export function TradeCard({ trade }: TradeCardProps) {
-  const statusStyle = STATUS_STYLES[trade.status];
+export function TradeCard({ trade, onDeleted }: TradeCardProps) {
+  const currentUser = useAuthStore((s) => s.user);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const statusStyle = STATUS_STYLES[trade.status] || { bg: 'bg-muted', text: 'text-muted-foreground', label: 'N/A' };
   const timestamp = trade.timestamp?.toDate ? trade.timestamp.toDate() : new Date(trade.timestamp as unknown as number);
+
+  const isOwn = currentUser?.id === trade.userId;
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowConfirm(true);
+  };
+
+  const handleConfirmDelete = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowConfirm(false);
+    setIsDeleting(true);
+    try {
+      await deleteTrade(trade.id);
+      toast.success('Trade deleted!');
+      onDeleted?.(trade.id);
+    } catch (err) {
+      console.error('Failed to delete trade:', err);
+      toast.error('Failed to delete trade. Please try again.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleCancelDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowConfirm(false);
+  };
 
   return (
     <Link href={`/trades/${trade.id}`}>
@@ -109,8 +164,44 @@ export function TradeCard({ trade }: TradeCardProps) {
                 PRO
               </Badge>
             )}
+            {/* Delete button for own trades */}
+            {isOwn && !showConfirm && (
+              <button
+                onClick={handleDeleteClick}
+                disabled={isDeleting}
+                className="h-7 w-7 flex items-center justify-center rounded-full bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors disabled:opacity-50"
+                title="Delete trade"
+              >
+                {isDeleting ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Trash2 className="h-3.5 w-3.5" />
+                )}
+              </button>
+            )}
           </div>
         </div>
+
+        {/* Delete confirmation bar */}
+        {showConfirm && (
+          <div className="flex items-center justify-between gap-2 rounded-xl bg-destructive/10 border border-destructive/20 px-3 py-2 mb-2 animate-in fade-in slide-in-from-top-1 duration-200">
+            <p className="text-xs font-medium text-destructive">Delete this trade?</p>
+            <div className="flex gap-1.5">
+              <button
+                onClick={handleConfirmDelete}
+                className="px-3 py-1 text-xs font-bold text-white bg-destructive rounded-lg hover:bg-destructive/90 transition-colors"
+              >
+                Yes, delete
+              </button>
+              <button
+                onClick={handleCancelDelete}
+                className="px-3 py-1 text-xs font-medium bg-card border rounded-lg hover:bg-accent transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Trade items: has → wants */}
         <div className="flex items-center justify-center gap-3">

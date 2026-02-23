@@ -8,8 +8,16 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { PetImage } from '@/components/shared/PetImage';
 import { formatNumber } from '@/lib/utils/formatters';
 import { ArrowUpRight, ArrowDownRight, TrendingUp, TrendingDown } from 'lucide-react';
-import type { ValueChange } from '@/lib/types/analytics';
 import { cn } from '@/lib/utils';
+
+interface ParsedChange {
+  name: string;
+  image: string;
+  oldValue: number;
+  newValue: number;
+  changePercent: number;
+  direction: 'up' | 'down';
+}
 
 type FilterTab = 'all' | 'up' | 'down';
 
@@ -19,24 +27,73 @@ const FILTER_TABS: { value: FilterTab; label: string }[] = [
   { value: 'down', label: 'Falling' },
 ];
 
+const SKIP_KEYS = new Set(['key', 'name', 'type', 'image']);
+const PRIORITY_KEYS = ['rvalue', 'score', 'dvalue', 'nvalue', 'mvalue'];
+
+function parseDiffData(raw: unknown): ParsedChange[] {
+  if (!raw || typeof raw !== 'object') return [];
+  const payload = raw as Record<string, unknown>;
+  const changed = payload.changed as Array<Record<string, unknown>> | undefined;
+  if (!Array.isArray(changed)) return [];
+
+  const results: ParsedChange[] = [];
+
+  for (const item of changed) {
+    let primary: { oldVal: number; newVal: number } | null = null;
+
+    for (const pk of PRIORITY_KEYS) {
+      const v = item[pk];
+      if (v && typeof v === 'object' && 'oldVal' in v && 'newVal' in v) {
+        primary = v as { oldVal: number; newVal: number };
+        break;
+      }
+    }
+    if (!primary) {
+      for (const k of Object.keys(item)) {
+        if (SKIP_KEYS.has(k)) continue;
+        const v = item[k];
+        if (v && typeof v === 'object' && 'oldVal' in v && 'newVal' in v) {
+          primary = v as { oldVal: number; newVal: number };
+          break;
+        }
+      }
+    }
+    if (!primary) continue;
+
+    const diff = primary.newVal - primary.oldVal;
+    if (diff === 0) continue;
+
+    const rawPct = primary.oldVal > 0 ? (diff / primary.oldVal) * 100 : 0;
+    const pct = diff > 0 ? Math.max(1, Math.round(rawPct)) : Math.min(-1, Math.round(rawPct));
+
+    results.push({
+      name: (item.name as string) || '',
+      image: (item.image as string) || '',
+      oldValue: primary.oldVal,
+      newValue: primary.newVal,
+      changePercent: pct,
+      direction: diff > 0 ? 'up' : 'down',
+    });
+  }
+
+  results.sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent));
+  return results;
+}
+
 export function ValueChangesFeed() {
-  const [changes, setChanges] = useState<ValueChange[]>([]);
+  const [changes, setChanges] = useState<ParsedChange[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [filter, setFilter] = useState<FilterTab>('all');
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(config.valueChangesUrl);
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data)) setChanges(data);
-          else if (data && typeof data === 'object') {
-            setChanges(Object.values(data) as ValueChange[]);
-          }
-        }
-      } catch (err) {
-        console.error('Error fetching value changes:', err);
+        const data = await fetch('/api/value-changes')
+          .then((r) => (r.ok ? r.json() : null))
+          .catch(() => null);
+        if (data) setChanges(parseDiffData(data));
+      } catch {
+        // silently ignore
       } finally {
         setIsLoading(false);
       }
@@ -48,11 +105,6 @@ export function ValueChangesFeed() {
     filter === 'all'
       ? changes
       : changes.filter((c) => c.direction === filter);
-
-  // Sort by absolute change descending
-  const sorted = [...filtered].sort(
-    (a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent),
-  );
 
   if (isLoading) {
     return (
@@ -83,7 +135,7 @@ export function ValueChangesFeed() {
           </button>
         ))}
         <Badge variant="secondary" className="ml-auto text-xs">
-          {sorted.length} changes
+          {filtered.length} changes
         </Badge>
       </div>
 
@@ -114,13 +166,13 @@ export function ValueChangesFeed() {
       </div>
 
       {/* Value changes list */}
-      {sorted.length === 0 ? (
+      {filtered.length === 0 ? (
         <div className="rounded-xl border border-dashed p-8 text-center">
           <p className="text-sm text-muted-foreground">No value changes found.</p>
         </div>
       ) : (
         <div className="flex flex-col gap-2">
-          {sorted.map((change, i) => {
+          {filtered.map((change, i) => {
             const isUp = change.direction === 'up';
             return (
               <Card key={`${change.name}-${i}`} className="flex items-center gap-3 p-3">
@@ -144,7 +196,7 @@ export function ValueChangesFeed() {
                   ) : (
                     <ArrowDownRight className="h-4 w-4" />
                   )}
-                  {Math.abs(change.changePercent).toFixed(1)}%
+                  {Math.abs(change.changePercent)}%
                 </div>
               </Card>
             );

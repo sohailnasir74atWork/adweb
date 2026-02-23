@@ -28,7 +28,7 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
   const fetchComments = useCallback(async () => {
     setIsLoading(true);
     try {
-      const data = await getComments(postId, 100);
+      const data = await getComments(postId, 20);
       setComments(data);
     } catch (err) {
       console.error('Error fetching comments:', err);
@@ -53,10 +53,10 @@ export function CommentsSection({ postId }: CommentsSectionProps) {
         timestamp: Timestamp.now(),
         isReported: false,
       };
-      const docRef = await addDoc(collection(firestore, 'posts', postId, 'comments'), newComment);
+      const docRef = await addDoc(collection(firestore, 'designPosts', postId, 'comments'), newComment);
 
       // Increment comment count on the post
-      await updateDoc(doc(firestore, 'posts', postId), {
+      await updateDoc(doc(firestore, 'designPosts', postId), {
         commentCount: increment(1),
       });
 

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { type Pet, type ValueVariant, type PotionType } from '@/lib/types/pet';
-import { calculateItemValue, getTradeResult, type CalculatorItem } from '@/lib/utils/tradeHelpers';
+import { type Pet } from '@/lib/types/pet';
+import { calculateItemValue, getTradeResult, type CalculatorItem, type BadgeValueType } from '@/lib/utils/tradeHelpers';
 
 interface TradeState {
   hasItems: CalculatorItem[];
@@ -10,12 +10,12 @@ interface TradeState {
   result: 'w' | 'l' | 'f' | null;
   resultPercentage: number;
   // Actions
-  addHasItem: (pet: Pet, variant?: ValueVariant, potion?: PotionType) => void;
-  addWantsItem: (pet: Pet, variant?: ValueVariant, potion?: PotionType) => void;
+  addHasItem: (pet: Pet, valueType?: BadgeValueType, isFly?: boolean, isRide?: boolean) => void;
+  addWantsItem: (pet: Pet, valueType?: BadgeValueType, isFly?: boolean, isRide?: boolean) => void;
   removeHasItem: (index: number) => void;
   removeWantsItem: (index: number) => void;
-  updateHasItem: (index: number, variant: ValueVariant, potion: PotionType) => void;
-  updateWantsItem: (index: number, variant: ValueVariant, potion: PotionType) => void;
+  updateHasItem: (index: number, badge: 'D' | 'N' | 'M' | 'F' | 'R') => void;
+  updateWantsItem: (index: number, badge: 'D' | 'N' | 'M' | 'F' | 'R') => void;
   swapSides: () => void;
   clearAll: () => void;
 }
@@ -32,13 +32,26 @@ function recalculate(hasItems: CalculatorItem[], wantsItems: CalculatorItem[]) {
   return { hasTotal, wantsTotal, result: status, resultPercentage: percentage };
 }
 
-function createItem(pet: Pet, variant: ValueVariant = 'r', potion: PotionType = 'default'): CalculatorItem {
+function createItem(pet: Pet, valueType: BadgeValueType = 'd', isFly = false, isRide = false): CalculatorItem {
   return {
     pet,
-    variant,
-    potion,
-    value: calculateItemValue(pet, variant, potion),
+    valueType,
+    isFly,
+    isRide,
+    value: calculateItemValue(pet, valueType, isFly, isRide),
   };
+}
+
+// Toggle a badge on an existing item (D/N/M exclusive, F/R toggle)
+function applyBadge(item: CalculatorItem, badge: 'D' | 'N' | 'M' | 'F' | 'R'): CalculatorItem {
+  let { valueType, isFly, isRide } = item;
+
+  if (badge === 'F') isFly = !isFly;
+  else if (badge === 'R') isRide = !isRide;
+  else valueType = badge.toLowerCase() as BadgeValueType;
+
+  const value = calculateItemValue(item.pet, valueType, isFly, isRide);
+  return { ...item, valueType, isFly, isRide, value };
 }
 
 export const useTradeStore = create<TradeState>((set, get) => ({
@@ -49,15 +62,15 @@ export const useTradeStore = create<TradeState>((set, get) => ({
   result: null,
   resultPercentage: 0,
 
-  addHasItem: (pet, variant = 'r', potion = 'default') => {
+  addHasItem: (pet, valueType = 'd', isFly = false, isRide = false) => {
     const { hasItems, wantsItems } = get();
-    const newHas = [...hasItems, createItem(pet, variant, potion)];
+    const newHas = [...hasItems, createItem(pet, valueType, isFly, isRide)];
     set({ hasItems: newHas, ...recalculate(newHas, wantsItems) });
   },
 
-  addWantsItem: (pet, variant = 'r', potion = 'default') => {
+  addWantsItem: (pet, valueType = 'd', isFly = false, isRide = false) => {
     const { hasItems, wantsItems } = get();
-    const newWants = [...wantsItems, createItem(pet, variant, potion)];
+    const newWants = [...wantsItems, createItem(pet, valueType, isFly, isRide)];
     set({ wantsItems: newWants, ...recalculate(hasItems, newWants) });
   },
 
@@ -73,18 +86,18 @@ export const useTradeStore = create<TradeState>((set, get) => ({
     set({ wantsItems: newWants, ...recalculate(hasItems, newWants) });
   },
 
-  updateHasItem: (index, variant, potion) => {
+  updateHasItem: (index, badge) => {
     const { hasItems, wantsItems } = get();
     const newHas = hasItems.map((item, i) =>
-      i === index ? createItem(item.pet, variant, potion) : item,
+      i === index ? applyBadge(item, badge) : item,
     );
     set({ hasItems: newHas, ...recalculate(newHas, wantsItems) });
   },
 
-  updateWantsItem: (index, variant, potion) => {
+  updateWantsItem: (index, badge) => {
     const { hasItems, wantsItems } = get();
     const newWants = wantsItems.map((item, i) =>
-      i === index ? createItem(item.pet, variant, potion) : item,
+      i === index ? applyBadge(item, badge) : item,
     );
     set({ wantsItems: newWants, ...recalculate(hasItems, newWants) });
   },

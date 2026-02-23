@@ -1,55 +1,58 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { Search, X, Check } from 'lucide-react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Search, X } from 'lucide-react';
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { PetImage } from '@/components/shared/PetImage';
-import { Badge } from '@/components/ui/badge';
 import { formatNumber } from '@/lib/utils/formatters';
-import { type Pet, type ValueVariant, type PotionType, getPetValue, getPetDefaultValue } from '@/lib/types/pet';
+import { type Pet, getPetDefaultValue } from '@/lib/types/pet';
 import { searchPets, filterPetsByRarity, getOnlyPets } from '@/lib/utils/petHelpers';
 import { cn } from '@/lib/utils';
 import { useDebounce } from '@/lib/hooks/useDebounce';
+import { type BadgeValueType, calculateItemValue } from '@/lib/utils/tradeHelpers';
 
 interface PetSelectorProps {
   open: boolean;
   onClose: () => void;
   pets: Pet[];
-  onSelect: (pet: Pet, variant?: ValueVariant, potion?: PotionType) => void;
+  onSelect: (pet: Pet, valueType: BadgeValueType, isFly: boolean, isRide: boolean) => void;
   side: 'has' | 'wants';
 }
 
 const RARITY_FILTERS = ['All', 'Legendary', 'Ultra Rare', 'Rare', 'Uncommon', 'Common'];
 
-const RARITY_COLORS: Record<string, string> = {
-  legendary: 'bg-yellow-500/15 text-yellow-700 dark:text-yellow-400 border-yellow-500/30',
-  'ultra rare': 'bg-purple-500/15 text-purple-700 dark:text-purple-400 border-purple-500/30',
-  rare: 'bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/30',
-  uncommon: 'bg-green-500/15 text-green-700 dark:text-green-400 border-green-500/30',
-  common: 'bg-gray-500/15 text-gray-700 dark:text-gray-400 border-gray-500/30',
+const RARITY_EMOJI: Record<string, string> = {
+  All: '🌟',
+  Legendary: '🏆',
+  'Ultra Rare': '💎',
+  Rare: '💙',
+  Uncommon: '💚',
+  Common: '🤍',
 };
 
-const VARIANT_OPTIONS: { value: ValueVariant; label: string; color: string }[] = [
-  { value: 'r', label: 'N', color: '' },
-  { value: 'n', label: 'Ne', color: 'bg-amber-500 text-white' },
-  { value: 'm', label: 'M', color: 'bg-fuchsia-500 text-white' },
+const VALUE_BADGES: { key: BadgeValueType; label: string; emoji: string; activeClass: string }[] = [
+  { key: 'd', label: 'D', emoji: '🐾', activeClass: 'bg-emerald-500 text-white shadow-emerald-500/40' },
+  { key: 'n', label: 'N', emoji: '✨', activeClass: 'bg-green-500 text-white shadow-green-500/40' },
+  { key: 'm', label: 'M', emoji: '🌈', activeClass: 'bg-purple-500 text-white shadow-purple-500/40' },
 ];
 
-const POTION_OPTIONS: { value: PotionType; label: string; color: string }[] = [
-  { value: 'default', label: 'Def', color: '' },
-  { value: 'nopotion', label: 'NP', color: '' },
-  { value: 'fly', label: 'F', color: 'bg-blue-500 text-white' },
-  { value: 'ride', label: 'R', color: 'bg-green-500 text-white' },
-  { value: 'flyride', label: 'FR', color: 'bg-purple-500 text-white' },
+const MODIFIER_BADGES: { key: 'F' | 'R'; label: string; emoji: string; activeClass: string }[] = [
+  { key: 'F', label: 'F', emoji: '🪽', activeClass: 'bg-blue-500 text-white shadow-blue-500/40' },
+  { key: 'R', label: 'R', emoji: '🏇', activeClass: 'bg-amber-500 text-white shadow-amber-500/40' },
 ];
 
 export function PetSelector({ open, onClose, pets, onSelect, side }: PetSelectorProps) {
   const [query, setQuery] = useState('');
   const [rarity, setRarity] = useState('All');
-  const [variant, setVariant] = useState<ValueVariant>('r');
-  const [potion, setPotion] = useState<PotionType>('default');
+  const [valueType, setValueType] = useState<BadgeValueType>('d');
+  const [isFly, setIsFly] = useState(false);
+  const [isRide, setIsRide] = useState(false);
   const debouncedQuery = useDebounce(query, 200);
 
   const onlyPets = useMemo(() => getOnlyPets(pets), [pets]);
@@ -63,132 +66,177 @@ export function PetSelector({ open, onClose, pets, onSelect, side }: PetSelector
 
   const handleSelect = useCallback(
     (pet: Pet) => {
-      onSelect(pet, variant, potion);
+      onSelect(pet, valueType, isFly, isRide);
     },
-    [onSelect, variant, potion],
+    [onSelect, valueType, isFly, isRide],
   );
 
   const handleClose = useCallback(() => {
     setQuery('');
     setRarity('All');
-    setVariant('r');
-    setPotion('default');
+    setValueType('d');
+    setIsFly(false);
+    setIsRide(false);
     onClose();
   }, [onClose]);
 
-  return (
-    <Dialog open={open} onOpenChange={(o) => !o && handleClose()}>
-      <DialogContent className="max-w-lg max-h-[85vh] flex flex-col p-0 gap-0">
-        <DialogHeader className="px-4 pt-4 pb-2">
-          <DialogTitle className="text-lg font-extrabold">
-            Pick a pet for{' '}
-            <span className={side === 'has' ? 'text-app-has' : 'text-app-want'}>
-              {side === 'has' ? 'Your Side' : 'Their Side'}
-            </span>
-          </DialogTitle>
-        </DialogHeader>
+  const isHas = side === 'has';
 
-        {/* Search */}
-        <div className="px-4 pb-2">
+  return (
+    <Sheet open={open} onOpenChange={(o) => !o && handleClose()}>
+      <SheetContent
+        side="bottom"
+        showCloseButton={false}
+        className="h-[70vh] sm:h-[80vh] rounded-t-3xl flex flex-col p-0 gap-0 bg-muted/40 backdrop-blur-md border-t border-border/50"
+      >
+        {/* Drag handle */}
+        <div className="flex justify-center pt-3 pb-1">
+          <div className="w-10 h-1 rounded-full bg-muted-foreground/30" />
+        </div>
+
+        {/* Header */}
+        <SheetHeader className="px-5 pt-1 pb-2">
+          <SheetTitle className="text-center text-lg font-extrabold tracking-tight">
+            Pick a pet for{' '}
+            <span
+              className={cn(
+                'inline-block px-2.5 py-0.5 rounded-lg text-white text-base font-extrabold',
+                isHas ? 'bg-app-has' : 'bg-app-want',
+              )}
+            >
+              {isHas ? '🧸 Your Side' : '🎯 Their Side'}
+            </span>
+          </SheetTitle>
+        </SheetHeader>
+
+        {/* Search bar */}
+        <div className="px-5 pb-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             <Input
               placeholder="Search for a pet..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="pl-9 pr-8 h-11 rounded-xl text-base"
-              autoFocus
+              className="pl-10 pr-9 h-11 rounded-2xl text-sm bg-muted/50 border-0 focus-visible:ring-2 focus-visible:ring-app-primary/30 placeholder:text-muted-foreground/60"
             />
             {query && (
               <button
                 onClick={() => setQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                className="absolute right-3 top-1/2 -translate-y-1/2 h-6 w-6 flex items-center justify-center rounded-full bg-muted text-muted-foreground hover:bg-accent transition-colors"
               >
-                <X className="h-4 w-4" />
+                <X className="h-3.5 w-3.5" />
               </button>
             )}
           </div>
         </div>
 
-        {/* Variant + Potion badges */}
-        <div className="px-4 pb-2 flex flex-wrap items-center gap-1.5">
-          {VARIANT_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => setVariant(opt.value)}
-              className={cn(
-                'h-7 px-2.5 text-[10px] font-extrabold rounded-lg transition-all',
-                variant === opt.value
-                  ? (opt.color || 'bg-app-primary text-white') + ' ring-2 ring-offset-1 ring-offset-background ring-current'
-                  : 'bg-muted text-muted-foreground hover:bg-accent',
-              )}
-            >
-              {opt.label}
-            </button>
-          ))}
-          <span className="w-px h-5 bg-border mx-0.5" />
-          {POTION_OPTIONS.map((opt) => (
-            <button
-              key={opt.value}
-              onClick={() => setPotion(opt.value)}
-              className={cn(
-                'h-6 px-2 text-[9px] font-extrabold rounded-lg transition-all',
-                potion === opt.value
-                  ? (opt.color || 'bg-app-secondary text-white') + ' ring-2 ring-offset-1 ring-offset-background ring-current'
-                  : 'bg-muted text-muted-foreground hover:bg-accent',
-              )}
-            >
-              {opt.label}
-            </button>
-          ))}
+        {/* Badge buttons — D/N/M + F/R */}
+        <div className="px-5 pb-3">
+          <div className="flex items-center justify-center gap-2">
+            {VALUE_BADGES.map((b) => (
+              <button
+                key={b.key}
+                onClick={() => setValueType(b.key)}
+                className={cn(
+                  'h-10 px-4 text-sm font-extrabold rounded-xl transition-all duration-200 flex items-center gap-1.5',
+                  valueType === b.key
+                    ? `${b.activeClass} shadow-lg scale-105`
+                    : 'bg-muted text-muted-foreground hover:bg-accent hover:scale-105 active:scale-95',
+                )}
+              >
+                <span className="text-base">{b.emoji}</span>
+                {b.label}
+              </button>
+            ))}
+            <div className="w-px h-8 bg-border mx-0.5" />
+            {MODIFIER_BADGES.map((b) => {
+              const isActive = b.key === 'F' ? isFly : isRide;
+              return (
+                <button
+                  key={b.key}
+                  onClick={() => (b.key === 'F' ? setIsFly(!isFly) : setIsRide(!isRide))}
+                  className={cn(
+                    'h-10 px-4 text-sm font-extrabold rounded-xl transition-all duration-200 flex items-center gap-1.5',
+                    isActive
+                      ? `${b.activeClass} shadow-lg scale-105`
+                      : 'bg-muted text-muted-foreground hover:bg-accent hover:scale-105 active:scale-95',
+                  )}
+                >
+                  <span className="text-base">{b.emoji}</span>
+                  {b.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Rarity filter */}
-        <div className="flex gap-1.5 px-4 pb-3 overflow-x-auto no-scrollbar">
-          {RARITY_FILTERS.map((r) => (
-            <button
-              key={r}
-              onClick={() => setRarity(r)}
-              className={cn(
-                'tap-target whitespace-nowrap text-xs font-bold px-4 py-1.5 rounded-xl border transition-all',
-                rarity === r
-                  ? 'bg-app-primary text-white border-app-primary shadow-sm'
-                  : 'bg-card text-muted-foreground border-border hover:bg-accent active:scale-95',
-              )}
-            >
-              {r}
-            </button>
-          ))}
+        {/* Rarity filter pills */}
+        <div className="px-5 pb-3">
+          <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
+            {RARITY_FILTERS.map((r) => (
+              <button
+                key={r}
+                onClick={() => setRarity(r)}
+                className={cn(
+                  'whitespace-nowrap text-xs font-bold px-3.5 py-2 rounded-full border transition-all duration-150 shrink-0',
+                  rarity === r
+                    ? cn(
+                      'text-white border-transparent shadow-sm scale-105',
+                      isHas ? 'bg-app-has' : 'bg-app-want',
+                    )
+                    : 'bg-card text-muted-foreground border-border hover:bg-accent active:scale-95',
+                )}
+              >
+                {RARITY_EMOJI[r] || ''} {r}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Pet grid */}
-        <ScrollArea className="flex-1 px-4 pb-4">
+        {/* Pet grid — scrollable */}
+        <div className="flex-1 min-h-0 overflow-y-auto px-5 pb-8">
           {filtered.length === 0 ? (
-            <div className="py-12 text-center text-muted-foreground text-sm">
-              No pets found
+            <div className="py-16 text-center">
+              <p className="text-4xl mb-3">🔍</p>
+              <p className="text-muted-foreground text-sm font-medium">No pets found</p>
+              <p className="text-muted-foreground/60 text-xs mt-1">Try a different search or filter</p>
             </div>
           ) : (
             <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
               {filtered.map((pet) => {
-                const value = getPetValue(pet, variant, potion) || getPetDefaultValue(pet);
+                const value =
+                  calculateItemValue(pet, valueType, isFly, isRide) || getPetDefaultValue(pet);
                 return (
                   <button
                     key={pet.id}
                     onClick={() => handleSelect(pet)}
-                    className="tap-target flex flex-col items-center gap-1 rounded-2xl border bg-card p-2 hover:border-app-primary/50 hover:shadow-md transition-all active:scale-95"
+                    className={cn(
+                      'flex flex-col items-center gap-1 rounded-2xl border-2 bg-card p-2.5',
+                      'hover:shadow-lg transition-all duration-150 active:scale-[0.97]',
+                      isHas
+                        ? 'border-transparent hover:border-app-has/40 hover:bg-app-has/5'
+                        : 'border-transparent hover:border-app-want/40 hover:bg-app-want/5',
+                    )}
                   >
-                    <PetImage src={pet.image} alt={pet.name} size={44} />
-                    <p className="text-[10px] font-bold text-center truncate w-full leading-tight">
+                    <PetImage src={pet.image} alt={pet.name} size={48} />
+                    <p className="text-[11px] font-bold text-center truncate w-full leading-tight">
                       {pet.name}
                     </p>
-                    <p className="text-xs font-extrabold text-app-primary">{formatNumber(value)}</p>
+                    <p
+                      className={cn(
+                        'text-xs font-extrabold',
+                        isHas ? 'text-app-has' : 'text-app-want',
+                      )}
+                    >
+                      {formatNumber(value)}
+                    </p>
                   </button>
                 );
               })}
             </div>
           )}
-        </ScrollArea>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }

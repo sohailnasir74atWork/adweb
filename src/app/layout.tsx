@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Nunito, Nunito_Sans } from "next/font/google";
+import Script from "next/script";
 import { Providers } from "@/components/providers/Providers";
 import "./globals.css";
 
@@ -91,30 +92,29 @@ export default function RootLayout({
         <link rel="preconnect" href="https://adoptme.b-cdn.net" crossOrigin="anonymous" />
         <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
         <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-        {/* Google Analytics (GA4) */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-NXXEKW69PT"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-NXXEKW69PT');`,
-          }}
-        />
         {/* Pinterest Domain Verification - raw HTML for crawler compatibility */}
         <meta name="p:domain_verify" content="955b6494657c81a62dcad3a3c68caafb" />
-
-        {/* Google AdSense */}
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5740215782746766"
-          crossOrigin="anonymous"
-        />
       </head>
       <body
         className={`${nunito.variable} ${nunitoSans.variable} antialiased`}
       >
         <Providers>{children}</Providers>
+
+        {/* Google Analytics (GA4) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-NXXEKW69PT"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4-init" strategy="afterInteractive">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-NXXEKW69PT');`}
+        </Script>
+
+        {/* Google AdSense */}
+        <Script
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5740215782746766"
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+        />
       </body>
     </html>
   );

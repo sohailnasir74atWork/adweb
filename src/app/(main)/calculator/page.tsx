@@ -3,9 +3,9 @@ import { JsonLd } from '@/components/seo/JsonLd';
 import { ListOrdered, HelpCircle, Sparkles, BarChart3 } from 'lucide-react';
 
 export const metadata = {
-  title: 'Adopt Me Trade Calculator — Is Your Trade Fair?',
+  title: 'Adopt Me Trade Calculator 2026 — Value Checker & Trade Checker',
   description:
-    'Use our free Adopt Me trade calculator to check pet values and see if your trade is a win, lose, or fair. Updated daily with the latest values.',
+    'Use our free Adopt Me trade calculator and value checker to check pet trading values and see if your Roblox trade is a win, lose, or fair. Updated daily with the latest 2026 values.',
 };
 
 const calculatorJsonLd = {
@@ -16,7 +16,7 @@ const calculatorJsonLd = {
   applicationCategory: 'GameApplication',
   operatingSystem: 'Web',
   description:
-    'Free trade calculator for Adopt Me. Check if your trade is a Win, Lose, or Fair with real-time pet values.',
+    'Free trade calculator and value checker for Adopt Me on Roblox. Check if your trade is a Win, Lose, or Fair with real-time pet trading values updated daily in 2026.',
   offers: {
     '@type': 'Offer',
     price: '0',
@@ -26,16 +26,16 @@ const calculatorJsonLd = {
 
 export default function CalculatorPage() {
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4 sm:gap-6">
       <JsonLd data={calculatorJsonLd} />
       {/* SEO shell — server rendered */}
       <section>
-        <h1 className="text-3xl font-bold">
+        <h1 className="text-2xl sm:text-3xl font-bold">
           Adopt Me Trade Calculator — Check if Your Trade is Fair
         </h1>
-        <p className="text-muted-foreground mt-1">
-          Add pets to each side and instantly see if your trade is a Win, Lose, or Fair.
-          All values updated daily.
+        <p className="text-muted-foreground text-sm sm:text-base mt-1">
+          Add pets to each side and instantly see if your Roblox Adopt Me trade is a Win, Lose, or Fair.
+          All trading values updated daily for 2026.
         </p>
       </section>
 
@@ -43,7 +43,7 @@ export default function CalculatorPage() {
       <CalculatorBoard />
 
       {/* How to Use — kid-friendly card */}
-      <div className="rounded-3xl bg-gradient-to-br from-rose-100 to-orange-100 dark:from-rose-950/40 dark:to-orange-950/40 ring-1 ring-rose-200 dark:ring-rose-800 p-5 sm:p-6 mt-6">
+      <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-rose-100 to-orange-100 dark:from-rose-950/40 dark:to-orange-950/40 ring-1 ring-rose-200 dark:ring-rose-800 p-4 sm:p-6 mt-4 sm:mt-6">
         <div className="flex items-center gap-2.5 mb-4">
           <div className="rounded-2xl bg-rose-200 dark:bg-rose-800/50 p-2.5">
             <ListOrdered className="h-6 w-6 text-rose-600 dark:text-rose-400" />
@@ -81,8 +81,8 @@ export default function CalculatorPage() {
             <h3 className="font-bold text-sm sm:text-base">How accurate are the values?</h3>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            Our pet values are updated daily based on real trading data and community demand.
-            We track Normal, Neon, Mega Neon, Fly, Ride, and Fly Ride values for every pet.
+            Our Adopt Me pet trading values are updated daily based on real trading data and community demand.
+            We track Normal, Neon, Mega Neon, Fly, Ride, and Fly Ride values for every Roblox Adopt Me pet in 2026.
           </p>
         </div>
 

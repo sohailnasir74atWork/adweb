@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { onAllPresenceChange, getUser } from '@/lib/firebase/database';
+import { getOnlineUsersWithData } from '@/lib/firebase/database';
 import { PetImage } from '@/components/shared/PetImage';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Users } from 'lucide-react';
@@ -13,29 +13,25 @@ export function OnlineUsers() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const unsub = onAllPresenceChange(async (presenceMap) => {
-      const onlineIds = Object.entries(presenceMap)
-        .filter(([, isOnline]) => isOnline)
-        .map(([uid]) => uid);
+    let cancelled = false;
 
-      // Fetch user data for first 50 online users
-      const limitedIds = onlineIds.slice(0, 50);
-      const users: User[] = [];
-      for (const uid of limitedIds) {
-        try {
-          const u = await getUser(uid);
-          if (u && !u.isBlock) {
-            users.push({ ...u, id: uid });
-          }
-        } catch {
-          // skip
+    async function loadOnce() {
+      try {
+        // 2 RTDB reads total (presence + users), instead of 51 sequential reads
+        const users = await getOnlineUsersWithData(50);
+
+        if (!cancelled) {
+          setOnlineUserData(users);
         }
+      } catch (err) {
+        console.warn('Failed to load online users:', err);
+      } finally {
+        if (!cancelled) setIsLoading(false);
       }
-      setOnlineUserData(users);
-      setIsLoading(false);
-    });
+    }
 
-    return () => unsub();
+    loadOnce();
+    return () => { cancelled = true; };
   }, []);
 
   if (isLoading) {

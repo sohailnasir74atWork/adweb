@@ -12,22 +12,30 @@ interface MessageListProps {
   isPaginating?: boolean;
   onLoadMore?: () => void;
   hasMore?: boolean;
+  onDeleteMessage?: (messageId: string) => void;
+  isDM?: boolean;
 }
 
-export function MessageList({ messages, isLoading, isPaginating, onLoadMore, hasMore }: MessageListProps) {
+export function MessageList({ messages, isLoading, isPaginating, onLoadMore, hasMore, onDeleteMessage, isDM }: MessageListProps) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const prevCountRef = useRef(0);
 
-  // Auto-scroll to bottom on new messages (only if already near bottom)
+  // Auto-scroll chat container to bottom on initial load + new messages if near bottom
   useEffect(() => {
-    if (!scrollRef.current) return;
+    if (!scrollRef.current || messages.length === 0) return;
     const el = scrollRef.current;
-    const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 150;
     const isNewMessage = messages.length > prevCountRef.current;
 
-    if (isNearBottom || isNewMessage) {
-      bottomRef.current?.scrollIntoView({ behavior: isNewMessage ? 'smooth' : 'auto' });
+    if (prevCountRef.current === 0) {
+      // Initial load — jump to bottom instantly (scrollTop, not scrollIntoView)
+      el.scrollTop = el.scrollHeight;
+    } else if (isNewMessage) {
+      // New message arrived — only scroll if user is already near the bottom
+      const isNearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 150;
+      if (isNearBottom) {
+        el.scrollTop = el.scrollHeight;
+      }
     }
     prevCountRef.current = messages.length;
   }, [messages.length]);
@@ -75,7 +83,7 @@ export function MessageList({ messages, isLoading, isPaginating, onLoadMore, has
       )}
       {/* Messages sorted oldest first for display */}
       {[...messages].sort((a, b) => (a.timestamp || 0) - (b.timestamp || 0)).map((msg) => (
-        <MessageBubble key={msg.id} message={msg} />
+        <MessageBubble key={msg.id} message={msg} onDelete={onDeleteMessage} isDM={isDM} />
       ))}
       <div ref={bottomRef} />
     </div>

@@ -10,7 +10,10 @@ export function formatNumber(num: number): string {
   if (num >= 1_000) {
     return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
   }
-  return num.toString();
+  // Round to 2 decimal places and strip trailing zeros
+  const rounded = Math.round(num * 100) / 100;
+  if (Number.isInteger(rounded)) return rounded.toString();
+  return rounded.toFixed(2).replace(/\.?0+$/, '');
 }
 
 export function formatValue(value: number | undefined): string {

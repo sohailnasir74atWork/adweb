@@ -6,7 +6,7 @@ import { Card } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PetImage } from '@/components/shared/PetImage';
 import { formatNumber } from '@/lib/utils/formatters';
-import { TrendingUp, TrendingDown, BarChart3, Handshake, ArrowUpRight, ArrowDownRight, Flame, Eye } from 'lucide-react';
+import { TrendingUp, TrendingDown, BarChart3, ArrowUpRight, ArrowDownRight, Flame, Eye, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 /* ---------- Types matching CDN data ---------- */
@@ -65,28 +65,53 @@ interface NormalizedChange {
 /* ---------- Helpers ---------- */
 const VM = 2; // visual multiplier (cosmetic, matches reference app)
 
+const BAR_COLORS = [
+  '#4F8CFF', '#A78BFA', '#F472B6', '#FB923C', '#34D399', '#FBBF24',
+  '#22D3EE', '#F87171', '#4F8CFF', '#A78BFA', '#F472B6', '#FB923C',
+  '#34D399', '#FBBF24', '#22D3EE', '#F87171', '#4F8CFF', '#A78BFA',
+  '#F472B6', '#FB923C', '#34D399', '#FBBF24', '#22D3EE', '#F87171',
+];
+
 const SKIP_KEYS = new Set(['key', 'name', 'type', 'image']);
 
 function normalizeDiff(raw: DiffPayload): NormalizedChange[] {
   if (!raw?.changed) return [];
   const results: NormalizedChange[] = [];
 
+  // Priority order for picking the "main" value field
+  const PRIORITY_KEYS = ['rvalue', 'score', 'dvalue', 'nvalue', 'mvalue'];
+
   for (const item of raw.changed) {
-    // Find the primary value key (first one with oldVal/newVal)
     let primary: { oldVal: number; newVal: number } | null = null;
-    for (const k of Object.keys(item)) {
-      if (SKIP_KEYS.has(k)) continue;
-      const v = item[k];
+
+    // Try priority keys first
+    for (const pk of PRIORITY_KEYS) {
+      const v = item[pk];
       if (v && typeof v === 'object' && 'oldVal' in v && 'newVal' in v) {
         primary = v as { oldVal: number; newVal: number };
         break;
       }
     }
+
+    // Fallback: any key with oldVal/newVal
+    if (!primary) {
+      for (const k of Object.keys(item)) {
+        if (SKIP_KEYS.has(k)) continue;
+        const v = item[k];
+        if (v && typeof v === 'object' && 'oldVal' in v && 'newVal' in v) {
+          primary = v as { oldVal: number; newVal: number };
+          break;
+        }
+      }
+    }
     if (!primary) continue;
 
     const diff = primary.newVal - primary.oldVal;
-    const pct = primary.oldVal > 0 ? Math.round((diff / primary.oldVal) * 100) : 0;
-    if (pct === 0) continue;
+    if (diff === 0) continue;
+
+    // Use fractional pct so even small changes show (e.g. 132→133 = +0.8%)
+    const rawPct = primary.oldVal > 0 ? (diff / primary.oldVal) * 100 : 0;
+    const pct = diff > 0 ? Math.max(1, Math.round(rawPct)) : Math.min(-1, Math.round(rawPct));
 
     results.push({
       name: item.name || '',
@@ -95,16 +120,15 @@ function normalizeDiff(raw: DiffPayload): NormalizedChange[] {
       oldVal: primary.oldVal,
       newVal: primary.newVal,
       pct,
-      direction: pct > 0 ? 'up' : 'down',
+      direction: diff > 0 ? 'up' : 'down',
     });
   }
 
-  // Sort by absolute pct descending
   results.sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct));
   return results;
 }
 
-/* ---------- Firestore REST normaliser (CDN may wrap in documents) ---------- */
+/* ---------- Firestore REST normaliser ---------- */
 function unwrapFirestoreValue(v: unknown): unknown {
   if (!v || typeof v !== 'object') return v;
   const obj = v as Record<string, unknown>;
@@ -142,11 +166,10 @@ function normalizeFirestoreDoc(payload: unknown): CDNAnalytics {
   return payload as CDNAnalytics;
 }
 
-/* ---------- Helpers: fix relative image paths ---------- */
+/* ---------- Image helpers ---------- */
 function fixImagePath(img: string | undefined): string {
   if (!img) return '';
   if (img.startsWith('http')) return img;
-  // Relative paths like /images/pets/X.png → CDN URL
   return `${config.cdnBaseUrl}${img}`;
 }
 
@@ -155,45 +178,47 @@ function fixItemImages<T extends { image: string }>(items: T[] | undefined): T[]
   return items.map((item) => ({ ...item, image: fixImagePath(item.image) }));
 }
 
+type TabKey = 'overview' | 'changes' | 'movers' | 'demand' | 'predictions';
+type ChangesFilter = 'all' | 'up' | 'down';
+
 /* ---------- Component ---------- */
-export function AnalyticsDashboard() {
-  const [analytics, setAnalytics] = useState<CDNAnalytics | null>(null);
-  const [changes, setChanges] = useState<NormalizedChange[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+interface AnalyticsDashboardProps {
+  ssrAnalyticsRaw?: unknown;
+  ssrChangesRaw?: unknown;
+}
+
+export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: AnalyticsDashboardProps = {}) {
+  const hasSSR = !!ssrAnalyticsRaw;
+  const [analytics, setAnalytics] = useState<CDNAnalytics | null>(() =>
+    ssrAnalyticsRaw ? normalizeFirestoreDoc(ssrAnalyticsRaw) : null,
+  );
+  const [changes, setChanges] = useState<NormalizedChange[]>(() =>
+    ssrChangesRaw ? normalizeDiff(ssrChangesRaw as DiffPayload) : [],
+  );
+  const [isLoading, setIsLoading] = useState(!hasSSR);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'changes' | 'movers' | 'predictions'>('overview');
+  const [activeTab, setActiveTab] = useState<TabKey>('overview');
+  const [changesFilter, setChangesFilter] = useState<ChangesFilter>('all');
 
   useEffect(() => {
+    // Skip fetch if we already have SSR data
+    if (hasSSR) return;
+
     async function fetchData() {
       try {
         const [analyticsRes, changesRes] = await Promise.all([
-          fetch(`${config.tradeAnalyticsUrl}?cb=${Date.now()}`).then((r) => {
-            if (!r.ok) { console.warn('Analytics CDN response:', r.status); return null; }
-            return r.json();
-          }).catch((e) => { console.warn('Analytics fetch failed:', e); return null; }),
-          fetch(`${config.valueChangesUrl}?cb=${Date.now()}`).then((r) => {
-            if (!r.ok) return null;
-            return r.json();
-          }).catch(() => null),
+          fetch('/api/analytics').then((r) => (r.ok ? r.json() : null)).catch(() => null),
+          fetch('/api/value-changes').then((r) => (r.ok ? r.json() : null)).catch(() => null),
         ]);
         if (analyticsRes) {
           const data = normalizeFirestoreDoc(analyticsRes);
-          // Fix image paths on all lists
-          data.topTraded = fixItemImages(data.topTraded);
-          data.topWanted = fixItemImages(data.topWanted);
-          data.topOffered = fixItemImages(data.topOffered);
-          data.topMovers = fixItemImages(data.topMovers);
-          data.topLosers = fixItemImages(data.topLosers);
-          data.demandSupplyRatios = fixItemImages(data.demandSupplyRatios);
-          data.predictions = fixItemImages(data.predictions);
           setAnalytics(data);
         } else {
           setError('Could not load analytics data');
         }
         if (changesRes) {
           const normalized = normalizeDiff(changesRes as DiffPayload);
-          // Fix image paths on changes
-          setChanges(normalized.map((c) => ({ ...c, image: fixImagePath(c.image) })));
+          setChanges(normalized);
         }
       } catch (err) {
         console.error('Error fetching analytics:', err);
@@ -203,10 +228,16 @@ export function AnalyticsDashboard() {
       }
     }
     fetchData();
-  }, []);
+  }, [hasSSR]);
 
-  const increases = useMemo(() => changes.filter((c) => c.direction === 'up').slice(0, 15), [changes]);
-  const decreases = useMemo(() => changes.filter((c) => c.direction === 'down').slice(0, 15), [changes]);
+  const increases = useMemo(() => changes.filter((c) => c.direction === 'up'), [changes]);
+  const decreases = useMemo(() => changes.filter((c) => c.direction === 'down'), [changes]);
+
+  const filteredChanges = useMemo(() => {
+    if (changesFilter === 'up') return increases;
+    if (changesFilter === 'down') return decreases;
+    return changes;
+  }, [changes, increases, decreases, changesFilter]);
 
   if (isLoading) {
     return (
@@ -234,11 +265,12 @@ export function AnalyticsDashboard() {
   const vol = analytics.tradeVolume;
   const dist = analytics.statusDistribution;
 
-  const tabs = [
-    { key: 'overview' as const, label: 'Overview', emoji: '🏠' },
-    { key: 'changes' as const, label: 'Value Changes', emoji: '📊' },
-    { key: 'movers' as const, label: 'Movers', emoji: '🚀' },
-    { key: 'predictions' as const, label: 'Predictions', emoji: '🔮' },
+  const tabs: { key: TabKey; label: string; emoji: string }[] = [
+    { key: 'overview', label: 'Overview', emoji: '🏠' },
+    { key: 'changes', label: 'Changes', emoji: '📊' },
+    { key: 'movers', label: 'Movers', emoji: '🚀' },
+    { key: 'demand', label: 'Demand', emoji: '🔥' },
+    { key: 'predictions', label: 'Predict', emoji: '🔮' },
   ];
 
   return (
@@ -295,7 +327,6 @@ export function AnalyticsDashboard() {
                   <p className="text-xs font-semibold text-muted-foreground">Losses</p>
                 </div>
               </div>
-              {/* Bar */}
               {(() => {
                 const total = (dist.win || 0) + (dist.fair || 0) + (dist.lose || 0);
                 if (total === 0) return null;
@@ -307,6 +338,21 @@ export function AnalyticsDashboard() {
                   </div>
                 );
               })()}
+            </Card>
+          )}
+
+          {/* Hourly Activity Bar Chart */}
+          {analytics.hourlyActivity && analytics.hourlyActivity.length > 0 && (
+            <Card className="p-4 rounded-2xl">
+              <div className="flex items-center justify-between mb-3">
+                <h2 className="font-extrabold text-base">🕒 Hourly Activity</h2>
+                {analytics.peakHour !== undefined && (
+                  <span className="text-xs text-muted-foreground font-medium">
+                    Peak: {analytics.peakHour}:00
+                  </span>
+                )}
+              </div>
+              <HourlyBarChart data={analytics.hourlyActivity} peakHour={analytics.peakHour} />
             </Card>
           )}
 
@@ -339,64 +385,85 @@ export function AnalyticsDashboard() {
               </div>
             </Card>
           )}
+
+          {/* Most Offered */}
+          {analytics.topOffered && analytics.topOffered.length > 0 && (
+            <Card className="p-4 rounded-2xl">
+              <div className="flex items-center gap-2 mb-4">
+                <Package className="h-5 w-5 text-blue-500" />
+                <h2 className="font-extrabold text-base">Most Offered</h2>
+              </div>
+              <div className="flex flex-col gap-2">
+                {analytics.topOffered.slice(0, 10).map((item, i) => (
+                  <ItemRow key={`offered-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
+                ))}
+              </div>
+            </Card>
+          )}
         </>
       )}
 
       {/* ═══ VALUE CHANGES TAB ═══ */}
       {activeTab === 'changes' && (
         <>
-          {changes.length === 0 ? (
+          {/* Filter Buttons */}
+          <div className="flex gap-2">
+            {([
+              { key: 'all' as const, label: 'All', emoji: '📋', count: changes.length },
+              { key: 'up' as const, label: 'Up', emoji: '⬆️', count: increases.length },
+              { key: 'down' as const, label: 'Down', emoji: '⬇️', count: decreases.length },
+            ]).map((f) => (
+              <button
+                key={f.key}
+                onClick={() => setChangesFilter(f.key)}
+                className={cn(
+                  'flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold transition-all border',
+                  changesFilter === f.key
+                    ? 'bg-app-primary text-white border-app-primary'
+                    : 'bg-card text-muted-foreground border-border hover:bg-accent',
+                )}
+              >
+                <span>{f.emoji}</span>
+                {f.label} ({f.count})
+              </button>
+            ))}
+          </div>
+
+          {filteredChanges.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-4xl mb-2">📊</p>
-              <p className="font-bold">No value changes yet</p>
+              <p className="font-bold">No value changes found</p>
               <p className="text-sm text-muted-foreground">Values are checked daily.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Increases */}
-              <Card className="p-4 rounded-2xl">
-                <div className="flex items-center gap-2 mb-4">
-                  <TrendingUp className="h-5 w-5 text-emerald-500" />
-                  <h2 className="font-extrabold text-base">Going Up ({increases.length})</h2>
-                </div>
-                {increases.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-6">No increases right now</p>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    {increases.map((c, i) => (
-                      <ChangeRow key={`up-${i}`} change={c} />
-                    ))}
-                  </div>
-                )}
-              </Card>
-
-              {/* Decreases */}
-              <Card className="p-4 rounded-2xl">
-                <div className="flex items-center gap-2 mb-4">
-                  <TrendingDown className="h-5 w-5 text-red-500" />
-                  <h2 className="font-extrabold text-base">Going Down ({decreases.length})</h2>
-                </div>
-                {decreases.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-6">No decreases right now</p>
-                ) : (
-                  <div className="flex flex-col gap-2">
-                    {decreases.map((c, i) => (
-                      <ChangeRow key={`down-${i}`} change={c} />
-                    ))}
-                  </div>
-                )}
-              </Card>
-            </div>
+            <Card className="p-4 rounded-2xl">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-lg">🔄</span>
+                <h2 className="font-extrabold text-base">Value Updates</h2>
+                <span className="text-xs text-muted-foreground ml-auto">{filteredChanges.length} items</span>
+              </div>
+              <div className="flex flex-col gap-2">
+                {filteredChanges.map((c, i) => (
+                  <ChangeRow key={`change-${i}`} change={c} />
+                ))}
+              </div>
+            </Card>
           )}
+
+          {/* Disclaimer */}
+          <div className="flex items-start gap-2 rounded-xl bg-muted/50 px-4 py-3 text-xs text-muted-foreground">
+            <span>ℹ️</span>
+            <span>Value changes are detected automatically by comparing daily snapshots. Small fluctuations are normal.</span>
+          </div>
         </>
       )}
 
       {/* ═══ MOVERS TAB ═══ */}
       {activeTab === 'movers' && (
         <>
-          {/* Demand / Supply Rising */}
+          {/* Rising Demand */}
           {analytics.topMovers && analytics.topMovers.length > 0 && (
-            <Card className="p-4 rounded-2xl">
+            <Card className="p-4 rounded-2xl border-l-4 border-l-emerald-500">
               <div className="flex items-center gap-2 mb-4">
                 <TrendingUp className="h-5 w-5 text-emerald-500" />
                 <h2 className="font-extrabold text-base">🚀 Rising Demand</h2>
@@ -415,9 +482,9 @@ export function AnalyticsDashboard() {
             </Card>
           )}
 
-          {/* Falling */}
+          {/* Falling Demand */}
           {analytics.topLosers && analytics.topLosers.length > 0 && (
-            <Card className="p-4 rounded-2xl">
+            <Card className="p-4 rounded-2xl border-l-4 border-l-red-500">
               <div className="flex items-center gap-2 mb-4">
                 <TrendingDown className="h-5 w-5 text-red-500" />
                 <h2 className="font-extrabold text-base">📉 Falling Demand</h2>
@@ -436,12 +503,66 @@ export function AnalyticsDashboard() {
             </Card>
           )}
 
-          {/* Demand / Supply Ratios */}
-          {analytics.demandSupplyRatios && analytics.demandSupplyRatios.length > 0 && (
-            <Card className="p-4 rounded-2xl">
+          {/* No data fallback */}
+          {(!analytics.topMovers || analytics.topMovers.length === 0) &&
+            (!analytics.topLosers || analytics.topLosers.length === 0) && (
+              <div className="text-center py-12">
+                <p className="text-4xl mb-2">🚀</p>
+                <p className="font-bold">No movers data yet</p>
+                <p className="text-sm text-muted-foreground">Check back after more trades happen.</p>
+              </div>
+            )}
+        </>
+      )}
+
+      {/* ═══ DEMAND TAB ═══ */}
+      {activeTab === 'demand' && (
+        <>
+          {/* Most Wanted */}
+          {analytics.topWanted && analytics.topWanted.length > 0 && (
+            <Card className="p-4 rounded-2xl border-l-4 border-l-pink-500">
               <div className="flex items-center gap-2 mb-4">
-                <BarChart3 className="h-5 w-5 text-blue-500" />
-                <h2 className="font-extrabold text-base">📈 Demand vs Supply</h2>
+                <span className="text-lg">❤️</span>
+                <div>
+                  <h2 className="font-extrabold text-base">Most Wanted</h2>
+                  <p className="text-[11px] text-muted-foreground">Highest demand pets</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                {analytics.topWanted.slice(0, 15).map((item, i) => (
+                  <ItemRow key={`wanted-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Most Offered */}
+          {analytics.topOffered && analytics.topOffered.length > 0 && (
+            <Card className="p-4 rounded-2xl border-l-4 border-l-blue-500">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-lg">📦</span>
+                <div>
+                  <h2 className="font-extrabold text-base">Most Offered</h2>
+                  <p className="text-[11px] text-muted-foreground">Highest supply pets</p>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                {analytics.topOffered.slice(0, 15).map((item, i) => (
+                  <ItemRow key={`offered-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Demand vs Supply Ratios */}
+          {analytics.demandSupplyRatios && analytics.demandSupplyRatios.length > 0 && (
+            <Card className="p-4 rounded-2xl border-l-4 border-l-violet-500">
+              <div className="flex items-center gap-2 mb-4">
+                <BarChart3 className="h-5 w-5 text-violet-500" />
+                <div>
+                  <h2 className="font-extrabold text-base">⚖️ Demand vs Supply</h2>
+                  <p className="text-[11px] text-muted-foreground">Want-to-offer ratio</p>
+                </div>
               </div>
               <div className="flex flex-col gap-2">
                 {analytics.demandSupplyRatios.slice(0, 15).map((item, i) => {
@@ -470,12 +591,12 @@ export function AnalyticsDashboard() {
           )}
 
           {/* No data fallback */}
-          {(!analytics.topMovers || analytics.topMovers.length === 0) &&
-            (!analytics.topLosers || analytics.topLosers.length === 0) &&
+          {(!analytics.topWanted || analytics.topWanted.length === 0) &&
+            (!analytics.topOffered || analytics.topOffered.length === 0) &&
             (!analytics.demandSupplyRatios || analytics.demandSupplyRatios.length === 0) && (
               <div className="text-center py-12">
-                <p className="text-4xl mb-2">🚀</p>
-                <p className="font-bold">No movers data yet</p>
+                <p className="text-4xl mb-2">🔥</p>
+                <p className="font-bold">No demand data yet</p>
                 <p className="text-sm text-muted-foreground">Check back after more trades happen.</p>
               </div>
             )}
@@ -507,6 +628,11 @@ export function AnalyticsDashboard() {
                     : pred.includes('fall')
                       ? 'text-red-600 dark:text-red-400'
                       : 'text-amber-600 dark:text-amber-400';
+                  const barColor = isRise
+                    ? 'bg-emerald-500'
+                    : pred.includes('fall')
+                      ? 'bg-red-500'
+                      : 'bg-amber-400';
                   return (
                     <div key={`pred-${i}`} className="flex items-center gap-2.5 rounded-2xl border p-2.5">
                       <PetImage src={item.image} alt={item.name} size={36} />
@@ -521,7 +647,7 @@ export function AnalyticsDashboard() {
                         <div className="flex items-center gap-1">
                           <div className="w-12 h-1.5 rounded-full bg-muted overflow-hidden">
                             <div
-                              className={cn('h-full rounded-full', isRise ? 'bg-emerald-500' : pred.includes('fall') ? 'bg-red-500' : 'bg-amber-400')}
+                              className={cn('h-full rounded-full', barColor)}
                               style={{ width: `${conf}%` }}
                             />
                           </div>
@@ -540,7 +666,20 @@ export function AnalyticsDashboard() {
               <p className="text-sm text-muted-foreground">Predictions update based on trading patterns.</p>
             </div>
           )}
+
+          {/* Disclaimer */}
+          <div className="flex items-start gap-2 rounded-xl bg-muted/50 px-4 py-3 text-xs text-muted-foreground">
+            <span>💡</span>
+            <span>Predictions are based on trading patterns and may not reflect actual future values. Trade responsibly!</span>
+          </div>
         </>
+      )}
+
+      {/* Last Updated */}
+      {analytics.computedAt && (
+        <p className="text-[11px] text-muted-foreground text-center">
+          Updated: {new Date(analytics.computedAt).toLocaleString()}
+        </p>
       )}
     </div>
   );
@@ -556,6 +695,39 @@ function StatCard({ emoji, label, value, bg, color }: {
       <p className="text-2xl mb-1">{emoji}</p>
       <p className={cn('text-xl font-extrabold', color)}>{value}</p>
       <p className="text-xs font-semibold text-muted-foreground">{label}</p>
+    </div>
+  );
+}
+
+function HourlyBarChart({ data, peakHour }: { data: number[]; peakHour?: number }) {
+  const maxVal = Math.max(...data, 1);
+  return (
+    <div className="flex items-end gap-[2px] h-[80px]">
+      {data.map((val, i) => {
+        const isPeak = i === peakHour;
+        const height = Math.max(4, (val / maxVal) * 72);
+        return (
+          <div key={i} className="flex-1 flex flex-col items-center gap-0.5 group relative">
+            {/* Tooltip on hover */}
+            <div className="absolute bottom-full mb-1 hidden group-hover:flex flex-col items-center">
+              <span className="text-[9px] font-bold bg-foreground text-background px-1.5 py-0.5 rounded whitespace-nowrap">
+                {i}:00 — {val * VM} trades
+              </span>
+            </div>
+            <div
+              className="w-full rounded-t-sm transition-all"
+              style={{
+                height: `${height}px`,
+                backgroundColor: isPeak ? '#FB923C' : BAR_COLORS[i % BAR_COLORS.length],
+                opacity: isPeak ? 1 : 0.7,
+              }}
+            />
+            {i % 4 === 0 && (
+              <span className="text-[8px] text-muted-foreground">{i}h</span>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

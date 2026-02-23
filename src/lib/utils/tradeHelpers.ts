@@ -1,15 +1,32 @@
 import type { TradeItem } from '@/lib/types/trade';
-import { type Pet, type ValueVariant, type PotionType, getPetValue } from '@/lib/types/pet';
+import { type Pet, type ValueVariant, type PotionType, getPetValue, getPetDefaultValue } from '@/lib/types/pet';
+
+// Badge value type matching RN: D (default/regular), N (neon), M (mega)
+export type BadgeValueType = 'd' | 'n' | 'm';
 
 export interface CalculatorItem {
   pet: Pet;
-  variant: ValueVariant;
-  potion: PotionType;
+  valueType: BadgeValueType;
+  isFly: boolean;
+  isRide: boolean;
   value: number;
 }
 
-export function calculateItemValue(pet: Pet, variant: ValueVariant, potion: PotionType): number {
-  return getPetValue(pet, variant, potion);
+// Map badge value type to data variant
+export function badgeToVariant(vt: BadgeValueType): ValueVariant {
+  return vt === 'd' ? 'r' : vt;
+}
+
+// Map isFly/isRide toggles to PotionType
+export function modifiersToPotion(isFly: boolean, isRide: boolean): PotionType {
+  if (isFly && isRide) return 'flyride';
+  if (isFly) return 'fly';
+  if (isRide) return 'ride';
+  return 'nopotion';
+}
+
+export function calculateItemValue(pet: Pet, valueType: BadgeValueType, isFly: boolean, isRide: boolean): number {
+  return getPetValue(pet, badgeToVariant(valueType), modifiersToPotion(isFly, isRide)) || getPetDefaultValue(pet);
 }
 
 export function calculateTotalValue(items: CalculatorItem[]): number {
@@ -46,15 +63,17 @@ export function getTradeResult(
 
 export function tradeItemFromPet(
   pet: Pet,
-  variant: ValueVariant = 'r',
-  potion: PotionType = 'default',
+  valueType: BadgeValueType = 'd',
+  isFly: boolean = false,
+  isRide: boolean = false,
 ): TradeItem {
   return {
     name: pet.name,
     type: pet.type,
-    valueType: `${variant}_${potion}`,
-    isFly: potion === 'fly' || potion === 'flyride',
-    isRide: potion === 'ride' || potion === 'flyride',
+    valueType: valueType,
+    isFly,
+    isRide,
     image: pet.image,
   };
 }
+

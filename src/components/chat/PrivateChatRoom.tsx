@@ -8,6 +8,7 @@ import {
   getPrivateChatKey,
   setActiveChat,
   clearActiveChat,
+  deletePrivateMessage,
 } from '@/lib/firebase/database';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { MessageList } from './MessageList';
@@ -95,6 +96,17 @@ export function PrivateChatRoom({ otherUserId, otherDisplayName, otherAvatar }: 
     });
   }, [chatKey, isPaginating]);
 
+  // Delete own message
+  const handleDeleteMessage = useCallback(async (messageId: string) => {
+    if (!chatKey) return;
+    try {
+      await deletePrivateMessage(chatKey, messageId);
+      setMessages((prev) => prev.filter((m) => String(m.id) !== messageId));
+    } catch (err) {
+      console.error('Failed to delete message:', err);
+    }
+  }, [chatKey]);
+
   // Send message
   const handleSend = async () => {
     if (!user || !text.trim() || isSending) return;
@@ -129,6 +141,8 @@ export function PrivateChatRoom({ otherUserId, otherDisplayName, otherAvatar }: 
           isPaginating={isPaginating}
           onLoadMore={handleLoadMore}
           hasMore={hasMoreRef.current}
+          onDeleteMessage={handleDeleteMessage}
+          isDM
         />
       </div>
 

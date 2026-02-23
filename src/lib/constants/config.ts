@@ -13,8 +13,8 @@ export const config = {
   valueChangesUrl: 'https://check-diff-adoptme.b-cdn.net/diff.json',
 
   // App Links
-  androidLink: 'https://play.google.com/store/apps/details?id=com.adoptmevaluescalc',
-  iosLink: 'https://apps.apple.com/us/app/app-name/id6745400111',
+  androidLink: 'https://play.google.com/store/apps/details?id=com.adoptmevaluescalc&hl=en',
+  iosLink: 'https://apps.apple.com/us/app/adoptme-values/id6745400111',
 
   // Theme Colors
   colors: {

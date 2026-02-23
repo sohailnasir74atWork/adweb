@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useCallback, useRef, useState } from 'react';
-import { loadGroupMessages, onNewGroupMessage, setActiveGroupChat, clearActiveGroupChat } from '@/lib/firebase/database';
+import { loadGroupMessages, onNewGroupMessage, setActiveGroupChat, clearActiveGroupChat, deleteGroupMessage } from '@/lib/firebase/database';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { MessageList } from './MessageList';
 import { MessageInput } from './MessageInput';
@@ -39,7 +39,7 @@ export function ChatRoom({ roomId, roomName }: ChatRoomProps) {
     return () => { cancelled = true; };
   }, [roomId]);
 
-  // Real-time listener for new messages (limitToLast(1) child_added)
+  // Real-time listener for new messages (onValue limitToLast(1))
   useEffect(() => {
     const unsub = onNewGroupMessage(roomId, (newMsg) => {
       setMessages((prev) => {
@@ -78,6 +78,16 @@ export function ChatRoom({ roomId, roomName }: ChatRoomProps) {
     });
   }, [roomId, isPaginating]);
 
+  // Delete own message
+  const handleDeleteMessage = useCallback(async (messageId: string) => {
+    try {
+      await deleteGroupMessage(roomId, messageId);
+      setMessages((prev) => prev.filter((m) => String(m.id) !== messageId));
+    } catch (err) {
+      console.error('Failed to delete message:', err);
+    }
+  }, [roomId]);
+
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
@@ -95,6 +105,7 @@ export function ChatRoom({ roomId, roomName }: ChatRoomProps) {
           isPaginating={isPaginating}
           onLoadMore={handleLoadMore}
           hasMore={hasMoreRef.current}
+          onDeleteMessage={handleDeleteMessage}
         />
       </div>
 
@@ -103,3 +114,4 @@ export function ChatRoom({ roomId, roomName }: ChatRoomProps) {
     </div>
   );
 }
+

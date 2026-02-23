@@ -125,6 +125,7 @@ export function CreatePostModal({ open, onOpenChange, onPostCreated }: CreatePos
         avatar: user.avatar || null,
         createdAt: serverTimestamp(),
         likes: {},
+        commentCount: 0,
         selectedTags: [selectedTag],
         email: user.email || null,
         report: false,
@@ -199,7 +200,7 @@ export function CreatePostModal({ open, onOpenChange, onPostCreated }: CreatePos
               <div className="flex flex-wrap gap-2">
                 {imagePreviews.map((preview, idx) => (
                   <div key={idx} className="relative w-16 h-16 rounded-xl overflow-hidden">
-                    <Image src={preview} alt="" fill className="object-cover" unoptimized />
+                    <Image src={preview} alt="" fill className="object-cover" />
                     <button
                       onClick={() => removeImage(idx)}
                       className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-red-500 text-white flex items-center justify-center text-[10px]"

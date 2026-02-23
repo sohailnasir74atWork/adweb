@@ -12,6 +12,7 @@ import { ValueBar } from './ValueBar';
 import { cn } from '@/lib/utils';
 import { formatNumber } from '@/lib/utils/formatters';
 import { Skeleton } from '@/components/ui/skeleton';
+import { toast } from 'sonner';
 
 type SelectorSide = 'has' | 'wants' | null;
 
@@ -82,8 +83,8 @@ export function CalculatorBoard() {
         </div>
       )}
 
-      {/* Two columns — scrollable pet grids */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      {/* Two sides — always side by side */}
+      <div className="grid grid-cols-2 gap-3">
         {/* HAS / Offering side */}
         <div className="rounded-2xl border-2 border-app-has/40 bg-app-has/5 p-2.5 sm:p-3">
           <div className="flex items-center justify-between mb-2">
@@ -106,13 +107,13 @@ export function CalculatorBoard() {
           {hasItems.length === 0 ? (
             <button
               onClick={() => setSelectorSide('has')}
-              className="w-full rounded-xl border-2 border-dashed border-app-has/30 p-6 text-center text-sm text-muted-foreground hover:border-app-has/50 hover:bg-app-has/5 transition-colors"
+              className="w-full rounded-xl border-2 border-dashed border-app-has/30 p-4 sm:p-6 text-center text-xs sm:text-sm text-muted-foreground hover:border-app-has/50 hover:bg-app-has/5 transition-colors"
             >
               Tap here to add your pets!
             </button>
           ) : (
             <div className="max-h-[420px] overflow-y-auto overflow-x-hidden pr-0.5">
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-4 gap-1 sm:gap-1.5">
                 {hasItems.map((item, i) => (
                   <CalculatorPetCard
                     key={`has-${i}-${item.pet.id}`}
@@ -124,10 +125,10 @@ export function CalculatorBoard() {
                 ))}
                 <button
                   onClick={() => setSelectorSide('has')}
-                  className="flex flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-app-has/30 p-3 text-muted-foreground hover:border-app-has/50 hover:bg-app-has/5 transition-colors min-h-[80px]"
+                  className="flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-xl border-2 border-dashed border-app-has/30 p-2 sm:p-3 text-muted-foreground hover:border-app-has/50 hover:bg-app-has/5 transition-colors min-h-[60px] sm:min-h-[80px]"
                 >
-                  <Plus className="h-5 w-5" />
-                  <span className="text-[10px]">Add</span>
+                  <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="text-[9px] sm:text-[10px]">Add</span>
                 </button>
               </div>
             </div>
@@ -156,13 +157,13 @@ export function CalculatorBoard() {
           {wantsItems.length === 0 ? (
             <button
               onClick={() => setSelectorSide('wants')}
-              className="w-full rounded-xl border-2 border-dashed border-app-want/30 p-6 text-center text-sm text-muted-foreground hover:border-app-want/50 hover:bg-app-want/5 transition-colors"
+              className="w-full rounded-xl border-2 border-dashed border-app-want/30 p-4 sm:p-6 text-center text-xs sm:text-sm text-muted-foreground hover:border-app-want/50 hover:bg-app-want/5 transition-colors"
             >
               Tap here to add their pets!
             </button>
           ) : (
             <div className="max-h-[420px] overflow-y-auto overflow-x-hidden pr-0.5">
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-4 gap-1 sm:gap-1.5">
                 {wantsItems.map((item, i) => (
                   <CalculatorPetCard
                     key={`wants-${i}-${item.pet.id}`}
@@ -174,10 +175,10 @@ export function CalculatorBoard() {
                 ))}
                 <button
                   onClick={() => setSelectorSide('wants')}
-                  className="flex flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-app-want/30 p-3 text-muted-foreground hover:border-app-want/50 hover:bg-app-want/5 transition-colors min-h-[80px]"
+                  className="flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-xl border-2 border-dashed border-app-want/30 p-2 sm:p-3 text-muted-foreground hover:border-app-want/50 hover:bg-app-want/5 transition-colors min-h-[60px] sm:min-h-[80px]"
                 >
-                  <Plus className="h-5 w-5" />
-                  <span className="text-[10px]">Add</span>
+                  <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+                  <span className="text-[9px] sm:text-[10px]">Add</span>
                 </button>
               </div>
             </div>
@@ -185,22 +186,15 @@ export function CalculatorBoard() {
         </div>
       </div>
 
-      {/* Full trade result below */}
-      <TradeResult
-        result={result}
-        percentage={resultPercentage}
-        hasTotal={hasTotal}
-        wantsTotal={wantsTotal}
-      />
-
       {/* Pet selector modal */}
       <PetSelector
         open={selectorSide !== null}
         onClose={() => setSelectorSide(null)}
         pets={pets}
-        onSelect={(pet, variant, potion) => {
-          if (selectorSide === 'has') addHasItem(pet, variant, potion);
-          else if (selectorSide === 'wants') addWantsItem(pet, variant, potion);
+        onSelect={(pet, valueType, isFly, isRide) => {
+          if (selectorSide === 'has') addHasItem(pet, valueType, isFly, isRide);
+          else if (selectorSide === 'wants') addWantsItem(pet, valueType, isFly, isRide);
+          toast.success(`${pet.name} added!`, { duration: 1500 });
         }}
         side={selectorSide || 'has'}
       />

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Calculator, Handshake, Home, MessageCircle, TrendingUp } from 'lucide-react';
+import { Calculator, Handshake, Home, Image as ImageIcon, MessageCircle, TrendingUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const TABS = [
@@ -10,6 +10,7 @@ const TABS = [
   { href: '/values', label: 'Values', icon: TrendingUp },
   { href: '/calculator', label: 'Check', icon: Calculator },
   { href: '/trades', label: 'Trade', icon: Handshake },
+  { href: '/feed', label: 'Feed', icon: ImageIcon },
   { href: '/chat', label: 'Chat', icon: MessageCircle },
 ];
 
@@ -17,8 +18,8 @@ export function MobileNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden safe-area-bottom">
-      <div className="mx-auto flex h-[68px] max-w-md items-center justify-around px-1 pb-1">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden safe-area-bottom" aria-label="Bottom navigation">
+      <div className="mx-auto flex h-[56px] max-w-md items-center justify-around px-1 pb-0.5">
         {TABS.map((tab) => {
           const isActive =
             tab.href === '/'
@@ -31,13 +32,13 @@ export function MobileNav() {
               key={tab.href}
               href={tab.href}
               className={cn(
-                'tap-target flex flex-col items-center justify-center gap-1 rounded-2xl px-4 py-2 text-[11px] font-bold transition-all min-w-[60px]',
+                'tap-target flex flex-col items-center justify-center gap-0.5 rounded-2xl px-3 py-1.5 text-[10px] font-bold transition-all min-w-[56px]',
                 isActive
                   ? 'bg-app-tab-active text-app-primary scale-105'
                   : 'text-muted-foreground hover:text-foreground active:scale-95',
               )}
             >
-              <Icon className={cn('h-6 w-6', isActive && 'text-app-primary')} />
+              <Icon className={cn('h-5 w-5', isActive && 'text-app-primary')} />
               <span>{tab.label}</span>
             </Link>
           );

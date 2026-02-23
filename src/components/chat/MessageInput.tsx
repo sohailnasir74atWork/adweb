@@ -23,6 +23,12 @@ export function MessageInput({ roomId }: MessageInputProps) {
     setIsSending(true);
 
     try {
+      // Check if user has recent game win (matching RN logic)
+      const now = Date.now();
+      const hasRecentWin =
+        typeof user.lastGameWinAt === 'number' &&
+        now - user.lastGameWinAt <= 24 * 60 * 60 * 1000;
+
       // Send message matching sibling RN project structure
       await sendGroupChatMessage(
         roomId,
@@ -32,11 +38,11 @@ export function MessageInput({ roomId }: MessageInputProps) {
           sender: user.displayName || 'Anonymous',
           avatar: user.avatar || null,
           timestamp: Date.now(),
-          isPro: false,
-          robloxUsernameVerified: false,
-          hasRecentGameWin: false,
-          lastGameWinAt: null,
-          isCreator: false,
+          isPro: user.isPro || false,
+          robloxUsernameVerified: user.robloxUsernameVerified || false,
+          hasRecentGameWin: hasRecentWin,
+          lastGameWinAt: user.lastGameWinAt || null,
+          isCreator: false, // Will be overridden if needed; RN also computes this per-group
         },
         {
           id: user.id,

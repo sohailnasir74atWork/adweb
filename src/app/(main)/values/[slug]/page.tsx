@@ -37,11 +37,11 @@ export async function generateMetadata({
 
   const value = getPetDefaultValue(pet);
   return {
-    title: `${pet.name} Value in Adopt Me — Neon, Mega, Fly, Ride Prices`,
-    description: `Check the latest ${pet.name} value in Adopt Me. Current value: ${formatNumber(value)}. See Neon (${formatNumber(pet.nvalue)}), Mega (${formatNumber(pet.mvalue)}), Fly, Ride prices and demand. Rarity: ${pet.rarity}.`,
+    title: `${pet.name} Value in Adopt Me 2026 — Trading Value, Neon & Mega Prices`,
+    description: `Check the latest ${pet.name} trading value in Roblox Adopt Me. Current value: ${formatNumber(value)}. See Neon (${formatNumber(pet.nvalue)}), Mega Neon (${formatNumber(pet.mvalue)}), Fly, Ride prices and demand. Rarity: ${pet.rarity}. Updated daily in 2026.`,
     openGraph: {
-      title: `${pet.name} Value | Adopt Me Values`,
-      description: `${pet.name} is worth ${formatNumber(value)} in Adopt Me. Neon: ${formatNumber(pet.nvalue)}, Mega: ${formatNumber(pet.mvalue)}.`,
+      title: `${pet.name} Trading Value | Adopt Me Values 2026`,
+      description: `${pet.name} is worth ${formatNumber(value)} in Adopt Me. Neon: ${formatNumber(pet.nvalue)}, Mega: ${formatNumber(pet.mvalue)}. Check trading values daily.`,
       images: [pet.image],
     },
     alternates: {
@@ -139,8 +139,8 @@ export default async function PetDetailPage({
   const jsonLdData = {
     '@context': 'https://schema.org',
     '@type': 'Product',
-    name: `${pet.name} — Adopt Me`,
-    description: `${pet.name} pet value in Adopt Me Roblox. Rarity: ${pet.rarity}. Value: ${formatNumber(value)}.`,
+    name: `${pet.name} — Adopt Me Roblox`,
+    description: `${pet.name} pet trading value in Roblox Adopt Me. Rarity: ${pet.rarity}. Value: ${formatNumber(value)}. Updated daily in 2026.`,
     image: pet.image,
     category: pet.rarity,
     offers: {
@@ -248,19 +248,20 @@ export default async function PetDetailPage({
         <section className="prose dark:prose-invert max-w-none">
           <h2>About {pet.name} in Adopt Me</h2>
           <p>
-            The {pet.name} is a {pet.rarity} pet in Adopt Me on Roblox. 
-            Its current default value is <strong>{formatNumber(value)}</strong>, 
-            with the Neon version worth <strong>{formatNumber(pet.nvalue)}</strong> and 
+            The {pet.name} is a {pet.rarity} pet in Roblox Adopt Me.
+            Its current trading value is <strong>{formatNumber(value)}</strong>,
+            with the Neon version worth <strong>{formatNumber(pet.nvalue)}</strong> and
             the Mega Neon version worth <strong>{formatNumber(pet.mvalue)}</strong>.
             {pet.score <= 10
-              ? ` The ${pet.name} is currently in high demand among traders.`
-              : ` The ${pet.name} has a demand rank of #${pet.score}.`}
+              ? ` The ${pet.name} is currently in high demand among Adopt Me traders in 2026.`
+              : ` The ${pet.name} has a demand rank of #${pet.score} in the Adopt Me trading values list.`}
           </p>
           <p>
-            Values can vary based on potion status. A No Potion {pet.name} is worth{' '}
-            <strong>{formatNumber(pet.rvalueNoPotion)}</strong>, while Fly ({formatNumber(pet.rvalueFly)}), 
-            Ride ({formatNumber(pet.rvalueRide)}), and Fly Ride ({formatNumber(pet.rvalueFlyRide)}) 
-            versions each have their own distinct values.
+            Trading values can vary based on potion status. A No Potion {pet.name} is worth{' '}
+            <strong>{formatNumber(pet.rvalueNoPotion)}</strong>, while Fly ({formatNumber(pet.rvalueFly)}),
+            Ride ({formatNumber(pet.rvalueRide)}), and Fly Ride ({formatNumber(pet.rvalueFlyRide)})
+            versions each have their own distinct trading values. Use our{' '}
+            <a href="/calculator">trade calculator</a> to check if your {pet.name} trade is fair.
           </p>
         </section>
       </div>

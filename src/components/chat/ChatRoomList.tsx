@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ref, onValue } from 'firebase/database';
 import { database } from '@/lib/firebase/config';
 import { useAuthStore } from '@/lib/store/useAuthStore';
-import { MessageCircle, Users, Clock } from 'lucide-react';
+import { MessageCircle, Users, Clock, Smartphone } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -28,23 +28,28 @@ interface GroupMetaItem {
 
 interface ChatRoomListProps {
   activeRoomId?: string;
+  hideCommunityDefault?: boolean;
 }
 
-export function ChatRoomList({ activeRoomId }: ChatRoomListProps) {
+export function ChatRoomList({ activeRoomId, hideCommunityDefault }: ChatRoomListProps) {
   const user = useAuthStore((s) => s.user);
   const [groups, setGroups] = useState<GroupMetaItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // If not logged in, show default community room
+    // If not logged in, show default community room (unless hidden)
     if (!user?.id) {
-      setGroups([{
-        groupId: 'community',
-        groupName: 'Community Chat',
-        lastMessage: 'General discussion for all traders',
-        lastMessageTimestamp: 0,
-        memberCount: 0,
-      }]);
+      if (hideCommunityDefault) {
+        setGroups([]);
+      } else {
+        setGroups([{
+          groupId: 'community',
+          groupName: 'Community Chat',
+          lastMessage: 'General discussion for all traders',
+          lastMessageTimestamp: 0,
+          memberCount: 0,
+        }]);
+      }
       setIsLoading(false);
       return;
     }
@@ -53,14 +58,17 @@ export function ChatRoomList({ activeRoomId }: ChatRoomListProps) {
     const userGroupsRef = ref(database, `group_meta_data/${user.id}`);
     const unsub = onValue(userGroupsRef, (snapshot) => {
       if (!snapshot.exists()) {
-        // No groups yet — show default community room
-        setGroups([{
-          groupId: 'community',
-          groupName: 'Community Chat',
-          lastMessage: 'General discussion for all traders',
-          lastMessageTimestamp: 0,
-          memberCount: 0,
-        }]);
+        if (hideCommunityDefault) {
+          setGroups([]);
+        } else {
+          setGroups([{
+            groupId: 'community',
+            groupName: 'Community Chat',
+            lastMessage: 'General discussion for all traders',
+            lastMessageTimestamp: 0,
+            memberCount: 0,
+          }]);
+        }
         setIsLoading(false);
         return;
       }
@@ -110,8 +118,11 @@ export function ChatRoomList({ activeRoomId }: ChatRoomListProps) {
 
   if (groups.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed p-8 text-center">
-        <p className="text-sm text-muted-foreground">No chat rooms available.</p>
+      <div className="rounded-xl bg-gradient-to-r from-violet-100 to-fuchsia-100 dark:from-violet-950/40 dark:to-fuchsia-950/40 ring-1 ring-violet-200 dark:ring-violet-800 px-4 py-3 flex items-center gap-3">
+        <Smartphone className="h-5 w-5 text-violet-600 dark:text-violet-400 flex-shrink-0" />
+        <p className="text-xs text-muted-foreground flex-1">
+          Create &amp; join groups on the app — <a href="https://apps.apple.com/us/app/adoptme-values/id6745400111" target="_blank" rel="noopener noreferrer" className="text-violet-600 dark:text-violet-400 font-bold hover:underline">download now</a>!
+        </p>
       </div>
     );
   }

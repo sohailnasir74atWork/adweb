@@ -21,18 +21,18 @@ export function ValueBar({ hasTotal, wantsTotal }: ValueBarProps) {
       </div>
       <div className="flex h-4 w-full overflow-hidden rounded-full bg-muted">
         <div
-          className={cn(
-            'h-full bg-app-has transition-all duration-500 ease-out',
-            hasPercent > wantsPercent && 'rounded-r-full',
-          )}
-          style={{ width: `${hasPercent}%` }}
+          className="h-full bg-app-has transition-all duration-500 ease-out"
+          style={{
+            width: `${hasPercent}%`,
+            borderRadius: wantsPercent === 0 ? '9999px' : '9999px 0 0 9999px',
+          }}
         />
         <div
-          className={cn(
-            'h-full bg-app-want transition-all duration-500 ease-out',
-            wantsPercent > hasPercent && 'rounded-l-full',
-          )}
-          style={{ width: `${wantsPercent}%` }}
+          className="h-full bg-app-want transition-all duration-500 ease-out"
+          style={{
+            width: `${wantsPercent}%`,
+            borderRadius: hasPercent === 0 ? '9999px' : '0 9999px 9999px 0',
+          }}
         />
       </div>
     </div>

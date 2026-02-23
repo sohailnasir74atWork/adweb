@@ -13,7 +13,7 @@ export interface Trade {
   id: string;
   userId: string;
   traderName: string;
-  avatar: string;
+  avatar: string | null;
   hasItems: TradeItem[];
   wantsItems: TradeItem[];
   hasItemNames: string[];
@@ -21,13 +21,20 @@ export interface Trade {
   hasTotal: number;
   wantsTotal: number;
   status: 'w' | 'l' | 'f';
-  timestamp: Timestamp;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  timestamp: Timestamp | any; // Accepts serverTimestamp() FieldValue too
   isFeatured: boolean;
   description: string;
   isPro: boolean;
   isSharkMode: boolean;
-  rating: number;
+  rating: number | null;
   ratingCount: number;
+  // Fields from sibling RN project
+  flage?: string | null;
+  robloxUsername?: string | null;
+  robloxUsernameVerified?: boolean;
+  hasRecentGameWin?: boolean;
+  lastGameWinAt?: number | null;
 }
 
 export type TradeStatus = Trade['status'];

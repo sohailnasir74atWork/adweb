@@ -32,10 +32,16 @@ export interface Message {
 }
 
 export interface FruitItem {
+  id?: string;
   name: string;
+  Name?: string; // legacy fallback
   image: string;
+  imageUrl?: string;
   type?: string;
   value?: number;
+  valueType?: string; // 'd' | 'n' | 'm'
+  isFly?: boolean;
+  isRide?: boolean;
 }
 
 // Group from Firestore (matches sibling)

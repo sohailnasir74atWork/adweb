@@ -2,14 +2,13 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import { useImageBase } from '@/lib/hooks/useImageBase';
 
-const CDN_BASE = 'https://adoptme.b-cdn.net';
-
-function resolveSrc(src: string): string {
+function resolveSrc(src: string, imageBase: string): string {
   if (!src) return '';
   if (src.startsWith('http')) return src;
-  // Relative paths like /images/pets/X.png → CDN URL
-  return `${CDN_BASE}${src.startsWith('/') ? '' : '/'}${src}`;
+  // Relative paths like /images/pets/X.png → dynamic base URL from RTDB
+  return `${imageBase}${src.startsWith('/') ? '' : '/'}${src}`;
 }
 
 interface PetImageProps {
@@ -21,7 +20,8 @@ interface PetImageProps {
 
 export function PetImage({ src, alt, size = 64, className = '' }: PetImageProps) {
   const [error, setError] = useState(false);
-  const resolved = resolveSrc(src);
+  const imageBase = useImageBase();
+  const resolved = resolveSrc(src, imageBase);
 
   if (error || !resolved) {
     return (
@@ -42,6 +42,7 @@ export function PetImage({ src, alt, size = 64, className = '' }: PetImageProps)
       height={size}
       className={`object-contain ${className}`}
       onError={() => setError(true)}
+      loading="lazy"
       unoptimized
     />
   );

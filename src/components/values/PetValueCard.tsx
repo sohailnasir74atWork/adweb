@@ -33,9 +33,9 @@ export function PetValueCard({ pet }: PetValueCardProps) {
 
   return (
     <Link href={`/values/${slugify(pet.name)}`} prefetch={false}>
-      <div className={`group flex flex-col items-center gap-2 rounded-3xl bg-gradient-to-b ${bgClass} ring-1 p-4 hover:scale-[1.04] active:scale-[0.97] transition-all cursor-pointer h-full`}>
-        <div className="rounded-2xl bg-white/60 dark:bg-white/10 p-2">
-          <PetImage src={pet.image} alt={pet.name} size={72} className="drop-shadow-sm" />
+      <div className={`group flex flex-col items-center gap-1.5 sm:gap-2 rounded-2xl sm:rounded-3xl bg-gradient-to-b ${bgClass} ring-1 p-3 sm:p-4 hover:scale-[1.04] active:scale-[0.97] transition-all cursor-pointer h-full`}>
+        <div className="rounded-xl sm:rounded-2xl bg-white/60 dark:bg-white/10 p-1.5 sm:p-2">
+          <PetImage src={pet.image} alt={pet.name} size={72} className="drop-shadow-sm w-[56px] h-[56px] sm:w-[72px] sm:h-[72px]" />
         </div>
         <div className="text-center w-full">
           <p className="text-sm font-bold truncate group-hover:text-app-primary transition-colors">
@@ -46,7 +46,7 @@ export function PetValueCard({ pet }: PetValueCardProps) {
           </p>
         </div>
         <div className="text-center mt-auto pt-1">
-          <p className="text-xl font-extrabold text-app-primary leading-none">{formatNumber(value)}</p>
+          <p className="text-lg sm:text-xl font-extrabold text-app-primary leading-none">{formatNumber(value)}</p>
           {(pet.nvalue > 0 || pet.mvalue > 0) && (
             <div className="flex justify-center gap-2.5 text-[10px] font-semibold text-muted-foreground mt-1.5">
               {pet.nvalue > 0 && <span>Neon {formatNumber(pet.nvalue)}</span>}

@@ -33,13 +33,20 @@ export async function signInWithApple() {
 }
 
 export async function signInWithEmail(email: string, password: string) {
-  return signInWithEmailAndPassword(auth, email, password);
+  const credential = await signInWithEmailAndPassword(auth, email, password);
+  if (!credential.user.emailVerified) {
+    await signOut(auth);
+    throw new Error('Please verify your email before signing in. Check your inbox for a verification link.');
+  }
+  return credential;
 }
 
 export async function registerWithEmail(email: string, password: string) {
   const credential = await createUserWithEmailAndPassword(auth, email, password);
   if (credential.user) {
     await sendEmailVerification(credential.user);
+    // Sign out immediately — user must verify email before they can log in
+    await signOut(auth);
   }
   return credential;
 }
@@ -75,7 +82,8 @@ export function createNewUser(firebaseUser: FirebaseUser, robloxUsername?: strin
 export async function getUserFromRTDB(uid: string): Promise<User | null> {
   const snapshot = await get(ref(database, `users/${uid}`));
   if (snapshot.exists()) {
-    return snapshot.val() as User;
+    // Ensure id is always set from the RTDB key (RN app may not store id as a field)
+    return { ...snapshot.val(), id: uid } as User;
   }
   return null;
 }

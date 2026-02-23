@@ -1,4 +1,4 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
+import { initializeApp, getApps, getApp, type FirebaseApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
@@ -14,9 +14,16 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+// Lazy singleton — only initialises when first accessed
+let _app: FirebaseApp | undefined;
+function getFirebaseApp() {
+  if (!_app) {
+    _app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  }
+  return _app;
+}
 
-export const auth = getAuth(app);
-export const firestore = getFirestore(app);
-export const database = getDatabase(app);
-export default app;
+export const auth = getAuth(getFirebaseApp());
+export const firestore = getFirestore(getFirebaseApp());
+export const database = getDatabase(getFirebaseApp());
+export default getFirebaseApp();

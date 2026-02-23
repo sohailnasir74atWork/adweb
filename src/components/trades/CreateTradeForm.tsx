@@ -10,33 +10,41 @@ import { PetSelector } from '@/components/calculator/PetSelector';
 import { usePetData } from '@/lib/hooks/usePetData';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { createTrade } from '@/lib/firebase/firestore';
+import { firestore } from '@/lib/firebase/config';
+import { getDoc, doc } from 'firebase/firestore';
 import { formatNumber } from '@/lib/utils/formatters';
 import { getTradeResult, tradeItemFromPet } from '@/lib/utils/tradeHelpers';
 import { getPetValue, getPetDefaultValue, type Pet, type ValueVariant, type PotionType } from '@/lib/types/pet';
-import { Timestamp } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 
-const VARIANT_OPTIONS: { value: ValueVariant; label: string; color: string }[] = [
-  { value: 'r', label: 'N', color: '' },
-  { value: 'n', label: 'Ne', color: 'bg-amber-500 text-white' },
-  { value: 'm', label: 'M', color: 'bg-fuchsia-500 text-white' },
-];
-
-const POTION_OPTIONS: { value: PotionType; label: string; color: string }[] = [
-  { value: 'default', label: 'Def', color: '' },
-  { value: 'nopotion', label: 'NP', color: '' },
-  { value: 'fly', label: 'F', color: 'bg-blue-500 text-white' },
-  { value: 'ride', label: 'R', color: 'bg-green-500 text-white' },
-  { value: 'flyride', label: 'FR', color: 'bg-purple-500 text-white' },
-];
+// Badge system matching RN: D/N/M are exclusive value types, F/R are independent toggles
+type BadgeValueType = 'd' | 'n' | 'm';
 
 interface SelectedPet {
   pet: Pet;
-  variant: ValueVariant;
-  potion: PotionType;
+  valueType: BadgeValueType;
+  isFly: boolean;
+  isRide: boolean;
   value: number;
+}
+
+// Map badge value type to the Pet value variant used in getPetValue
+function badgeToVariant(vt: BadgeValueType): ValueVariant {
+  return vt === 'd' ? 'r' : vt; // 'd' (default) maps to 'r' (regular) in data
+}
+
+// Map isFly/isRide toggles to PotionType
+function modifiersToPotion(isFly: boolean, isRide: boolean): PotionType {
+  if (isFly && isRide) return 'flyride';
+  if (isFly) return 'fly';
+  if (isRide) return 'ride';
+  return 'nopotion'; // When neither F nor R selected, use nopotion (matches RN)
+}
+
+function calcPetValue(pet: Pet, valueType: BadgeValueType, isFly: boolean, isRide: boolean): number {
+  return getPetValue(pet, badgeToVariant(valueType), modifiersToPotion(isFly, isRide)) || getPetDefaultValue(pet);
 }
 
 export function CreateTradeForm() {
@@ -54,33 +62,40 @@ export function CreateTradeForm() {
   const wantsTotal = wantsItems.reduce((s, i) => s + i.value, 0);
   const { status } = getTradeResult(hasTotal, wantsTotal);
 
-  const addPet = (pet: Pet) => {
-    const variant: ValueVariant = 'r';
-    const potion: PotionType = 'default';
-    const value = getPetValue(pet, variant, potion) || getPetDefaultValue(pet);
-    const item: SelectedPet = { pet, variant, potion, value };
+  const addPet = (pet: Pet, valueType: BadgeValueType = 'd', isFly = false, isRide = false) => {
+    const value = calcPetValue(pet, valueType, isFly, isRide);
+    const item: SelectedPet = { pet, valueType, isFly, isRide, value };
     if (selectorSide === 'has') setHasItems((prev) => [...prev, item]);
     else setWantsItems((prev) => [...prev, item]);
+    toast.success(`${pet.name} added!`, { duration: 1500 });
   };
 
-  const updateHasItem = (index: number, variant: ValueVariant, potion: PotionType) => {
-    setHasItems((prev) => prev.map((item, i) => {
-      if (i !== index) return item;
-      const value = getPetValue(item.pet, variant, potion) || getPetDefaultValue(item.pet);
-      return { ...item, variant, potion, value };
-    }));
-  };
+  // Toggle a badge for a pet in a specific list
+  const updateItem = (
+    setter: React.Dispatch<React.SetStateAction<SelectedPet[]>>,
+    index: number,
+    badge: 'D' | 'N' | 'M' | 'F' | 'R',
+  ) => {
+    setter((prev) =>
+      prev.map((item, i) => {
+        if (i !== index) return item;
+        let { valueType, isFly, isRide } = item;
 
-  const updateWantsItem = (index: number, variant: ValueVariant, potion: PotionType) => {
-    setWantsItems((prev) => prev.map((item, i) => {
-      if (i !== index) return item;
-      const value = getPetValue(item.pet, variant, potion) || getPetDefaultValue(item.pet);
-      return { ...item, variant, potion, value };
-    }));
+        if (badge === 'F') isFly = !isFly;
+        else if (badge === 'R') isRide = !isRide;
+        else valueType = badge.toLowerCase() as BadgeValueType;
+
+        const value = calcPetValue(item.pet, valueType, isFly, isRide);
+        return { ...item, valueType, isFly, isRide, value };
+      }),
+    );
   };
 
   const removeHas = (index: number) => setHasItems((prev) => prev.filter((_, i) => i !== index));
   const removeWants = (index: number) => setWantsItems((prev) => prev.filter((_, i) => i !== index));
+
+  // Cooldown tracking (2 min, matches RN)
+  const [lastTradeTime, setLastTradeTime] = useState<number | null>(null);
 
   const handleSubmit = async () => {
     if (!user) return;
@@ -89,27 +104,98 @@ export function CreateTradeForm() {
       return;
     }
 
+    // 2-minute cooldown check (matches RN)
+    const now = Date.now();
+    const COOLDOWN_MS = 120000;
+    if (lastTradeTime && (now - lastTradeTime) < COOLDOWN_MS) {
+      const secondsLeft = Math.ceil((COOLDOWN_MS - (now - lastTradeTime)) / 1000);
+      const minutesLeft = Math.floor(secondsLeft / 60);
+      const remainingSeconds = secondsLeft % 60;
+      const timeMessage = minutesLeft > 0
+        ? `${minutesLeft}m ${remainingSeconds}s`
+        : `${secondsLeft}s`;
+      toast.error(`Please wait ${timeMessage} before creating a new trade.`);
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      await createTrade({
-        userId: user.id,
-        traderName: user.displayName || 'Unknown',
-        avatar: user.avatar || '',
-        hasItems: hasItems.map((i) => tradeItemFromPet(i.pet, i.variant, i.potion)),
-        wantsItems: wantsItems.map((i) => tradeItemFromPet(i.pet, i.variant, i.potion)),
-        hasItemNames: hasItems.map((i) => i.pet.name),
-        wantsItemNames: wantsItems.map((i) => i.pet.name),
-        hasTotal,
-        wantsTotal,
-        status,
-        timestamp: Timestamp.now(),
-        isFeatured: false,
-        description,
-        isPro: user.isPro || false,
-        isSharkMode: false,
-        rating: 0,
-        ratingCount: 0,
-      });
+      // Fetch real rating from Firestore (matches RN's user_ratings_summary)
+      let userRating: number | null = null;
+      let ratingCount = 0;
+
+      try {
+        const summaryDoc = await getDoc(doc(firestore, 'user_ratings_summary', user.id));
+        if (summaryDoc.exists()) {
+          const summaryData = summaryDoc.data();
+          userRating = summaryData.averageRating || null;
+          ratingCount = summaryData.count || 0;
+        }
+      } catch (err) {
+        console.warn('Failed to fetch user rating:', err);
+      }
+
+      // Generate search tokens (matches RN's createSearchTokens)
+      const createSearchTokens = (itemName: string): string[] => {
+        const name = itemName.toLowerCase().trim();
+        const tokens = [name];
+        const words = name.split(/\s+/).filter((w) => w.length > 0);
+        tokens.push(...words);
+        return [...new Set(tokens)];
+      };
+
+      const hasRecentWin =
+        typeof user.lastGameWinAt === 'number' &&
+        now - user.lastGameWinAt <= 24 * 60 * 60 * 1000;
+
+      await createTrade(
+        {
+          userId: user.id,
+          traderName: user.displayName || 'Unknown',
+          avatar: user.avatar || null,
+          hasItems: hasItems.map((i) => ({
+            name: i.pet.name,
+            type: i.pet.type,
+            valueType: i.valueType,
+            isFly: i.isFly,
+            isRide: i.isRide,
+            image: i.pet.image,
+          })),
+          wantsItems: wantsItems.map((i) => ({
+            name: i.pet.name,
+            type: i.pet.type,
+            valueType: i.valueType,
+            isFly: i.isFly,
+            isRide: i.isRide,
+            image: i.pet.image,
+          })),
+          hasItemNames: hasItems.flatMap((i) => createSearchTokens(i.pet.name)),
+          wantsItemNames: wantsItems.flatMap((i) => createSearchTokens(i.pet.name)),
+          hasTotal,
+          wantsTotal,
+          status,
+          timestamp: null, // Will be overridden by serverTimestamp() in createTrade
+          isFeatured: false,
+          description,
+          isPro: user.isPro || false,
+          isSharkMode: false,
+          rating: userRating,
+          ratingCount,
+          flage: user.flage || null,
+          robloxUsername: user.robloxUsername || null,
+          robloxUsernameVerified: user.robloxUsernameVerified || false,
+          hasRecentGameWin: hasRecentWin,
+          lastGameWinAt: user.lastGameWinAt || null,
+        },
+        {
+          userId: user.id,
+          displayName: user.displayName || 'Unknown',
+          avatar: user.avatar || null,
+          description,
+        },
+      );
+
+      setLastTradeTime(now);
       toast.success('Trade posted!');
       router.push('/trades');
     } catch (err) {
@@ -140,7 +226,7 @@ export function CreateTradeForm() {
           total={hasTotal}
           onAdd={() => setSelectorSide('has')}
           onRemove={removeHas}
-          onUpdate={updateHasItem}
+          onUpdate={(index, badge) => updateItem(setHasItems, index, badge)}
         />
         {/* WANTS side */}
         <PetColumn
@@ -150,7 +236,7 @@ export function CreateTradeForm() {
           total={wantsTotal}
           onAdd={() => setSelectorSide('wants')}
           onRemove={removeWants}
-          onUpdate={updateWantsItem}
+          onUpdate={(index, badge) => updateItem(setWantsItems, index, badge)}
         />
       </div>
 
@@ -218,7 +304,7 @@ function PetColumn({
   total: number;
   onAdd: () => void;
   onRemove: (index: number) => void;
-  onUpdate: (index: number, variant: ValueVariant, potion: PotionType) => void;
+  onUpdate: (index: number, badge: 'D' | 'N' | 'M' | 'F' | 'R') => void;
 }) {
   const isHas = side === 'has';
   return (
@@ -279,45 +365,54 @@ function PetColumn({
             >
               <button
                 onClick={() => onRemove(i)}
-                className="absolute -top-1.5 -right-1.5 h-5 w-5 rounded-full bg-destructive text-white text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-0.5 right-0.5 h-5 w-5 rounded-full bg-destructive text-white text-[10px] flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
               >
                 ×
               </button>
               <PetImage src={item.pet.image} alt={item.pet.name} size={40} />
               <p className="text-[10px] font-medium truncate max-w-[50px]">{item.pet.name}</p>
-              {/* Variant badges */}
+              {/* 5-badge system: D/N/M (exclusive) + F/R (toggles) - matches RN */}
               <div className="flex gap-0.5">
-                {VARIANT_OPTIONS.map((opt) => (
+                {(['D', 'N', 'M'] as const).map((badge) => (
                   <button
-                    key={opt.value}
-                    onClick={() => onUpdate(i, opt.value, item.potion)}
+                    key={badge}
+                    onClick={() => onUpdate(i, badge)}
                     className={cn(
                       'w-6 h-5 text-[8px] font-extrabold rounded transition-all',
-                      item.variant === opt.value
-                        ? (opt.color || 'bg-app-primary text-white') + ' ring-1 ring-offset-1 ring-offset-background ring-current'
+                      item.valueType === badge.toLowerCase()
+                        ? cn(
+                          'text-white ring-1 ring-offset-1 ring-offset-background ring-current',
+                          badge === 'D' && 'bg-emerald-500',
+                          badge === 'N' && 'bg-green-500',
+                          badge === 'M' && 'bg-purple-500',
+                        )
                         : 'bg-muted text-muted-foreground hover:bg-accent',
                     )}
                   >
-                    {opt.label}
+                    {badge}
                   </button>
                 ))}
-              </div>
-              {/* Potion badges */}
-              <div className="flex gap-0.5">
-                {POTION_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => onUpdate(i, item.variant, opt.value)}
-                    className={cn(
-                      'w-5 h-4 text-[7px] font-extrabold rounded transition-all',
-                      item.potion === opt.value
-                        ? (opt.color || 'bg-app-secondary text-white') + ' ring-1 ring-offset-1 ring-offset-background ring-current'
-                        : 'bg-muted text-muted-foreground hover:bg-accent',
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
+                {(['F', 'R'] as const).map((badge) => {
+                  const isActive = badge === 'F' ? item.isFly : item.isRide;
+                  return (
+                    <button
+                      key={badge}
+                      onClick={() => onUpdate(i, badge)}
+                      className={cn(
+                        'w-6 h-5 text-[8px] font-extrabold rounded transition-all',
+                        isActive
+                          ? cn(
+                            'text-white ring-1 ring-offset-1 ring-offset-background ring-current',
+                            badge === 'F' && 'bg-blue-500',
+                            badge === 'R' && 'bg-emerald-500',
+                          )
+                          : 'bg-muted text-muted-foreground hover:bg-accent',
+                      )}
+                    >
+                      {badge}
+                    </button>
+                  );
+                })}
               </div>
               <p className="text-[10px] font-bold text-app-primary">{formatNumber(item.value)}</p>
             </div>

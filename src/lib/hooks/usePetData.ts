@@ -5,6 +5,16 @@ import { config } from '@/lib/constants/config';
 import { type Pet, type PetRaw, normalizePet } from '@/lib/types/pet';
 import { getImageBaseUrl } from '@/lib/firebase/database';
 
+// Shared module-level cache (same instance used by useImageBase)
+let cachedImageBase: string | null = null;
+
+async function getOrFetchImageBase(): Promise<string> {
+  if (cachedImageBase) return cachedImageBase;
+  const url = await getImageBaseUrl();
+  cachedImageBase = url;
+  return url;
+}
+
 export function usePetData() {
   const [pets, setPets] = useState<Pet[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -15,7 +25,7 @@ export function usePetData() {
       setIsLoading(true);
       const [res, imageBase] = await Promise.all([
         fetch(config.petDataUrl),
-        getImageBaseUrl(),
+        getOrFetchImageBase(),
       ]);
       if (!res.ok) throw new Error('Failed to fetch pet data');
       const raw: PetRaw[] = await res.json();

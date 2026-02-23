@@ -16,7 +16,7 @@ import {
   type DocumentSnapshot,
   type QuerySnapshot,
   type Unsubscribe,
-  Timestamp,
+  serverTimestamp,
 } from 'firebase/firestore';
 import { firestore } from './config';
 import type { Trade } from '@/lib/types/trade';
@@ -92,11 +92,34 @@ export async function getTradeById(tradeId: string): Promise<Trade | null> {
   return null;
 }
 
-export async function createTrade(trade: Omit<Trade, 'id'>): Promise<string> {
+export async function createTrade(
+  trade: Omit<Trade, 'id'>,
+  activityData?: { userId: string; displayName: string; avatar: string | null; description: string },
+): Promise<string> {
   const docRef = await addDoc(collection(firestore, 'trades_new'), {
     ...trade,
-    timestamp: Timestamp.now(),
+    timestamp: serverTimestamp(),
   });
+
+  // Track activity for followers' feed (matches RN app's user_activity tracking)
+  if (activityData) {
+    try {
+      await addDoc(collection(firestore, 'user_activity'), {
+        userId: activityData.userId,
+        type: 'trade_post',
+        referenceId: docRef.id,
+        displayName: activityData.displayName,
+        avatar: activityData.avatar,
+        preview: activityData.description
+          ? activityData.description.substring(0, 100)
+          : 'Posted a new trade',
+        createdAt: serverTimestamp(),
+      });
+    } catch (err) {
+      console.warn('Failed to track activity:', err);
+    }
+  }
+
   return docRef.id;
 }
 
@@ -108,13 +131,25 @@ export async function deleteTrade(tradeId: string): Promise<void> {
   await deleteDoc(doc(firestore, 'trades_new', tradeId));
 }
 
+export async function deletePost(postId: string): Promise<void> {
+  await deleteDoc(doc(firestore, 'designPosts', postId));
+}
+
 // --- Posts ---
 
 export async function getPosts(
   pageSize = 20,
   lastDoc?: DocumentSnapshot,
+  filters?: { tag?: string; userId?: string },
 ): Promise<{ posts: Post[]; lastDoc: DocumentSnapshot | null }> {
   const constraints: QueryConstraint[] = [orderBy('createdAt', 'desc'), limit(pageSize)];
+
+  if (filters?.userId) {
+    constraints.unshift(where('userId', '==', filters.userId));
+  }
+  if (filters?.tag) {
+    constraints.unshift(where('selectedTags', 'array-contains', filters.tag));
+  }
   if (lastDoc) {
     constraints.push(startAfter(lastDoc));
   }
@@ -142,7 +177,7 @@ export async function getPostById(postId: string): Promise<Post | null> {
 
 export async function getComments(
   postId: string,
-  pageSize = 50,
+  pageSize = 20,
 ): Promise<Comment[]> {
   const q = query(
     collection(firestore, 'designPosts', postId, 'comments'),

@@ -1,3 +1,4 @@
+import { fetchPostsServer } from '@/lib/data/posts';
 import { FeedPageClient } from './FeedPageClient';
 
 export const metadata = {
@@ -6,6 +7,10 @@ export const metadata = {
     'Browse the Adopt Me community feed. Share designs, trade screenshots, and connect with other players.',
 };
 
-export default function FeedPage() {
-  return <FeedPageClient />;
+export const revalidate = 300; // ISR: 5 minutes
+
+export default async function FeedPage() {
+  const initialPosts = await fetchPostsServer(5);
+
+  return <FeedPageClient initialPosts={initialPosts} />;
 }
