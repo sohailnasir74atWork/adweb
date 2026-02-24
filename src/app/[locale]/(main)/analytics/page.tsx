@@ -1,12 +1,19 @@
 import { BarChart3 } from 'lucide-react';
 import { AnalyticsDashboard } from '@/components/analytics/AnalyticsDashboard';
 import { config } from '@/lib/constants/config';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
 
-export const metadata = {
-  title: 'Adopt Me Trading Values 2026 — Market Trends & Pet Analytics',
-  description:
-    'Track Adopt Me pet trading values, trending pets, and Roblox market analytics. See which pets are rising and falling in value. Updated daily in 2026.',
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'metadata' });
+  const { canonical, languages } = getLocalizedAlternates('/analytics', locale);
+  return {
+    title: t('analyticsTitle'),
+    description: t('analyticsDescription'),
+    alternates: { canonical, languages },
+  };
+}
 
 async function getSSRData() {
   try {
@@ -24,7 +31,10 @@ async function getSSRData() {
   }
 }
 
-export default async function AnalyticsPage() {
+export default async function AnalyticsPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale });
   const { analyticsRaw, changesRaw } = await getSSRData();
 
   return (
@@ -33,9 +43,9 @@ export default async function AnalyticsPage() {
         <div className="flex items-center gap-3">
           <BarChart3 className="h-8 w-8 text-green-500" />
           <div>
-            <h1 className="text-3xl font-bold">Market Analytics</h1>
+            <h1 className="text-3xl font-bold">{t('analytics.title')}</h1>
             <p className="text-muted-foreground text-sm mt-0.5">
-              Track pet value trends and see what&apos;s hot in the Adopt Me market.
+              {t('analytics.subtitle')}
             </p>
           </div>
         </div>
@@ -44,19 +54,10 @@ export default async function AnalyticsPage() {
       <AnalyticsDashboard ssrAnalyticsRaw={analyticsRaw} ssrChangesRaw={changesRaw} />
 
       <section className="prose dark:prose-invert max-w-none mt-4">
-        <h2>Adopt Me Pet Trading Values &amp; Trends</h2>
-        <p>
-          Our market analytics dashboard tracks real-time Adopt Me trading data on Roblox.
-          See which pets are gaining trading value, which are declining, and discover the
-          most traded and demanded pets in the community. All trading values are updated daily
-          from thousands of community trades in 2026.
-        </p>
-        <h3>How We Track Adopt Me Values</h3>
-        <p>
-          Pet trading values are calculated from real trade data submitted by our community.
-          We analyze trade frequency, demand ratios, and value trends to give you the
-          most accurate Adopt Me value list — the best alternative for checking your Roblox pet values.
-        </p>
+        <h2>{t('analytics.trendsTitle')}</h2>
+        <p>{t('analytics.trendsDesc')}</p>
+        <h3>{t('analytics.howWeTrackTitle')}</h3>
+        <p>{t('analytics.howWeTrackDesc')}</p>
       </section>
     </div>
   );

@@ -36,6 +36,24 @@
         "filterAll": "All",
         "noResults": "No pets found matching your search."
     },
+    "detail": {
+        "defaultValue": "Default Value",
+        "neon": "Neon",
+        "megaNeon": "Mega Neon",
+        "demandRank": "Demand Rank",
+        "highDemand": "High Demand",
+        "allValues": "All Values",
+        "similar": "Similar {type}",
+        "aboutTitle": "About {name} in Adopt Me",
+        "useInCalculator": "Use in Calculator",
+        "browseAllItems": "Browse All Items",
+        "petDesc": "The {name} is a {rarity} pet in Roblox Adopt Me. Its current trading value is <strong>{value}</strong>, with the Neon version worth <strong>{neonValue}</strong> and the Mega Neon version worth <strong>{megaValue}</strong>.",
+        "petHighDemand": "The {name} is currently in high demand among Adopt Me traders in 2026.",
+        "petDemandRank": "The {name} has a demand rank of #{rank} in the Adopt Me trading values list.",
+        "petPotionInfo": "Trading values can vary based on potion status. A No Potion {name} is worth <strong>{noPotion}</strong>, while Fly (<strong>{fly}</strong>), Ride (<strong>{ride}</strong>), and Fly Ride (<strong>{flyRide}</strong>) versions each have their own distinct trading values. Use our <link>trade calculator</link> to check if your {name} trade is fair.",
+        "itemDesc": "The {name} is a {rarity} {type} item in Roblox Adopt Me. Its current trading value is <strong>{value}</strong>.",
+        "itemCta": "Use our <link>trade calculator</link> to check if your trade is fair."
+    },
     "calculator": {
         "title": "Trade Calculator",
         "subtitle": "Add pets to each side and check if your trade is fair.",
@@ -47,7 +65,23 @@
         "win": "Win",
         "loss": "Loss",
         "bigWin": "Big Win",
-        "bigLoss": "Big Loss"
+        "bigLoss": "Big Loss",
+        "howToTitle": "How to Use the Calculator",
+        "step1Title": "Add pets to \"Offering\"",
+        "step1Desc": "Click the Add button on the left and search for the pets you're giving away.",
+        "step2Title": "Add pets to \"Looking For\"",
+        "step2Desc": "Click the Add button on the right and search for the pets you want in return.",
+        "step3Title": "Adjust variants",
+        "step3Desc": "Toggle between Normal, Neon, and Mega Neon. Set potion status to No Potion, Fly, Ride, or Fly Ride.",
+        "step4Title": "See your result",
+        "step4Desc": "The calculator instantly shows Win, Lose, or Fair with a percentage breakdown.",
+        "faqTitle": "Frequently Asked Questions",
+        "faqAccuracyTitle": "How accurate are the values?",
+        "faqAccuracyDesc": "Our Adopt Me pet trading values are updated daily based on real trading data and community demand. We track Normal, Neon, Mega Neon, Fly, Ride, and Fly Ride values for every Roblox Adopt Me pet in 2026.",
+        "faqWinLoseTitle": "What does Win, Lose, and Fair mean?",
+        "faqWinLoseDesc": "<strong>{win}</strong> means you receive more value than you give. <strong>{loss}</strong> means you give more value than you receive. <strong>{fair}</strong> means the trade is roughly equal (within 10% difference).",
+        "faqNeonTitle": "Can I check Neon and Mega Neon trades?",
+        "faqNeonDesc": "Yes! After adding a pet, use the variant toggles on each card to switch between Normal, Neon, and Mega Neon. You can also set potion status for the most accurate value."
     },
     "trades": {
         "title": "Trade Listings",
@@ -68,6 +102,39 @@
         "title": "Community Feed",
         "createPost": "Create Post"
     },
+    "scammer": {
+        "title": "Scammer Database",
+        "subtitle": "Check usernames before trading and report scammers to keep the community safe.",
+        "howItWorks": "How the Scammer Database Works",
+        "howItWorksDesc": "Our scammer database is community-driven. Players can report Roblox usernames they believe scammed them during Adopt Me trades. Reports are reviewed by moderators before being marked as verified. Always check a player's username here before making a big trade!",
+        "safetyTips": "Trading Safety Tips",
+        "tip1": "Never trust \"trust trades\" — always use the trade window",
+        "tip2": "Check usernames in our database before trading high-value pets",
+        "tip3": "Report scammers to help protect other players",
+        "tip4": "Never share personal information during trades"
+    },
+    "news": {
+        "title": "News & Updates",
+        "subtitle": "Latest Adopt Me game updates, events, and community news.",
+        "noNews": "No News Yet",
+        "noNewsDesc": "We're working on bringing you the latest Adopt Me updates, events, and announcements. Check back soon!",
+        "viewValueChanges": "View Value Changes",
+        "helpfulResources": "Helpful Resources",
+        "marketAnalytics": "Market Analytics",
+        "marketAnalyticsDesc": "Track rising & falling pet values",
+        "adoptMeWiki": "Adopt Me Wiki",
+        "adoptMeWikiDesc": "Official game wiki & events",
+        "getTheApp": "Get the App",
+        "getTheAppDesc": "Push notifications for updates"
+    },
+    "analytics": {
+        "title": "Market Analytics",
+        "subtitle": "Track pet value trends and see what's hot in the Adopt Me market.",
+        "trendsTitle": "Adopt Me Pet Trading Values & Trends",
+        "trendsDesc": "Our market analytics dashboard tracks real-time Adopt Me trading data on Roblox. See which pets are gaining trading value, which are declining, and discover the most traded and demanded pets in the community. All trading values are updated daily from thousands of community trades in 2026.",
+        "howWeTrackTitle": "How We Track Adopt Me Values",
+        "howWeTrackDesc": "Pet trading values are calculated from real trade data submitted by our community. We analyze trade frequency, demand ratios, and value trends to give you the most accurate Adopt Me value list — the best alternative for checking your Roblox pet values."
+    },
     "metadata": {
         "homeTitle": "Adopt Me Values — Free Pet Value List & Trade Calculator 2026",
         "homeDescription": "Check Adopt Me trading values and use our free trade calculator to see if your Roblox Adopt Me trade is fair. Updated daily with every pet value.",
@@ -78,6 +145,12 @@
         "tradesTitle": "Adopt Me Trades 2026 — Find & Post Trades",
         "tradesDescription": "Browse and create Adopt Me trades. Find fair trades with other Roblox players.",
         "chatTitle": "Adopt Me Chat & Trading Groups 2026 — Chat with Traders",
-        "chatDescription": "Chat with other Roblox Adopt Me players in real-time. Join trading groups and find trades."
+        "chatDescription": "Chat with other Roblox Adopt Me players in real-time. Join trading groups and find trades.",
+        "scammerTitle": "Adopt Me Scammer Database 2026 — Report & Check Scammers",
+        "scammerDescription": "Check if a Roblox player is a known Adopt Me scammer before trading. Report scammers to protect the community.",
+        "newsTitle": "Adopt Me News 2026 — Latest Updates & Announcements",
+        "newsDescription": "Stay up to date with the latest Adopt Me game updates, events, new pets, and community news.",
+        "analyticsTitle": "Adopt Me Trading Values 2026 — Market Trends & Pet Analytics",
+        "analyticsDescription": "Track Adopt Me pet trading values, trending pets, and Roblox market analytics. See which pets are rising and falling in value."
     }
 }

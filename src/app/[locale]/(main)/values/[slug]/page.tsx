@@ -1,25 +1,22 @@
-import { notFound } from 'next/navigation';
-import type { Metadata } from 'next';
+import { fetchPetDataServer } from '@/lib/data/pets';
+import { Pet, isPetType } from '@/lib/types/pet';
+import { slugify, formatNumber, getPetDefaultValue, getSimilarPets } from '@/lib/utils/petHelpers';
+import { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { fetchPetDataServer } from '@/lib/data/pets';
-import { slugify } from '@/lib/utils/slugify';
-import { formatNumber } from '@/lib/utils/formatters';
-import { getSimilarPets, isPetType } from '@/lib/utils/petHelpers';
-import { getPetDefaultValue, type Pet } from '@/lib/types/pet';
-import { PetImage } from '@/components/shared/PetImage';
+import { PetImage } from '@/components/common/PetImage';
 import { PetValueCard } from '@/components/values/PetValueCard';
 import { Badge } from '@/components/ui/badge';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { notFound } from 'next/navigation';
 
 export const revalidate = 300;
-export const dynamicParams = true; // Allow ISR for items not generated at build
+export const dynamicParams = true;
 
-// Generate static pages for all items at build time
 export async function generateStaticParams() {
   const items = await fetchPetDataServer();
-  // Only pre-build pet pages (690). Non-pets use ISR via dynamicParams=true
   return items.filter((i) => i.type === 'pets').map((item) => ({ slug: slugify(item.name) }));
 }
 
@@ -62,32 +59,11 @@ const RARITY_COLORS: Record<string, string> = {
   common: 'bg-gray-500/15 text-gray-700 dark:text-gray-400 border-gray-500/30',
 };
 
-function ValueTable({ pet }: { pet: Pet }) {
+function ValueTable({ pet, t }: { pet: Pet; t: any }) {
   const rows = [
-    {
-      label: 'Normal',
-      default: pet.rvalue,
-      fly: pet.rvalueFly,
-      ride: pet.rvalueRide,
-      flyride: pet.rvalueFlyRide,
-      nopotion: pet.rvalueNoPotion,
-    },
-    {
-      label: 'Neon',
-      default: pet.nvalue,
-      fly: pet.nvalueFly,
-      ride: pet.nvalueRide,
-      flyride: pet.nvalueFlyRide,
-      nopotion: pet.nvalueNoPotion,
-    },
-    {
-      label: 'Mega Neon',
-      default: pet.mvalue,
-      fly: pet.mvalueFly,
-      ride: pet.mvalueRide,
-      flyride: pet.mvalueFlyRide,
-      nopotion: pet.mvalueNoPotion,
-    },
+    { label: 'Normal', default: pet.rvalue, fly: pet.rvalueFly, ride: pet.rvalueRide, flyride: pet.rvalueFlyRide, nopotion: pet.rvalueNoPotion },
+    { label: t('detail.neon'), default: pet.nvalue, fly: pet.nvalueFly, ride: pet.nvalueRide, flyride: pet.nvalueFlyRide, nopotion: pet.nvalueNoPotion },
+    { label: t('detail.megaNeon'), default: pet.mvalue, fly: pet.mvalueFly, ride: pet.mvalueRide, flyride: pet.mvalueFlyRide, nopotion: pet.mvalueNoPotion },
   ];
 
   return (
@@ -96,7 +72,7 @@ function ValueTable({ pet }: { pet: Pet }) {
         <thead>
           <tr className="border-b">
             <th className="text-left py-2 pr-4 font-semibold">Variant</th>
-            <th className="text-right py-2 px-3 font-semibold">Default</th>
+            <th className="text-right py-2 px-3 font-semibold">{t('detail.defaultValue')}</th>
             <th className="text-right py-2 px-3 font-semibold">No Potion</th>
             <th className="text-right py-2 px-3 font-semibold">Fly</th>
             <th className="text-right py-2 px-3 font-semibold">Ride</th>
@@ -107,9 +83,7 @@ function ValueTable({ pet }: { pet: Pet }) {
           {rows.map((row) => (
             <tr key={row.label} className="border-b last:border-0">
               <td className="py-2.5 pr-4 font-medium">{row.label}</td>
-              <td className="text-right py-2.5 px-3 font-bold text-app-primary">
-                {formatNumber(row.default)}
-              </td>
+              <td className="text-right py-2.5 px-3 font-bold text-app-primary">{formatNumber(row.default)}</td>
               <td className="text-right py-2.5 px-3">{formatNumber(row.nopotion)}</td>
               <td className="text-right py-2.5 px-3">{formatNumber(row.fly)}</td>
               <td className="text-right py-2.5 px-3">{formatNumber(row.ride)}</td>
@@ -125,9 +99,11 @@ function ValueTable({ pet }: { pet: Pet }) {
 export default async function PetDetailPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }) {
-  const { slug } = await params;
+  const { slug, locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale });
   const allPets = await fetchPetDataServer();
   const pet = allPets.find((p) => slugify(p.name) === slug);
 
@@ -164,11 +140,11 @@ export default async function PetDetailPage({
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-1 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground transition-colors">
-            Home
+            {t('nav.home')}
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
           <Link href="/values" className="hover:text-foreground transition-colors">
-            Values
+            {t('nav.values')}
           </Link>
           <ChevronRight className="h-3.5 w-3.5" />
           <span className="text-foreground font-medium">{pet.name}</span>
@@ -188,65 +164,59 @@ export default async function PetDetailPage({
               <Badge variant="outline">{pet.category || typeLabel}</Badge>
               {pet.score <= 10 && (
                 <Badge className="bg-green-500/15 text-green-700 dark:text-green-400 border-green-500/30" variant="outline">
-                  High Demand
+                  {t('detail.highDemand')}
                 </Badge>
               )}
             </div>
             <div className="mt-4">
-              <p className="text-sm text-muted-foreground">Default Value</p>
+              <p className="text-sm text-muted-foreground">{t('detail.defaultValue')}</p>
               <p className="text-4xl font-bold text-app-primary">{formatNumber(value)}</p>
             </div>
             <div className="flex gap-6 mt-3">
               {isPet && pet.nvalue > 0 && (
                 <div>
-                  <p className="text-xs text-muted-foreground">Neon</p>
+                  <p className="text-xs text-muted-foreground">{t('detail.neon')}</p>
                   <p className="text-xl font-semibold">{formatNumber(pet.nvalue)}</p>
                 </div>
               )}
               {isPet && pet.mvalue > 0 && (
                 <div>
-                  <p className="text-xs text-muted-foreground">Mega Neon</p>
+                  <p className="text-xs text-muted-foreground">{t('detail.megaNeon')}</p>
                   <p className="text-xl font-semibold">{formatNumber(pet.mvalue)}</p>
                 </div>
               )}
               <div>
-                <p className="text-xs text-muted-foreground">Demand Rank</p>
+                <p className="text-xs text-muted-foreground">{t('detail.demandRank')}</p>
                 <p className="text-xl font-semibold">#{pet.score}</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Value Table — only for pets with multiple value variants */}
+        {/* Value Table */}
         {isPet && (
           <section>
-            <h2 className="text-xl font-bold mb-3">All Values</h2>
+            <h2 className="text-xl font-bold mb-3">{t('detail.allValues')}</h2>
             <div className="rounded-lg border bg-card p-4">
-              <ValueTable pet={pet} />
+              <ValueTable pet={pet} t={t} />
             </div>
           </section>
         )}
 
         {/* CTA */}
         <div className="flex gap-3">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-lg bg-app-primary px-5 py-2.5 text-white font-medium hover:bg-app-primary/90 transition-colors text-sm"
-          >
-            Use in Calculator
+          <Link href="/" className="inline-flex items-center gap-2 rounded-lg bg-app-primary px-5 py-2.5 text-white font-medium hover:bg-app-primary/90 transition-colors text-sm">
+            {t('detail.useInCalculator')}
           </Link>
-          <Link
-            href="/values"
-            className="inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-medium hover:bg-accent transition-colors text-sm"
-          >
-            Browse All Items
+          <Link href="/values" className="inline-flex items-center gap-2 rounded-lg border px-5 py-2.5 font-medium hover:bg-accent transition-colors text-sm">
+            {t('detail.browseAllItems')}
           </Link>
         </div>
 
-        {/* Similar Pets — internal linking for SEO */}
+        {/* Similar Pets */}
         {similarPets.length > 0 && (
           <section>
-            <h2 className="text-xl font-bold mb-3">Similar {typeLabel}</h2>
+            <h2 className="text-xl font-bold mb-3">{t('detail.similar', { type: typeLabel })}</h2>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {similarPets.map((p) => (
                 <PetValueCard key={p.id} pet={p} />
@@ -257,34 +227,46 @@ export default async function PetDetailPage({
 
         {/* SEO Content */}
         <section className="prose dark:prose-invert max-w-none">
-          <h2>About {pet.name} in Adopt Me</h2>
+          <h2>{t('detail.aboutTitle', { name: pet.name })}</h2>
           {isPet ? (
             <>
               <p>
-                The {pet.name} is a {pet.rarity} pet in Roblox Adopt Me.
-                Its current trading value is <strong>{formatNumber(value)}</strong>,
-                with the Neon version worth <strong>{formatNumber(pet.nvalue)}</strong> and
-                the Mega Neon version worth <strong>{formatNumber(pet.mvalue)}</strong>.
+                {t.rich('detail.petDesc', {
+                  name: pet.name, rarity: pet.rarity, value: formatNumber(value),
+                  neonValue: formatNumber(pet.nvalue), megaValue: formatNumber(pet.mvalue),
+                  strong: (chunks) => <strong>{chunks}</strong>,
+                })}
+                {' '}
                 {pet.score <= 10
-                  ? ` The ${pet.name} is currently in high demand among Adopt Me traders in 2026.`
-                  : ` The ${pet.name} has a demand rank of #${pet.score} in the Adopt Me trading values list.`}
+                  ? t('detail.petHighDemand', { name: pet.name })
+                  : t('detail.petDemandRank', { name: pet.name, rank: pet.score })}
               </p>
               <p>
-                Trading values can vary based on potion status. A No Potion {pet.name} is worth{' '}
-                <strong>{formatNumber(pet.rvalueNoPotion)}</strong>, while Fly ({formatNumber(pet.rvalueFly)}),
-                Ride ({formatNumber(pet.rvalueRide)}), and Fly Ride ({formatNumber(pet.rvalueFlyRide)})
-                versions each have their own distinct trading values. Use our{' '}
-                <a href="/calculator">trade calculator</a> to check if your {pet.name} trade is fair.
+                {t.rich('detail.petPotionInfo', {
+                  name: pet.name,
+                  noPotion: formatNumber(pet.rvalueNoPotion),
+                  fly: formatNumber(pet.rvalueFly),
+                  ride: formatNumber(pet.rvalueRide),
+                  flyRide: formatNumber(pet.rvalueFlyRide),
+                  strong: (chunks) => <strong>{chunks}</strong>,
+                  link: (chunks) => <a href="/calculator">{chunks}</a>,
+                })}
               </p>
             </>
           ) : (
             <p>
-              The {pet.name} is a {pet.rarity} {pet.type} item in Roblox Adopt Me.
-              Its current trading value is <strong>{formatNumber(value)}</strong>.
+              {t.rich('detail.itemDesc', {
+                name: pet.name, rarity: pet.rarity, type: pet.type, value: formatNumber(value),
+                strong: (chunks) => <strong>{chunks}</strong>,
+              })}
+              {' '}
               {pet.score <= 10
-                ? ` The ${pet.name} is currently in high demand among Adopt Me traders in 2026.`
-                : ` The ${pet.name} has a demand rank of #${pet.score} in the Adopt Me trading values list.`}{' '}
-              Use our <a href="/calculator">trade calculator</a> to check if your trade is fair.
+                ? t('detail.petHighDemand', { name: pet.name })
+                : t('detail.petDemandRank', { name: pet.name, rank: pet.score })}
+              {' '}
+              {t.rich('detail.itemCta', {
+                link: (chunks) => <a href="/calculator">{chunks}</a>,
+              })}
             </p>
           )}
         </section>

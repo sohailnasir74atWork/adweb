@@ -20,15 +20,10 @@ const calculatorJsonLd = {
   '@type': 'WebApplication',
   name: 'Adopt Me Trade Calculator',
   url: 'https://adoptmevalues.app/calculator',
+  description:
+    'Free Adopt Me trade calculator to check if your Roblox pet trade is fair. Compare values for Normal, Neon, Mega Neon, Fly, Ride, and Fly Ride pets.',
   applicationCategory: 'GameApplication',
   operatingSystem: 'Web',
-  description:
-    'Free trade calculator and value checker for Adopt Me on Roblox. Check if your trade is a Win, Lose, or Fair with real-time pet trading values updated daily in 2026.',
-  offers: {
-    '@type': 'Offer',
-    price: '0',
-    priceCurrency: 'USD',
-  },
 };
 
 export default async function CalculatorPage({ params }: { params: Promise<{ locale: string }> }) {
@@ -56,14 +51,14 @@ export default async function CalculatorPage({ params }: { params: Promise<{ loc
           <div className="rounded-2xl bg-rose-200 dark:bg-rose-800/50 p-2.5">
             <ListOrdered className="h-6 w-6 text-rose-600 dark:text-rose-400" />
           </div>
-          <h2 className="text-lg sm:text-xl font-extrabold">How to Use the Calculator</h2>
+          <h2 className="text-lg sm:text-xl font-extrabold">{t('calculator.howToTitle')}</h2>
         </div>
         <div className="space-y-2.5">
           {[
-            { num: '1', title: 'Add pets to "Offering"', desc: 'Click the Add button on the left and search for the pets you\'re giving away.' },
-            { num: '2', title: 'Add pets to "Looking For"', desc: 'Click the Add button on the right and search for the pets you want in return.' },
-            { num: '3', title: 'Adjust variants', desc: 'Toggle between Normal, Neon, and Mega Neon. Set potion status to No Potion, Fly, Ride, or Fly Ride.' },
-            { num: '4', title: 'See your result', desc: 'The calculator instantly shows Win, Lose, or Fair with a percentage breakdown.' },
+            { num: '1', title: t('calculator.step1Title'), desc: t('calculator.step1Desc') },
+            { num: '2', title: t('calculator.step2Title'), desc: t('calculator.step2Desc') },
+            { num: '3', title: t('calculator.step3Title'), desc: t('calculator.step3Desc') },
+            { num: '4', title: t('calculator.step4Title'), desc: t('calculator.step4Desc') },
           ].map((step) => (
             <div key={step.num} className="flex items-start gap-3">
               <span className="flex-shrink-0 w-7 h-7 rounded-full bg-rose-500 text-white text-sm font-bold flex items-center justify-center">{step.num}</span>
@@ -80,40 +75,41 @@ export default async function CalculatorPage({ params }: { params: Promise<{ loc
       <div className="mt-4 space-y-3">
         <h2 className="text-lg sm:text-xl font-extrabold flex items-center gap-2 px-1">
           <HelpCircle className="h-5 w-5 text-violet-500" />
-          Frequently Asked Questions
+          {t('calculator.faqTitle')}
         </h2>
 
         <div className="rounded-2xl bg-gradient-to-br from-amber-100 to-yellow-100 dark:from-amber-950/40 dark:to-yellow-950/40 ring-1 ring-amber-200 dark:ring-amber-800 p-4 sm:p-5">
           <div className="flex items-center gap-2 mb-1.5">
             <BarChart3 className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-            <h3 className="font-bold text-sm sm:text-base">How accurate are the values?</h3>
+            <h3 className="font-bold text-sm sm:text-base">{t('calculator.faqAccuracyTitle')}</h3>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            Our Adopt Me pet trading values are updated daily based on real trading data and community demand.
-            We track Normal, Neon, Mega Neon, Fly, Ride, and Fly Ride values for every Roblox Adopt Me pet in 2026.
+            {t('calculator.faqAccuracyDesc')}
           </p>
         </div>
 
         <div className="rounded-2xl bg-gradient-to-br from-sky-100 to-blue-100 dark:from-sky-950/40 dark:to-blue-950/40 ring-1 ring-sky-200 dark:ring-sky-800 p-4 sm:p-5">
           <div className="flex items-center gap-2 mb-1.5">
             <HelpCircle className="h-4 w-4 text-sky-600 dark:text-sky-400" />
-            <h3 className="font-bold text-sm sm:text-base">What does Win, Lose, and Fair mean?</h3>
+            <h3 className="font-bold text-sm sm:text-base">{t('calculator.faqWinLoseTitle')}</h3>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            <strong>{t('calculator.win')}</strong> means you receive more value than you give.{' '}
-            <strong>{t('calculator.loss')}</strong> means you give more value than you receive.{' '}
-            <strong>{t('calculator.fairTrade')}</strong> means the trade is roughly equal (within 10% difference).
+            {t.rich('calculator.faqWinLoseDesc', {
+              win: t('calculator.win'),
+              loss: t('calculator.loss'),
+              fair: t('calculator.fairTrade'),
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
         </div>
 
         <div className="rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 dark:from-violet-950/40 dark:to-purple-950/40 ring-1 ring-violet-200 dark:ring-violet-800 p-4 sm:p-5">
           <div className="flex items-center gap-2 mb-1.5">
             <Sparkles className="h-4 w-4 text-violet-600 dark:text-violet-400" />
-            <h3 className="font-bold text-sm sm:text-base">Can I check Neon and Mega Neon trades?</h3>
+            <h3 className="font-bold text-sm sm:text-base">{t('calculator.faqNeonTitle')}</h3>
           </div>
           <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-            Yes! After adding a pet, use the variant toggles on each card to switch between
-            Normal, Neon, and Mega Neon. You can also set potion status for the most accurate value.
+            {t('calculator.faqNeonDesc')}
           </p>
         </div>
       </div>

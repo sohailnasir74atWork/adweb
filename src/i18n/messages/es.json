@@ -36,6 +36,24 @@
         "filterAll": "Todos",
         "noResults": "No se encontraron mascotas con tu búsqueda."
     },
+    "detail": {
+        "defaultValue": "Valor Base",
+        "neon": "Neón",
+        "megaNeon": "Mega Neón",
+        "demandRank": "Rango de Demanda",
+        "highDemand": "Alta Demanda",
+        "allValues": "Todos los Valores",
+        "similar": "{type} Similares",
+        "aboutTitle": "Acerca de {name} en Adopt Me",
+        "useInCalculator": "Usar en Calculadora",
+        "browseAllItems": "Ver Todos los Items",
+        "petDesc": "El {name} es una mascota {rarity} en Roblox Adopt Me. Su valor de intercambio actual es <strong>{value}</strong>, con la versión Neón valorada en <strong>{neonValue}</strong> y la versión Mega Neón valorada en <strong>{megaValue}</strong>.",
+        "petHighDemand": "El {name} tiene actualmente una alta demanda entre los jugadores de Adopt Me en 2026.",
+        "petDemandRank": "El {name} tiene un rango de demanda de #{rank} en la lista de valores de Adopt Me.",
+        "petPotionInfo": "Los valores de intercambio pueden variar según el estado de poción. Un {name} Sin Poción vale <strong>{noPotion}</strong>, mientras que las versiones Fly (<strong>{fly}</strong>), Ride (<strong>{ride}</strong>) y Fly Ride (<strong>{flyRide}</strong>) tienen sus propios valores de intercambio. Usa nuestra <link>calculadora de intercambios</link> para verificar si tu intercambio de {name} es justo.",
+        "itemDesc": "El {name} es un item {rarity} de tipo {type} en Roblox Adopt Me. Su valor de intercambio actual es <strong>{value}</strong>.",
+        "itemCta": "Usa nuestra <link>calculadora de intercambios</link> para verificar si tu intercambio es justo."
+    },
     "calculator": {
         "title": "Calculadora de Intercambios",
         "subtitle": "Agrega mascotas a cada lado y verifica si tu intercambio es justo.",
@@ -47,7 +65,23 @@
         "win": "Ganancia",
         "loss": "Pérdida",
         "bigWin": "Gran Ganancia",
-        "bigLoss": "Gran Pérdida"
+        "bigLoss": "Gran Pérdida",
+        "howToTitle": "Cómo Usar la Calculadora",
+        "step1Title": "Agrega mascotas a \"Ofreciendo\"",
+        "step1Desc": "Haz clic en el botón Agregar a la izquierda y busca las mascotas que vas a dar.",
+        "step2Title": "Agrega mascotas a \"Buscando\"",
+        "step2Desc": "Haz clic en el botón Agregar a la derecha y busca las mascotas que quieres a cambio.",
+        "step3Title": "Ajustar variantes",
+        "step3Desc": "Alterna entre Normal, Neón y Mega Neón. Configura el estado de poción a Sin Poción, Fly, Ride o Fly Ride.",
+        "step4Title": "Ver tu resultado",
+        "step4Desc": "La calculadora muestra al instante Ganancia, Pérdida o Justo con un desglose porcentual.",
+        "faqTitle": "Preguntas Frecuentes",
+        "faqAccuracyTitle": "¿Qué tan precisos son los valores?",
+        "faqAccuracyDesc": "Nuestros valores de intercambio de mascotas de Adopt Me se actualizan diariamente basados en datos reales de intercambio y demanda de la comunidad. Rastreamos valores Normal, Neón, Mega Neón, Fly, Ride y Fly Ride para cada mascota de Roblox Adopt Me en 2026.",
+        "faqWinLoseTitle": "¿Qué significa Ganancia, Pérdida y Justo?",
+        "faqWinLoseDesc": "<strong>{win}</strong> significa que recibes más valor del que das. <strong>{loss}</strong> significa que das más valor del que recibes. <strong>{fair}</strong> significa que el intercambio es aproximadamente igual (dentro del 10% de diferencia).",
+        "faqNeonTitle": "¿Puedo verificar intercambios Neón y Mega Neón?",
+        "faqNeonDesc": "¡Sí! Después de agregar una mascota, usa los botones de variante en cada tarjeta para alternar entre Normal, Neón y Mega Neón. También puedes configurar el estado de poción para obtener el valor más preciso."
     },
     "trades": {
         "title": "Listado de Intercambios",
@@ -68,6 +102,39 @@
         "title": "Feed de la Comunidad",
         "createPost": "Crear Publicación"
     },
+    "scammer": {
+        "title": "Base de Datos de Estafadores",
+        "subtitle": "Verifica nombres de usuario antes de intercambiar y reporta estafadores para mantener segura la comunidad.",
+        "howItWorks": "Cómo Funciona la Base de Datos de Estafadores",
+        "howItWorksDesc": "Nuestra base de datos de estafadores es impulsada por la comunidad. Los jugadores pueden reportar nombres de usuario de Roblox que creen que los estafaron durante intercambios de Adopt Me. Los reportes son revisados por moderadores antes de ser verificados. ¡Siempre verifica el nombre de usuario de un jugador aquí antes de hacer un intercambio importante!",
+        "safetyTips": "Consejos de Seguridad para Intercambiar",
+        "tip1": "Nunca confíes en \"intercambios de confianza\" — siempre usa la ventana de intercambio",
+        "tip2": "Verifica nombres de usuario en nuestra base de datos antes de intercambiar mascotas de alto valor",
+        "tip3": "Reporta estafadores para ayudar a proteger a otros jugadores",
+        "tip4": "Nunca compartas información personal durante intercambios"
+    },
+    "news": {
+        "title": "Noticias y Actualizaciones",
+        "subtitle": "Últimas actualizaciones del juego Adopt Me, eventos y noticias de la comunidad.",
+        "noNews": "Sin Noticias Aún",
+        "noNewsDesc": "Estamos trabajando en traerte las últimas actualizaciones, eventos y anuncios de Adopt Me. ¡Vuelve pronto!",
+        "viewValueChanges": "Ver Cambios de Valor",
+        "helpfulResources": "Recursos Útiles",
+        "marketAnalytics": "Análisis del Mercado",
+        "marketAnalyticsDesc": "Rastrea valores de mascotas subiendo y bajando",
+        "adoptMeWiki": "Wiki de Adopt Me",
+        "adoptMeWikiDesc": "Wiki oficial del juego y eventos",
+        "getTheApp": "Obtener la App",
+        "getTheAppDesc": "Notificaciones push para actualizaciones"
+    },
+    "analytics": {
+        "title": "Análisis del Mercado",
+        "subtitle": "Rastrea tendencias de valores de mascotas y ve qué es popular en el mercado de Adopt Me.",
+        "trendsTitle": "Valores de Intercambio y Tendencias de Adopt Me",
+        "trendsDesc": "Nuestro panel de análisis del mercado rastrea datos de intercambio en tiempo real de Adopt Me en Roblox. Ve qué mascotas están ganando valor, cuáles están bajando, y descubre las mascotas más intercambiadas y demandadas de la comunidad. Todos los valores se actualizan diariamente con miles de intercambios de la comunidad en 2026.",
+        "howWeTrackTitle": "Cómo Rastreamos los Valores de Adopt Me",
+        "howWeTrackDesc": "Los valores de intercambio de mascotas se calculan a partir de datos reales enviados por nuestra comunidad. Analizamos frecuencia de intercambio, ratios de demanda y tendencias de valor para darte la lista de valores de Adopt Me más precisa."
+    },
     "metadata": {
         "homeTitle": "Adopt Me Valores — Lista de Valores de Mascotas y Calculadora Gratis 2026",
         "homeDescription": "Consulta los valores de intercambio de Adopt Me y usa nuestra calculadora gratuita para ver si tu intercambio en Roblox Adopt Me es justo. Actualizado diariamente.",
@@ -78,6 +145,12 @@
         "tradesTitle": "Intercambios de Adopt Me 2026 — Encuentra y Publica Intercambios",
         "tradesDescription": "Explora y crea intercambios de Adopt Me. Encuentra intercambios justos con otros jugadores de Roblox.",
         "chatTitle": "Chat y Grupos de Adopt Me 2026 — Chatea con Jugadores",
-        "chatDescription": "Chatea con otros jugadores de Roblox Adopt Me en tiempo real. Únete a grupos de intercambio."
+        "chatDescription": "Chatea con otros jugadores de Roblox Adopt Me en tiempo real. Únete a grupos de intercambio.",
+        "scammerTitle": "Base de Datos de Estafadores Adopt Me 2026 — Reporta y Verifica",
+        "scammerDescription": "Verifica si un jugador de Roblox es un estafador conocido de Adopt Me antes de intercambiar. Reporta estafadores para proteger a la comunidad.",
+        "newsTitle": "Noticias de Adopt Me 2026 — Últimas Actualizaciones y Anuncios",
+        "newsDescription": "Mantente al día con las últimas actualizaciones del juego Adopt Me, eventos, nuevas mascotas y noticias de la comunidad.",
+        "analyticsTitle": "Valores de Intercambio Adopt Me 2026 — Tendencias del Mercado y Análisis",
+        "analyticsDescription": "Rastrea valores de intercambio de mascotas, tendencias y análisis del mercado de Roblox Adopt Me."
     }
 }

@@ -36,6 +36,24 @@
         "filterAll": "Alle",
         "noResults": "Keine Haustiere gefunden, die deiner Suche entsprechen."
     },
+    "detail": {
+        "defaultValue": "Standardwert",
+        "neon": "Neon",
+        "megaNeon": "Mega Neon",
+        "demandRank": "Nachfrage-Rang",
+        "highDemand": "Hohe Nachfrage",
+        "allValues": "Alle Werte",
+        "similar": "Ähnliche {type}",
+        "aboutTitle": "Über {name} in Adopt Me",
+        "useInCalculator": "Im Rechner verwenden",
+        "browseAllItems": "Alle Items durchsuchen",
+        "petDesc": "Das {name} ist ein {rarity} Haustier in Roblox Adopt Me. Sein aktueller Tauschwert beträgt <strong>{value}</strong>, mit der Neon-Version im Wert von <strong>{neonValue}</strong> und der Mega Neon-Version im Wert von <strong>{megaValue}</strong>.",
+        "petHighDemand": "Das {name} hat derzeit eine hohe Nachfrage unter Adopt Me Spielern in 2026.",
+        "petDemandRank": "Das {name} hat einen Nachfrage-Rang von #{rank} in der Adopt Me Werteliste.",
+        "petPotionInfo": "Tauschwerte können je nach Trank-Status variieren. Ein {name} ohne Trank ist <strong>{noPotion}</strong> wert, während Fly (<strong>{fly}</strong>), Ride (<strong>{ride}</strong>) und Fly Ride (<strong>{flyRide}</strong>) Versionen jeweils eigene Tauschwerte haben. Nutze unseren <link>Tauschrechner</link> um zu prüfen, ob dein {name} Tausch fair ist.",
+        "itemDesc": "Das {name} ist ein {rarity} {type} Item in Roblox Adopt Me. Sein aktueller Tauschwert beträgt <strong>{value}</strong>.",
+        "itemCta": "Nutze unseren <link>Tauschrechner</link> um zu prüfen, ob dein Tausch fair ist."
+    },
     "calculator": {
         "title": "Tauschrechner",
         "subtitle": "Füge Haustiere auf jeder Seite hinzu und prüfe, ob dein Tausch fair ist.",
@@ -47,7 +65,23 @@
         "win": "Gewinn",
         "loss": "Verlust",
         "bigWin": "Großer Gewinn",
-        "bigLoss": "Großer Verlust"
+        "bigLoss": "Großer Verlust",
+        "howToTitle": "So verwendest du den Rechner",
+        "step1Title": "Haustiere zu \"Bietet an\" hinzufügen",
+        "step1Desc": "Klicke auf den Hinzufügen-Button links und suche die Haustiere, die du abgibst.",
+        "step2Title": "Haustiere zu \"Sucht nach\" hinzufügen",
+        "step2Desc": "Klicke auf den Hinzufügen-Button rechts und suche die Haustiere, die du im Gegenzug willst.",
+        "step3Title": "Varianten anpassen",
+        "step3Desc": "Wechsle zwischen Normal, Neon und Mega Neon. Stelle den Trank-Status auf Ohne Trank, Fly, Ride oder Fly Ride.",
+        "step4Title": "Ergebnis ansehen",
+        "step4Desc": "Der Rechner zeigt sofort Gewinn, Verlust oder Fair mit einer prozentualen Aufschlüsselung.",
+        "faqTitle": "Häufig Gestellte Fragen",
+        "faqAccuracyTitle": "Wie genau sind die Werte?",
+        "faqAccuracyDesc": "Unsere Adopt Me Tauschwerte werden täglich basierend auf echten Handelsdaten und Community-Nachfrage aktualisiert. Wir verfolgen Normal, Neon, Mega Neon, Fly, Ride und Fly Ride Werte für jedes Roblox Adopt Me Haustier in 2026.",
+        "faqWinLoseTitle": "Was bedeuten Gewinn, Verlust und Fair?",
+        "faqWinLoseDesc": "<strong>{win}</strong> bedeutet, du erhältst mehr Wert als du gibst. <strong>{loss}</strong> bedeutet, du gibst mehr Wert als du erhältst. <strong>{fair}</strong> bedeutet, der Tausch ist ungefähr gleich (innerhalb von 10% Unterschied).",
+        "faqNeonTitle": "Kann ich Neon und Mega Neon Tausche prüfen?",
+        "faqNeonDesc": "Ja! Nach dem Hinzufügen eines Haustieres nutze die Varianten-Buttons auf jeder Karte, um zwischen Normal, Neon und Mega Neon zu wechseln. Du kannst auch den Trank-Status für den genauesten Wert einstellen."
     },
     "trades": {
         "title": "Tauschliste",
@@ -68,16 +102,55 @@
         "title": "Community Feed",
         "createPost": "Beitrag erstellen"
     },
+    "scammer": {
+        "title": "Betrüger-Datenbank",
+        "subtitle": "Überprüfe Benutzernamen vor dem Tauschen und melde Betrüger, um die Community zu schützen.",
+        "howItWorks": "So funktioniert die Betrüger-Datenbank",
+        "howItWorksDesc": "Unsere Betrüger-Datenbank wird von der Community betrieben. Spieler können Roblox-Benutzernamen melden, die sie bei Adopt Me Tauschgeschäften betrogen haben. Meldungen werden von Moderatoren geprüft, bevor sie als verifiziert markiert werden. Überprüfe immer den Benutzernamen eines Spielers hier, bevor du einen großen Tausch machst!",
+        "safetyTips": "Sicherheitstipps für den Tausch",
+        "tip1": "Vertraue niemals \"Vertrauens-Tauschen\" — nutze immer das Tauschfenster",
+        "tip2": "Überprüfe Benutzernamen in unserer Datenbank, bevor du hochwertige Haustiere tauschst",
+        "tip3": "Melde Betrüger, um andere Spieler zu schützen",
+        "tip4": "Teile niemals persönliche Informationen bei Tauschgeschäften"
+    },
+    "news": {
+        "title": "Neuigkeiten und Updates",
+        "subtitle": "Neueste Adopt Me Spiel-Updates, Events und Community-Neuigkeiten.",
+        "noNews": "Noch keine Neuigkeiten",
+        "noNewsDesc": "Wir arbeiten daran, dir die neuesten Adopt Me Updates, Events und Ankündigungen zu bringen. Schau bald wieder vorbei!",
+        "viewValueChanges": "Wertänderungen ansehen",
+        "helpfulResources": "Hilfreiche Ressourcen",
+        "marketAnalytics": "Marktanalyse",
+        "marketAnalyticsDesc": "Verfolge steigende und fallende Haustierwerte",
+        "adoptMeWiki": "Adopt Me Wiki",
+        "adoptMeWikiDesc": "Offizielles Spiel-Wiki und Events",
+        "getTheApp": "App herunterladen",
+        "getTheAppDesc": "Push-Benachrichtigungen für Updates"
+    },
+    "analytics": {
+        "title": "Marktanalyse",
+        "subtitle": "Verfolge Haustierwert-Trends und sieh, was auf dem Adopt Me Markt angesagt ist.",
+        "trendsTitle": "Adopt Me Tauschwerte und Trends",
+        "trendsDesc": "Unser Marktanalyse-Dashboard verfolgt Echtzeit-Handelsdaten von Adopt Me auf Roblox. Sieh, welche Haustiere an Wert gewinnen, welche fallen, und entdecke die meistgehandelten und gefragtesten Haustiere der Community. Alle Werte werden täglich aktualisiert in 2026.",
+        "howWeTrackTitle": "So verfolgen wir Adopt Me Werte",
+        "howWeTrackDesc": "Tauschwerte werden aus echten Handelsdaten unserer Community berechnet. Wir analysieren Tauschfrequenz, Nachfrage-Verhältnisse und Werttrends, um dir die genaueste Adopt Me Werteliste zu geben."
+    },
     "metadata": {
         "homeTitle": "Adopt Me Werte — Kostenlose Haustier-Werteliste und Tauschrechner 2026",
-        "homeDescription": "Überprüfe Adopt Me Tauschwerte und nutze unseren kostenlosen Tauschrechner um zu sehen, ob dein Roblox Adopt Me Tausch fair ist. Täglich aktualisiert.",
+        "homeDescription": "Überprüfe Adopt Me Tauschwerte und nutze unseren kostenlosen Tauschrechner. Täglich aktualisiert.",
         "valuesTitle": "Adopt Me Haustierwerte 2026 — Tauschwerte Täglich Aktualisiert",
-        "valuesDescription": "Durchsuche alle Adopt Me Tauschwerte für jedes Roblox Haustier. Legendäre, Ultra Seltene, Seltene Haustiere mit Neon, Mega Neon, Fly und Ride Preisen.",
+        "valuesDescription": "Durchsuche alle Adopt Me Tauschwerte für jedes Roblox Haustier mit Neon, Mega Neon, Fly und Ride Preisen.",
         "calculatorTitle": "Adopt Me Tauschrechner 2026 — Werte-Prüfer",
         "calculatorDescription": "Nutze unseren kostenlosen Adopt Me Tauschrechner um zu prüfen, ob dein Tausch fair ist.",
         "tradesTitle": "Adopt Me Tausche 2026 — Finde und Erstelle Tausche",
         "tradesDescription": "Durchsuche und erstelle Adopt Me Tausche. Finde faire Tausche mit anderen Roblox Spielern.",
         "chatTitle": "Adopt Me Chat und Gruppen 2026 — Chatte mit Spielern",
-        "chatDescription": "Chatte in Echtzeit mit anderen Roblox Adopt Me Spielern. Tritt Tauschgruppen bei."
+        "chatDescription": "Chatte in Echtzeit mit anderen Roblox Adopt Me Spielern. Tritt Tauschgruppen bei.",
+        "scammerTitle": "Adopt Me Betrüger-Datenbank 2026 — Melden und Überprüfen",
+        "scammerDescription": "Überprüfe, ob ein Roblox-Spieler ein bekannter Adopt Me Betrüger ist.",
+        "newsTitle": "Adopt Me Neuigkeiten 2026 — Neueste Updates und Ankündigungen",
+        "newsDescription": "Bleib auf dem neuesten Stand mit den letzten Adopt Me Spiel-Updates und Events.",
+        "analyticsTitle": "Adopt Me Tauschwerte 2026 — Markttrends und Analyse",
+        "analyticsDescription": "Verfolge Tauschwerte, Trends und Marktanalysen für Roblox Adopt Me."
     }
 }
