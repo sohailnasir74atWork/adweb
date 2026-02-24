@@ -111,6 +111,7 @@ export default async function LocaleLayout({
                 <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
                 <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
                 <meta name="p:domain_verify" content="955b6494657c81a62dcad3a3c68caafb" />
+                <meta name="google-adsense-account" content="ca-pub-5740215782746766" />
             </head>
             <body
                 className={`${nunito.variable} ${nunitoSans.variable} antialiased`}
