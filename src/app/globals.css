@@ -155,20 +155,3 @@
     min-width: 44px;
   }
 }
-
-/* Smooth page transitions — GPU composited */
-main {
-  animation: fadeIn 0.2s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 4px, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}

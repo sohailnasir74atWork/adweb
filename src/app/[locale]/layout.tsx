@@ -110,6 +110,7 @@ export default async function LocaleLayout({
                 <link rel="preconnect" href="https://adoptme.b-cdn.net" crossOrigin="anonymous" />
                 <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
                 <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+                <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
                 <meta name="p:domain_verify" content="955b6494657c81a62dcad3a3c68caafb" />
                 <meta name="google-adsense-account" content="ca-pub-5740215782746766" />
             </head>
@@ -120,19 +121,19 @@ export default async function LocaleLayout({
                     <Providers>{children}</Providers>
                 </NextIntlClientProvider>
 
-                {/* Google Analytics (GA4) */}
+                {/* Google Analytics (GA4) — lazy loaded to reduce TBT */}
                 <Script
                     src="https://www.googletagmanager.com/gtag/js?id=G-NXXEKW69PT"
-                    strategy="afterInteractive"
+                    strategy="lazyOnload"
                 />
-                <Script id="ga4-init" strategy="afterInteractive">
+                <Script id="ga4-init" strategy="lazyOnload">
                     {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-NXXEKW69PT');`}
                 </Script>
 
-                {/* Google AdSense — loaded after page is interactive */}
+                {/* Google AdSense — lazy loaded for better performance */}
                 <Script
                     src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5740215782746766"
-                    strategy="afterInteractive"
+                    strategy="lazyOnload"
                     crossOrigin="anonymous"
                 />
             </body>
