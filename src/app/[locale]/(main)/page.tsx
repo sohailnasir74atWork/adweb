@@ -72,8 +72,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     },
     {
       href: '/analytics',
-      title: 'Trending',
-      description: 'See which pets are going up!',
+      title: t('analytics.title'),
+      description: t('analytics.subtitle'),
       icon: BarChart3,
       bg: 'bg-amber-100 dark:bg-amber-900/30',
       iconColor: 'text-amber-600 dark:text-amber-400',
@@ -81,8 +81,8 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     },
     {
       href: '/news',
-      title: 'News',
-      description: 'Latest value changes!',
+      title: t('news.title'),
+      description: t('news.subtitle'),
       icon: Newspaper,
       bg: 'bg-cyan-100 dark:bg-cyan-900/30',
       iconColor: 'text-cyan-600 dark:text-cyan-400',

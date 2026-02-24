@@ -44,9 +44,9 @@ export function Header() {
     { href: '/trades', label: t('nav.trades'), icon: Handshake },
     { href: '/feed', label: t('nav.feed'), icon: ImageIcon },
     { href: '/chat', label: t('nav.chat'), icon: MessageCircle },
-    { href: '/analytics', label: 'Trending', icon: BarChart3 },
-    { href: '/scammer', label: 'Scammer DB', icon: ShieldAlert },
-    { href: '/news', label: 'News', icon: Newspaper },
+    { href: '/analytics', label: t('analytics.title'), icon: BarChart3 },
+    { href: '/scammer', label: t('scammer.title'), icon: ShieldAlert },
+    { href: '/news', label: t('news.title'), icon: Newspaper },
   ];
 
   const toggleTheme = () => {

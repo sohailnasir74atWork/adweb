@@ -4,15 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { config } from '@/lib/constants/config';
 import { Heart, Smartphone } from 'lucide-react';
-
-const SITE_LINKS = [
-  { href: '/values', label: 'Values' },
-  { href: '/calculator', label: 'Calculator' },
-  { href: '/trades', label: 'Trades' },
-  { href: '/chat', label: 'Chat' },
-  { href: '/analytics', label: 'Trending' },
-  { href: '/news', label: 'News' },
-];
+import { useTranslations } from 'next-intl';
 
 const LEGAL_LINKS = [
   { href: '/privacy', label: 'Privacy Policy' },
@@ -23,6 +15,17 @@ const LEGAL_LINKS = [
 ];
 
 export function Footer() {
+  const t = useTranslations();
+
+  const SITE_LINKS = [
+    { href: '/values', label: t('nav.values') },
+    { href: '/calculator', label: t('nav.calculator') },
+    { href: '/trades', label: t('nav.trades') },
+    { href: '/chat', label: t('nav.chat') },
+    { href: '/analytics', label: t('analytics.title') },
+    { href: '/news', label: t('news.title') },
+  ];
+
   return (
     <footer className="hidden lg:block mt-auto">
       <div className="h-0.5 bg-gradient-to-r from-rose-500 via-violet-500 to-emerald-500" />
