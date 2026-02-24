@@ -113,6 +113,11 @@ export default async function LocaleLayout({
                 <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
                 <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
                 <meta name="p:domain_verify" content="955b6494657c81a62dcad3a3c68caafb" />
+                <script
+                    async
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5740215782746766"
+                    crossOrigin="anonymous"
+                />
             </head>
             <body
                 className={`${nunito.variable} ${nunitoSans.variable} antialiased`}
@@ -130,12 +135,7 @@ export default async function LocaleLayout({
                     {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-NXXEKW69PT');`}
                 </Script>
 
-                {/* Google AdSense */}
-                <Script
-                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5740215782746766"
-                    strategy="afterInteractive"
-                    crossOrigin="anonymous"
-                />
+
             </body>
         </html>
     );
