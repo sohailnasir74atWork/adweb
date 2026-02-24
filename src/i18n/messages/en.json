@@ -152,5 +152,33 @@
         "newsDescription": "Stay up to date with the latest Adopt Me game updates, events, new pets, and community news.",
         "analyticsTitle": "Adopt Me Trading Values 2026 — Market Trends & Pet Analytics",
         "analyticsDescription": "Track Adopt Me pet trading values, trending pets, and Roblox market analytics. See which pets are rising and falling in value."
+    },
+    "footer": {
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service",
+        "about": "About",
+        "contact": "Contact",
+        "disclaimer": "Disclaimer",
+        "explore": "Explore",
+        "legal": "Legal",
+        "apps": "Apps"
+    },
+    "error": {
+        "title": "Something went wrong",
+        "description": "An unexpected error occurred. Please try again.",
+        "retry": "Try Again"
+    },
+    "notFound": {
+        "title": "Page Not Found",
+        "description": "The page you're looking for doesn't exist or has been moved.",
+        "backHome": "Back to Home"
+    },
+    "valueTable": {
+        "variant": "Variant",
+        "normal": "Normal",
+        "noPotion": "No Potion",
+        "fly": "Fly",
+        "ride": "Ride",
+        "flyRide": "Fly Ride"
     }
 }

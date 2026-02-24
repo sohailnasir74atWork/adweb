@@ -1,11 +1,17 @@
-import type { Metadata } from 'next';
 import { config } from '@/lib/constants/config';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
 import { Mail, MessageCircle, Smartphone, Clock, Shield } from 'lucide-react';
+import { setRequestLocale } from 'next-intl/server';
 
-export const metadata: Metadata = {
-    title: 'Contact Us',
-    description: `Contact the ${config.appName} team. Get support, report issues, or share feedback.`,
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
+    const { canonical, languages } = getLocalizedAlternates('/contact', locale);
+    return {
+        title: 'Contact Us',
+        description: `Contact the ${config.appName} team. Get support, report issues, or share feedback.`,
+        alternates: { canonical, languages },
+    };
+}
 
 const CONTACT_CARDS = [
     {

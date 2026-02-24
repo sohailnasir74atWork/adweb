@@ -1,10 +1,16 @@
-import type { Metadata } from 'next';
 import { config } from '@/lib/constants/config';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
+import { setRequestLocale } from 'next-intl/server';
 
-export const metadata: Metadata = {
-    title: 'Terms of Service',
-    description: `Terms of Service for ${config.appName}. Read the rules and guidelines for using our platform.`,
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
+    const { canonical, languages } = getLocalizedAlternates('/terms', locale);
+    return {
+        title: 'Terms of Service',
+        description: `Terms of Service for ${config.appName}. Read the rules and guidelines for using our platform.`,
+        alternates: { canonical, languages },
+    };
+}
 
 export default function TermsOfServicePage() {
     const lastUpdated = 'February 21, 2026';

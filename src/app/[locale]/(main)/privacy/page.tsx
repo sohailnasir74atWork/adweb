@@ -1,10 +1,16 @@
-import type { Metadata } from 'next';
 import { config } from '@/lib/constants/config';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
+import { setRequestLocale } from 'next-intl/server';
 
-export const metadata: Metadata = {
-    title: 'Privacy Policy',
-    description: `Privacy Policy for ${config.appName}. Learn how we collect, use, and protect your data.`,
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
+    const { canonical, languages } = getLocalizedAlternates('/privacy', locale);
+    return {
+        title: 'Privacy Policy',
+        description: `Privacy Policy for ${config.appName}. Learn how we collect, use, and protect your data.`,
+        alternates: { canonical, languages },
+    };
+}
 
 export default function PrivacyPolicyPage() {
     const lastUpdated = 'February 21, 2026';

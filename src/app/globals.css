@@ -159,7 +159,6 @@
 /* Smooth page transitions — GPU composited */
 main {
   animation: fadeIn 0.2s ease-out;
-  will-change: opacity;
 }
 
 @keyframes fadeIn {

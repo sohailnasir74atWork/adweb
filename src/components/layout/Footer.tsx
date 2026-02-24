@@ -6,13 +6,7 @@ import { config } from '@/lib/constants/config';
 import { Heart, Smartphone } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
-const LEGAL_LINKS = [
-  { href: '/privacy', label: 'Privacy Policy' },
-  { href: '/terms', label: 'Terms of Service' },
-  { href: '/about', label: 'About' },
-  { href: '/contact', label: 'Contact' },
-  { href: '/disclaimer', label: 'Disclaimer' },
-];
+
 
 export function Footer() {
   const t = useTranslations();
@@ -24,6 +18,14 @@ export function Footer() {
     { href: '/chat', label: t('nav.chat') },
     { href: '/analytics', label: t('analytics.title') },
     { href: '/news', label: t('news.title') },
+  ];
+
+  const LEGAL_LINKS = [
+    { href: '/privacy', label: t('footer.privacy') },
+    { href: '/terms', label: t('footer.terms') },
+    { href: '/about', label: t('footer.about') },
+    { href: '/contact', label: t('footer.contact') },
+    { href: '/disclaimer', label: t('footer.disclaimer') },
   ];
 
   return (
@@ -45,7 +47,7 @@ export function Footer() {
 
             {/* Site links */}
             <div className="flex flex-col gap-1.5">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Explore</span>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{t('footer.explore')}</span>
               <nav className="flex flex-col gap-1" aria-label="Explore pages">
                 {SITE_LINKS.map((link) => (
                   <Link key={link.href} href={link.href} className="text-xs text-slate-400 hover:text-white transition-colors">
@@ -57,7 +59,7 @@ export function Footer() {
 
             {/* Legal links */}
             <div className="flex flex-col gap-1.5">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Legal</span>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{t('footer.legal')}</span>
               <nav className="flex flex-col gap-1" aria-label="Legal pages">
                 {LEGAL_LINKS.map((link) => (
                   <Link key={link.href} href={link.href} className="text-xs text-slate-400 hover:text-white transition-colors">
@@ -69,7 +71,7 @@ export function Footer() {
 
             {/* Apps */}
             <div className="flex flex-col gap-1.5">
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Apps</span>
+              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{t('footer.apps')}</span>
               <nav className="flex flex-col gap-1" aria-label="Download apps">
                 <a href={config.androidLink} target="_blank" rel="noopener noreferrer" className="text-xs text-slate-400 hover:text-white transition-colors flex items-center gap-1">
                   <Smartphone className="h-3 w-3" /> Android

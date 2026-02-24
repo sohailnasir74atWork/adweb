@@ -20,7 +20,7 @@ function alternatesForPath(path: string): Record<string, string> {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const staticPages = ['/', '/values', '/calculator', '/trades', '/feed', '/chat', '/analytics', '/scammer', '/news'];
+  const staticPages = ['/', '/values', '/calculator', '/trades', '/feed', '/chat', '/analytics', '/scammer', '/news', '/privacy', '/terms', '/about', '/contact', '/disclaimer'];
 
   const allItems = await fetchPetDataServer();
 

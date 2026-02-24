@@ -1,12 +1,18 @@
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { config } from '@/lib/constants/config';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
 import { Heart, TrendingUp, Calculator, Handshake, MessageCircle, Smartphone } from 'lucide-react';
+import { setRequestLocale } from 'next-intl/server';
 
-export const metadata: Metadata = {
-    title: 'About Us',
-    description: `Learn about ${config.appName} — the #1 community-driven Adopt Me pet value list, trade calculator, and trading hub.`,
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
+    const { canonical, languages } = getLocalizedAlternates('/about', locale);
+    return {
+        title: 'About Us',
+        description: `Learn about ${config.appName} — the #1 community-driven Adopt Me pet value list, trade calculator, and trading hub.`,
+        alternates: { canonical, languages },
+    };
+}
 
 const FEATURES = [
     {

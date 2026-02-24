@@ -64,7 +64,7 @@ const RARITY_COLORS: Record<string, string> = {
 
 function ValueTable({ pet, t }: { pet: Pet; t: any }) {
   const rows = [
-    { label: 'Normal', default: pet.rvalue, fly: pet.rvalueFly, ride: pet.rvalueRide, flyride: pet.rvalueFlyRide, nopotion: pet.rvalueNoPotion },
+    { label: t('valueTable.normal'), default: pet.rvalue, fly: pet.rvalueFly, ride: pet.rvalueRide, flyride: pet.rvalueFlyRide, nopotion: pet.rvalueNoPotion },
     { label: t('detail.neon'), default: pet.nvalue, fly: pet.nvalueFly, ride: pet.nvalueRide, flyride: pet.nvalueFlyRide, nopotion: pet.nvalueNoPotion },
     { label: t('detail.megaNeon'), default: pet.mvalue, fly: pet.mvalueFly, ride: pet.mvalueRide, flyride: pet.mvalueFlyRide, nopotion: pet.mvalueNoPotion },
   ];
@@ -74,12 +74,12 @@ function ValueTable({ pet, t }: { pet: Pet; t: any }) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b">
-            <th className="text-left py-2 pr-4 font-semibold">Variant</th>
+            <th className="text-left py-2 pr-4 font-semibold">{t('valueTable.variant')}</th>
             <th className="text-right py-2 px-3 font-semibold">{t('detail.defaultValue')}</th>
-            <th className="text-right py-2 px-3 font-semibold">No Potion</th>
-            <th className="text-right py-2 px-3 font-semibold">Fly</th>
-            <th className="text-right py-2 px-3 font-semibold">Ride</th>
-            <th className="text-right py-2 px-3 font-semibold">Fly Ride</th>
+            <th className="text-right py-2 px-3 font-semibold">{t('valueTable.noPotion')}</th>
+            <th className="text-right py-2 px-3 font-semibold">{t('valueTable.fly')}</th>
+            <th className="text-right py-2 px-3 font-semibold">{t('valueTable.ride')}</th>
+            <th className="text-right py-2 px-3 font-semibold">{t('valueTable.flyRide')}</th>
           </tr>
         </thead>
         <tbody>

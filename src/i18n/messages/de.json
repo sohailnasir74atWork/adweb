@@ -152,5 +152,33 @@
         "newsDescription": "Bleib auf dem neuesten Stand mit den letzten Adopt Me Spiel-Updates und Events.",
         "analyticsTitle": "Adopt Me Tauschwerte 2026 — Markttrends und Analyse",
         "analyticsDescription": "Verfolge Tauschwerte, Trends und Marktanalysen für Roblox Adopt Me."
+    },
+    "footer": {
+        "privacy": "Datenschutzrichtlinie",
+        "terms": "Nutzungsbedingungen",
+        "about": "Über Uns",
+        "contact": "Kontakt",
+        "disclaimer": "Haftungsausschluss",
+        "explore": "Entdecken",
+        "legal": "Rechtliches",
+        "apps": "Apps"
+    },
+    "error": {
+        "title": "Etwas ist schiefgelaufen",
+        "description": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuche es erneut.",
+        "retry": "Erneut versuchen"
+    },
+    "notFound": {
+        "title": "Seite Nicht Gefunden",
+        "description": "Die Seite, die du suchst, existiert nicht oder wurde verschoben.",
+        "backHome": "Zurück zur Startseite"
+    },
+    "valueTable": {
+        "variant": "Variante",
+        "normal": "Normal",
+        "noPotion": "Ohne Trank",
+        "fly": "Fly",
+        "ride": "Ride",
+        "flyRide": "Fly Ride"
     }
 }

@@ -1,10 +1,16 @@
-import type { Metadata } from 'next';
 import { config } from '@/lib/constants/config';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
+import { setRequestLocale } from 'next-intl/server';
 
-export const metadata: Metadata = {
-    title: 'Disclaimer',
-    description: `Disclaimer for ${config.appName}. Important information about pet values, trade calculations, and our relationship with Roblox.`,
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+    const { locale } = await params;
+    const { canonical, languages } = getLocalizedAlternates('/disclaimer', locale);
+    return {
+        title: 'Disclaimer',
+        description: `Disclaimer for ${config.appName}. Important information about pet values, trade calculations, and our relationship with Roblox.`,
+        alternates: { canonical, languages },
+    };
+}
 
 export default function DisclaimerPage() {
     const lastUpdated = 'February 21, 2026';

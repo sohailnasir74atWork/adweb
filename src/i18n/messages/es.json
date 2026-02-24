@@ -152,5 +152,33 @@
         "newsDescription": "Mantente al día con las últimas actualizaciones del juego Adopt Me, eventos, nuevas mascotas y noticias de la comunidad.",
         "analyticsTitle": "Valores de Intercambio Adopt Me 2026 — Tendencias del Mercado y Análisis",
         "analyticsDescription": "Rastrea valores de intercambio de mascotas, tendencias y análisis del mercado de Roblox Adopt Me."
+    },
+    "footer": {
+        "privacy": "Política de Privacidad",
+        "terms": "Términos de Servicio",
+        "about": "Acerca de",
+        "contact": "Contacto",
+        "disclaimer": "Aviso Legal",
+        "explore": "Explorar",
+        "legal": "Legal",
+        "apps": "Apps"
+    },
+    "error": {
+        "title": "Algo salió mal",
+        "description": "Ocurrió un error inesperado. Por favor, intenta de nuevo.",
+        "retry": "Intentar de Nuevo"
+    },
+    "notFound": {
+        "title": "Página No Encontrada",
+        "description": "La página que buscas no existe o ha sido movida.",
+        "backHome": "Volver al Inicio"
+    },
+    "valueTable": {
+        "variant": "Variante",
+        "normal": "Normal",
+        "noPotion": "Sin Poción",
+        "fly": "Fly",
+        "ride": "Ride",
+        "flyRide": "Fly Ride"
     }
 }

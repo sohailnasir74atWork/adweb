@@ -152,5 +152,33 @@
         "newsDescription": "ابق على اطلاع بأحدث تحديثات Adopt Me والأحداث والأخبار.",
         "analyticsTitle": "قيم تبادل Adopt Me 2026 — اتجاهات السوق والتحليل",
         "analyticsDescription": "تتبع قيم التبادل والاتجاهات وتحليلات سوق Roblox Adopt Me."
+    },
+    "footer": {
+        "privacy": "سياسة الخصوصية",
+        "terms": "شروط الخدمة",
+        "about": "حول",
+        "contact": "اتصل بنا",
+        "disclaimer": "إخلاء المسؤولية",
+        "explore": "استكشاف",
+        "legal": "قانوني",
+        "apps": "التطبيقات"
+    },
+    "error": {
+        "title": "حدث خطأ ما",
+        "description": "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.",
+        "retry": "حاول مرة أخرى"
+    },
+    "notFound": {
+        "title": "الصفحة غير موجودة",
+        "description": "الصفحة التي تبحث عنها غير موجودة أو تم نقلها.",
+        "backHome": "العودة للرئيسية"
+    },
+    "valueTable": {
+        "variant": "المتغير",
+        "normal": "عادي",
+        "noPotion": "بدون جرعة",
+        "fly": "Fly",
+        "ride": "Ride",
+        "flyRide": "Fly Ride"
     }
 }

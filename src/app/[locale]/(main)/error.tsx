@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
 
 export default function Error({
   error,
@@ -11,6 +12,8 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const t = useTranslations('error');
+
   useEffect(() => {
     console.error('Page error:', error);
   }, [error]);
@@ -18,12 +21,12 @@ export default function Error({
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center px-4">
       <AlertTriangle className="h-12 w-12 text-destructive" />
-      <h2 className="text-2xl font-semibold">Something went wrong</h2>
+      <h2 className="text-2xl font-semibold">{t('title')}</h2>
       <p className="text-muted-foreground max-w-md">
-        An unexpected error occurred. Please try again.
+        {t('description')}
       </p>
       <Button onClick={reset} className="bg-app-primary hover:bg-app-primary/90 text-white">
-        Try Again
+        {t('retry')}
       </Button>
     </div>
   );
