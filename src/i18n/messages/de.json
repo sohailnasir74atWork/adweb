@@ -21,7 +21,13 @@
     "home": {
         "heroTitle": "Adopt Me Werte",
         "heroSubtitle": "Kostenlose Haustier-Werteliste und Tauschrechner",
-        "searchPlaceholder": "Suche ein Haustier..."
+        "searchPlaceholder": "Suche ein Haustier...",
+        "faqWhatTitle": "Was ist Adopt Me Werte?",
+        "faqWhatDesc": "Adopt Me Werte ist der <strong>kostenlose Roblox Adopt Me Werte-Checker</strong>, der dir zeigt, wie viel jedes Haustier wert ist — von Legendären Frost-Drachen und Schatten-Drachen bis zu den neuesten Haustieren. Schau dir den Tauschwert jedes Haustiers an und vergleiche ihn mit anderen, bevor du tauschst.",
+        "faqTradeTitle": "So Prüfst du ob dein Tausch Fair ist",
+        "faqTradeDesc": "Gehe zum <link>Tausch-Prüfer</link>, füge Haustiere auf beiden Seiten hinzu, und sieh sofort ob es ein <strong>Gewinn</strong>, <strong>Verlust</strong> oder <strong>Fairer</strong> Deal ist. Alle Werte werden täglich aktualisiert.",
+        "faqBrowseTitle": "Alle Haustierwerte Durchsuchen",
+        "faqBrowseDesc": "Sieh dir unsere vollständige <link>Adopt Me Werteliste 2026</link> an, um jedes Haustier nach Tauschwert sortiert zu sehen."
     },
     "values": {
         "title": "Adopt Me Haustierwerte",

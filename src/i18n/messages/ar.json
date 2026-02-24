@@ -21,7 +21,13 @@
     "home": {
         "heroTitle": "قيم Adopt Me",
         "heroSubtitle": "قائمة قيم الحيوانات وحاسبة التبادل المجانية",
-        "searchPlaceholder": "ابحث عن حيوان..."
+        "searchPlaceholder": "ابحث عن حيوان...",
+        "faqWhatTitle": "ما هو Adopt Me Values؟",
+        "faqWhatDesc": "Adopt Me Values هو <strong>أداة فحص قيم Adopt Me المجانية في Roblox</strong> التي تظهر لك كم يساوي كل حيوان أليف — من تنانين الصقيع الأسطورية وتنانين الظل إلى أحدث الحيوانات. ابحث عن قيمة التبادل لأي حيوان وقارنه مع الآخرين قبل التبادل.",
+        "faqTradeTitle": "كيف تتحقق إذا كان تبادلك عادلاً",
+        "faqTradeDesc": "اذهب إلى <link>أداة فحص التبادل</link>، أضف حيوانات لكلا الجانبين، وانظر فوراً إذا كانت <strong>ربح</strong>، <strong>خسارة</strong>، أو صفقة <strong>عادلة</strong>. جميع القيم محدثة يومياً.",
+        "faqBrowseTitle": "تصفح جميع قيم الحيوانات",
+        "faqBrowseDesc": "تحقق من <link>قائمة قيم Adopt Me الكاملة 2026</link> لرؤية كل حيوان مرتب حسب قيمة التبادل."
     },
     "values": {
         "title": "قيم حيوانات Adopt Me",

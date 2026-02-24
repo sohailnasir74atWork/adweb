@@ -147,10 +147,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <div className="rounded-2xl bg-violet-200 dark:bg-violet-800/50 p-2.5">
               <HelpCircle className="h-6 w-6 text-violet-600 dark:text-violet-400" />
             </div>
-            <h2 className="text-lg sm:text-xl font-extrabold">What is Adopt Me Values?</h2>
+            <h2 className="text-lg sm:text-xl font-extrabold">{t('home.faqWhatTitle')}</h2>
           </div>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Adopt Me Values is the <strong>free Roblox Adopt Me value checker</strong> that shows you how much every pet is worth — from Legendary Frost Dragons and Shadow Dragons to the newest pets. Look up any pet&apos;s trading value and compare it with others before you trade.
+            {t.rich('home.faqWhatDesc', {
+              strong: (chunks) => <strong>{chunks}</strong>,
+            })}
           </p>
         </div>
 
@@ -159,10 +161,13 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <div className="rounded-2xl bg-sky-200 dark:bg-sky-800/50 p-2.5">
               <ArrowLeftRight className="h-6 w-6 text-sky-600 dark:text-sky-400" />
             </div>
-            <h2 className="text-lg sm:text-xl font-extrabold">How to Check if Your Trade is Fair</h2>
+            <h2 className="text-lg sm:text-xl font-extrabold">{t('home.faqTradeTitle')}</h2>
           </div>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Go to the <Link href="/calculator" className="text-sky-600 dark:text-sky-400 font-semibold hover:underline">Trade Checker</Link>, add pets to both sides, and instantly see if it&apos;s a <strong>Win</strong>, <strong>Lose</strong>, or <strong>Fair</strong> deal. All values updated daily.
+            {t.rich('home.faqTradeDesc', {
+              strong: (chunks) => <strong>{chunks}</strong>,
+              link: (chunks) => <Link href="/calculator" className="text-sky-600 dark:text-sky-400 font-semibold hover:underline">{chunks}</Link>,
+            })}
           </p>
         </div>
 
@@ -171,10 +176,12 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             <div className="rounded-2xl bg-emerald-200 dark:bg-emerald-800/50 p-2.5">
               <Search className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <h2 className="text-lg sm:text-xl font-extrabold">Browse All Pet Values</h2>
+            <h2 className="text-lg sm:text-xl font-extrabold">{t('home.faqBrowseTitle')}</h2>
           </div>
           <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Check our complete <Link href="/values" className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">Adopt Me value list 2026</Link> to see every pet ranked by trading value.
+            {t.rich('home.faqBrowseDesc', {
+              link: (chunks) => <Link href="/values" className="text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">{chunks}</Link>,
+            })}
           </p>
         </div>
       </section>

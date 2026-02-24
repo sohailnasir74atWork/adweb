@@ -21,7 +21,13 @@
     "home": {
         "heroTitle": "Adopt Me Values",
         "heroSubtitle": "Free Pet Value List & Trade Calculator",
-        "searchPlaceholder": "Search for a pet..."
+        "searchPlaceholder": "Search for a pet...",
+        "faqWhatTitle": "What is Adopt Me Values?",
+        "faqWhatDesc": "Adopt Me Values is the <strong>free Roblox Adopt Me value checker</strong> that shows you how much every pet is worth — from Legendary Frost Dragons and Shadow Dragons to the newest pets. Look up any pet's trading value and compare it with others before you trade.",
+        "faqTradeTitle": "How to Check if Your Trade is Fair",
+        "faqTradeDesc": "Go to the <link>Trade Checker</link>, add pets to both sides, and instantly see if it's a <strong>Win</strong>, <strong>Lose</strong>, or <strong>Fair</strong> deal. All values updated daily.",
+        "faqBrowseTitle": "Browse All Pet Values",
+        "faqBrowseDesc": "Check our complete <link>Adopt Me value list 2026</link> to see every pet ranked by trading value."
     },
     "values": {
         "title": "Adopt Me Pet Values",

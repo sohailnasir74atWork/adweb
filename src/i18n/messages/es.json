@@ -21,7 +21,13 @@
     "home": {
         "heroTitle": "Adopt Me Valores",
         "heroSubtitle": "Lista de Valores de Mascotas y Calculadora de Intercambios Gratis",
-        "searchPlaceholder": "Buscar una mascota..."
+        "searchPlaceholder": "Buscar una mascota...",
+        "faqWhatTitle": "¿Qué es Adopt Me Valores?",
+        "faqWhatDesc": "Adopt Me Valores es el <strong>verificador de valores de Adopt Me gratuito para Roblox</strong> que te muestra cuánto vale cada mascota — desde Dragones de Hielo Legendarios y Dragones Sombra hasta las mascotas más nuevas. Busca el valor de intercambio de cualquier mascota y compáralo con otros antes de hacer un intercambio.",
+        "faqTradeTitle": "Cómo Verificar si tu Intercambio es Justo",
+        "faqTradeDesc": "Ve al <link>Verificador de Intercambios</link>, agrega mascotas a ambos lados, y ve al instante si es una <strong>Ganancia</strong>, <strong>Pérdida</strong>, o un intercambio <strong>Justo</strong>. Todos los valores se actualizan diariamente.",
+        "faqBrowseTitle": "Ver Todos los Valores de Mascotas",
+        "faqBrowseDesc": "Consulta nuestra <link>lista completa de valores de Adopt Me 2026</link> para ver cada mascota clasificada por valor de intercambio."
     },
     "values": {
         "title": "Valores de Mascotas de Adopt Me",

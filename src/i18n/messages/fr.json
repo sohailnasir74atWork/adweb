@@ -21,7 +21,13 @@
     "home": {
         "heroTitle": "Adopt Me Valeurs",
         "heroSubtitle": "Liste de Valeurs d'Animaux et Calculateur d'Échanges Gratuit",
-        "searchPlaceholder": "Rechercher un animal..."
+        "searchPlaceholder": "Rechercher un animal...",
+        "faqWhatTitle": "Qu'est-ce que Adopt Me Valeurs ?",
+        "faqWhatDesc": "Adopt Me Valeurs est le <strong>vérificateur de valeurs Adopt Me gratuit pour Roblox</strong> qui vous montre combien vaut chaque animal — des Dragons de Givre Légendaires et Dragons d'Ombre aux animaux les plus récents. Recherchez la valeur d'échange de n'importe quel animal et comparez-la avec d'autres avant d'échanger.",
+        "faqTradeTitle": "Comment Vérifier si Votre Échange est Équitable",
+        "faqTradeDesc": "Allez au <link>Vérificateur d'Échanges</link>, ajoutez des animaux des deux côtés, et voyez instantanément si c'est un <strong>Gain</strong>, une <strong>Perte</strong>, ou un échange <strong>Équitable</strong>. Toutes les valeurs sont mises à jour quotidiennement.",
+        "faqBrowseTitle": "Parcourir Toutes les Valeurs d'Animaux",
+        "faqBrowseDesc": "Consultez notre <link>liste complète des valeurs Adopt Me 2026</link> pour voir chaque animal classé par valeur d'échange."
     },
     "values": {
         "title": "Valeurs des Animaux Adopt Me",
