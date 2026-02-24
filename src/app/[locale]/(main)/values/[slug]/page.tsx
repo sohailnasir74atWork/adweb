@@ -11,6 +11,7 @@ import { PetImage } from '@/components/shared/PetImage';
 import { PetValueCard } from '@/components/values/PetValueCard';
 import { Badge } from '@/components/ui/badge';
 import { JsonLd } from '@/components/seo/JsonLd';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
 
 export const revalidate = 300;
 export const dynamicParams = true; // Allow ISR for items not generated at build
@@ -26,9 +27,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { slug, locale } = await params;
   const pets = await fetchPetDataServer();
   const pet = pets.find((p) => slugify(p.name) === slug);
 
@@ -40,6 +41,7 @@ export async function generateMetadata({
   const isPet = isPetType(pet.type);
   const neonInfo = isPet ? ` See Neon (${formatNumber(pet.nvalue)}), Mega Neon (${formatNumber(pet.mvalue)}), Fly, Ride prices and demand.` : '';
   const ogNeon = isPet ? ` Neon: ${formatNumber(pet.nvalue)}, Mega: ${formatNumber(pet.mvalue)}.` : '';
+  const { canonical, languages } = getLocalizedAlternates(`/values/${slug}`, locale);
   return {
     title: `${pet.name} Value in Adopt Me 2026 — Trading Value${isPet ? ', Neon & Mega Prices' : ''}`,
     description: `Check the latest ${pet.name} trading value in Roblox Adopt Me. Current value: ${formatNumber(value)}.${neonInfo} Rarity: ${pet.rarity}. Updated daily in 2026.`,
@@ -48,9 +50,7 @@ export async function generateMetadata({
       description: `${pet.name} is worth ${formatNumber(value)} in Adopt Me.${ogNeon} Check trading values daily.`,
       images: [pet.image],
     },
-    alternates: {
-      canonical: `https://adoptmevalues.app/values/${slug}`,
-    },
+    alternates: { canonical, languages },
   };
 }
 

@@ -3,13 +3,16 @@ import { Handshake, Plus, Search, Shield } from 'lucide-react';
 import { TradeList } from '@/components/trades/TradeList';
 import { fetchTradesServer } from '@/lib/data/trades';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'metadata' });
+  const { canonical, languages } = getLocalizedAlternates('/trades', locale);
   return {
     title: t('tradesTitle'),
     description: t('tradesDescription'),
+    alternates: { canonical, languages },
   };
 }
 

@@ -67,9 +67,7 @@ export const metadata: Metadata = {
         title: "Adopt Me Values 2026 — Pet Trading Values & Trade Calculator",
         description: "Check every Adopt Me pet trading value. Free value checker and trade calculator updated daily for Roblox.",
     },
-    alternates: {
-        canonical: "https://adoptmevalues.app",
-    },
+    alternates: {},
     icons: {
         icon: [
             { url: "/favicon.ico", sizes: "any" },

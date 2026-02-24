@@ -1,13 +1,16 @@
 import { fetchPetDataServer } from '@/lib/data/pets';
 import { PetGrid } from '@/components/values/PetGrid';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'metadata' });
+  const { canonical, languages } = getLocalizedAlternates('/values', locale);
   return {
     title: t('valuesTitle'),
     description: t('valuesDescription'),
+    alternates: { canonical, languages },
   };
 }
 

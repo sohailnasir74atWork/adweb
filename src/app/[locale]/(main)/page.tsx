@@ -2,13 +2,16 @@ import Link from 'next/link';
 import { Calculator, TrendingUp, Handshake, MessageCircle, BarChart3, Newspaper, Search, ArrowLeftRight, Sparkles, HelpCircle } from 'lucide-react';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'metadata' });
+  const { canonical, languages } = getLocalizedAlternates('/', locale);
   return {
     title: t('homeTitle'),
     description: t('homeDescription'),
+    alternates: { canonical, languages },
   };
 }
 

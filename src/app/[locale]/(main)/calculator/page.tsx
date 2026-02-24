@@ -2,13 +2,16 @@ import { CalculatorBoard } from '@/components/calculator/CalculatorBoard';
 import { JsonLd } from '@/components/seo/JsonLd';
 import { ListOrdered, HelpCircle, Sparkles, BarChart3 } from 'lucide-react';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'metadata' });
+  const { canonical, languages } = getLocalizedAlternates('/calculator', locale);
   return {
     title: t('calculatorTitle'),
     description: t('calculatorDescription'),
+    alternates: { canonical, languages },
   };
 }
 
