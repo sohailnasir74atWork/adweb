@@ -1,10 +1,13 @@
 import { fetchPetDataServer } from '@/lib/data/pets';
-import { Pet, isPetType } from '@/lib/types/pet';
-import { slugify, formatNumber, getPetDefaultValue, getSimilarPets } from '@/lib/utils/petHelpers';
+import { Pet, getPetDefaultValue } from '@/lib/types/pet';
+import { isPetType } from '@/lib/utils/petHelpers';
+import { slugify } from '@/lib/utils/slugify';
+import { formatNumber } from '@/lib/utils/formatters';
+import { getSimilarPets } from '@/lib/utils/petHelpers';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronRight } from 'lucide-react';
-import { PetImage } from '@/components/common/PetImage';
+import { PetImage } from '@/components/shared/PetImage';
 import { PetValueCard } from '@/components/values/PetValueCard';
 import { Badge } from '@/components/ui/badge';
 import { JsonLd } from '@/components/seo/JsonLd';
