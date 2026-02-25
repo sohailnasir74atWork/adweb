@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import { locales, localeNames, type Locale } from '@/i18n/config';
 import {
     DropdownMenu,
@@ -10,7 +10,6 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { Globe } from 'lucide-react';
 
 const FLAGS: Record<Locale, string> = {
     en: '🇺🇸',
@@ -26,21 +25,8 @@ export function LanguageSwitcher() {
     const router = useRouter();
 
     function switchLocale(newLocale: Locale) {
-        // Remove current locale prefix from pathname
-        let path = pathname;
-        for (const loc of locales) {
-            if (path.startsWith(`/${loc}/`)) {
-                path = path.slice(loc.length + 1);
-                break;
-            } else if (path === `/${loc}`) {
-                path = '/';
-                break;
-            }
-        }
-
-        // Build new path
-        const newPath = newLocale === 'en' ? path : `/${newLocale}${path}`;
-        router.push(newPath);
+        // next-intl's useRouter handles locale prefix automatically
+        router.replace(pathname, { locale: newLocale });
     }
 
     return (
@@ -51,12 +37,12 @@ export function LanguageSwitcher() {
                     <span className="sr-only">Change language</span>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="min-w-[140px]">
+            <DropdownMenuContent align="end" sideOffset={8} className="min-w-[160px] z-[100]">
                 {locales.map((loc) => (
                     <DropdownMenuItem
                         key={loc}
                         onClick={() => switchLocale(loc)}
-                        className={`flex items-center gap-2.5 cursor-pointer ${loc === locale ? 'bg-accent font-bold' : ''}`}
+                        className={`flex items-center gap-2.5 cursor-pointer py-2.5 ${loc === locale ? 'bg-accent font-bold' : ''}`}
                     >
                         <span className="text-base">{FLAGS[loc]}</span>
                         <span className="text-sm">{localeNames[loc]}</span>
