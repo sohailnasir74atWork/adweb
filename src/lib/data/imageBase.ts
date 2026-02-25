@@ -12,7 +12,7 @@ export async function fetchImageBaseUrl(): Promise<string> {
   }
 
   try {
-    const res = await fetch(`${RTDB_URL}/image_url.json`, { next: { revalidate: 300 } });
+    const res = await fetch(`${RTDB_URL}/image_url.json`, { next: { revalidate: 3600 } });
     if (res.ok) {
       const val = await res.json();
       cachedImageBase = String(val).replace(/"/g, '').replace(/\/$/, '');

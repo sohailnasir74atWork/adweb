@@ -18,10 +18,10 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 async function getSSRData() {
   try {
     const [analyticsRes, changesRes] = await Promise.all([
-      fetch(config.tradeAnalyticsUrl, { next: { revalidate: 300 } })
+      fetch(config.tradeAnalyticsUrl, { next: { revalidate: 3600 } })
         .then((r) => (r.ok ? r.json() : null))
         .catch(() => null),
-      fetch(config.valueChangesUrl, { next: { revalidate: 300 } })
+      fetch(config.valueChangesUrl, { next: { revalidate: 3600 } })
         .then((r) => (r.ok ? r.json() : null))
         .catch(() => null),
     ]);

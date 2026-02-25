@@ -5,6 +5,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Providers } from "@/components/providers/Providers";
+import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
+import { WebVitalsReporter } from "@/components/analytics/WebVitalsReporter";
 import { routing } from "@/i18n/routing";
 import "../globals.css";
 
@@ -119,6 +121,8 @@ export default async function LocaleLayout({
             >
                 <NextIntlClientProvider messages={messages}>
                     <Providers>{children}</Providers>
+                    <ServiceWorkerRegistration />
+                    <WebVitalsReporter />
                 </NextIntlClientProvider>
 
                 {/* Google Analytics (GA4) — lazy loaded to reduce TBT */}

@@ -43,7 +43,7 @@ export async function fetchGroupsServer(): Promise<ServerGroup[]> {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
-            next: { revalidate: 300 }, // ISR: 5 minutes
+            next: { revalidate: 1800 }, // ISR: 30 min — fully real-time via Firebase
         });
 
         if (!res.ok) {

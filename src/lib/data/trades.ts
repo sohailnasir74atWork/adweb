@@ -81,7 +81,7 @@ export async function fetchTradesServer(): Promise<ServerTrade[]> {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
-            next: { revalidate: 120 }, // ISR: 2 minutes for fresher trade data
+            next: { revalidate: 300 }, // ISR: 5 min — client handles real-time
         });
 
         if (!res.ok) {

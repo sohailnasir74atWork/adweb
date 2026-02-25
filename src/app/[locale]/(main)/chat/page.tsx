@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export const revalidate = 300; // ISR: 5 minutes
+export const revalidate = 1800; // ISR: 30 min — fully real-time via Firebase, shell rarely matters
 
 export default async function ChatPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

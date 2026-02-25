@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export const revalidate = 300; // ISR: 5 minutes
+export const revalidate = 600; // ISR: 10 min — client handles real-time, cost-optimized
 
 export default async function FeedPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

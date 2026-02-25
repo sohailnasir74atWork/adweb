@@ -59,7 +59,7 @@ export async function fetchPostsServer(count = 5): Promise<ServerPost[]> {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),
-            next: { revalidate: 300 }, // ISR: 5 minutes
+            next: { revalidate: 600 }, // ISR: 10 min — client handles real-time
         });
 
         if (!res.ok) {
