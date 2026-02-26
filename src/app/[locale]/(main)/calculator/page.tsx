@@ -31,9 +31,32 @@ export default async function CalculatorPage({ params }: { params: Promise<{ loc
   setRequestLocale(locale);
   const t = await getTranslations({ locale });
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: t('calculator.faqAccuracyTitle'),
+        acceptedAnswer: { '@type': 'Answer', text: t('calculator.faqAccuracyDesc') },
+      },
+      {
+        '@type': 'Question',
+        name: t('calculator.faqWinLoseTitle'),
+        acceptedAnswer: { '@type': 'Answer', text: t('calculator.faqWinLoseDesc', { win: t('calculator.win'), loss: t('calculator.loss'), fair: t('calculator.fairTrade') }) },
+      },
+      {
+        '@type': 'Question',
+        name: t('calculator.faqNeonTitle'),
+        acceptedAnswer: { '@type': 'Answer', text: t('calculator.faqNeonDesc') },
+      },
+    ],
+  };
+
   return (
     <div className="flex flex-col gap-4 sm:gap-6">
       <JsonLd data={calculatorJsonLd} />
+      <JsonLd data={faqJsonLd} />
       <section>
         <h1 className="text-2xl sm:text-3xl font-bold">
           {t('calculator.title')}

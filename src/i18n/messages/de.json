@@ -88,7 +88,10 @@
         "subtitle": "Durchsuche Tausche oder erstelle deinen eigenen.",
         "createTrade": "Tausch erstellen",
         "offering": "Bietet an",
-        "lookingFor": "Sucht nach"
+        "lookingFor": "Sucht nach",
+        "seoTitle": "Adopt Me Tauschhandel",
+        "seoDesc": "Finde die besten Adopt Me Trades in unserem Echtzeit-Handelszentrum. Durchsuche Tauschwerte anderer Spieler, filtere nach <strong>Gewinn</strong>, <strong>Verlust</strong> oder <strong>Fair</strong>, und erstelle deine eigenen Trades. Alle Werte werden täglich für 2026 aktualisiert.",
+        "seoUpdated": "Werte werden täglich für faire Trades aktualisiert"
     },
     "chat": {
         "title": "Chat",

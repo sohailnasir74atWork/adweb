@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Nunito, Nunito_Sans } from "next/font/google";
 import Script from "next/script";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { Providers } from "@/components/providers/Providers";
 import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
@@ -24,65 +24,77 @@ const nunitoSans = Nunito_Sans({
     display: "swap",
 });
 
-export const metadata: Metadata = {
-    title: {
-        default: "Adopt Me Values — Free Pet Value List & Trade Calculator 2026",
-        template: "%s | Adopt Me Values",
-    },
-    description:
-        "Check Adopt Me trading values and use our free trade calculator to see if your Roblox Adopt Me trade is fair. Updated daily with every pet, neon, mega neon, fly, and ride value.",
-    keywords: [
-        "adopt me values",
-        "adopt me trading values",
-        "adopt me trade calculator",
-        "adopt me value checker",
-        "adopt me pet values",
-        "trading values adopt me",
-        "adopt me value list",
-        "adopt me values 2026",
-        "roblox adopt me values",
-        "adopt me trading",
-        "trade values adopt me",
-        "adopt me trade checker",
-        "adopt me gg",
-        "adopt me neon values",
-        "adopt me mega neon values",
-    ],
-    metadataBase: new URL("https://adoptmevalues.app"),
-    openGraph: {
-        type: "website",
-        locale: "en_US",
-        siteName: "Adopt Me Values",
-        title: "Adopt Me Values 2026 — Free Pet Trading Values & Trade Calculator",
-        description: "The #1 Adopt Me value list and trade calculator for Roblox. Check every pet trading value, use our value checker, and see if your trade is fair.",
-        images: [
-            {
-                url: "/og-image.png",
-                width: 1200,
-                height: 630,
-                alt: "Adopt Me Values — Free Pet Value List & Trade Calculator 2026",
-            },
-        ],
-    },
-    twitter: {
-        card: "summary_large_image",
-        title: "Adopt Me Values 2026 — Pet Trading Values & Trade Calculator",
-        description: "Check every Adopt Me pet trading value. Free value checker and trade calculator updated daily for Roblox.",
-    },
-    alternates: {},
-    icons: {
-        icon: [
-            { url: "/favicon.ico", sizes: "any" },
-            { url: "/logo.webp", type: "image/webp" },
-        ],
-        apple: "/logo.webp",
-    },
-    verification: {
-        other: {
-            "p:domain_verify": ["955b6494657c81a62dcad3a3c68caafb"],
-        },
-    },
+// Map i18n locale codes to OpenGraph locale format
+const ogLocaleMap: Record<string, string> = {
+    en: 'en_US',
+    es: 'es_ES',
+    fr: 'fr_FR',
+    ar: 'ar_SA',
+    de: 'de_DE',
 };
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+    const { locale } = await params;
+    const t = await getTranslations({ locale, namespace: 'metadata' });
+
+    return {
+        title: {
+            default: t('homeTitle'),
+            template: "%s | Adopt Me Values",
+        },
+        description: t('homeDescription'),
+        keywords: [
+            "adopt me values",
+            "adopt me trading values",
+            "adopt me trade calculator",
+            "adopt me value checker",
+            "adopt me pet values",
+            "trading values adopt me",
+            "adopt me value list",
+            "adopt me values 2026",
+            "roblox adopt me values",
+            "adopt me trading",
+            "trade values adopt me",
+            "adopt me trade checker",
+            "adopt me gg",
+            "adopt me neon values",
+            "adopt me mega neon values",
+        ],
+        metadataBase: new URL("https://adoptmevalues.app"),
+        openGraph: {
+            type: "website",
+            locale: ogLocaleMap[locale] || 'en_US',
+            siteName: "Adopt Me Values",
+            title: t('homeTitle'),
+            description: t('homeDescription'),
+            images: [
+                {
+                    url: "/og-image.png",
+                    width: 1200,
+                    height: 630,
+                    alt: t('homeTitle'),
+                },
+            ],
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: t('homeTitle'),
+            description: t('homeDescription'),
+        },
+        icons: {
+            icon: [
+                { url: "/favicon.ico", sizes: "any" },
+                { url: "/logo.webp", type: "image/webp" },
+            ],
+            apple: "/logo.webp",
+        },
+        verification: {
+            other: {
+                "p:domain_verify": ["955b6494657c81a62dcad3a3c68caafb"],
+            },
+        },
+    };
+}
 
 export function generateStaticParams() {
     return routing.locales.map((locale) => ({ locale }));

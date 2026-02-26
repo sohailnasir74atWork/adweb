@@ -88,7 +88,10 @@
         "subtitle": "Browse trades or create your own.",
         "createTrade": "Create Trade",
         "offering": "Offering",
-        "lookingFor": "Looking For"
+        "lookingFor": "Looking For",
+        "seoTitle": "Adopt Me Trading",
+        "seoDesc": "Find the best Adopt Me trades in our real-time Roblox trade hub. Browse trading values from other players, filter by <strong>Win</strong>, <strong>Lose</strong>, or <strong>Fair</strong>, and post your own trades. All trades show accurate trading values so you know exactly what you're getting in 2026.",
+        "seoUpdated": "Values updated daily for fair trades"
     },
     "chat": {
         "title": "Chat",

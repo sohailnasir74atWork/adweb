@@ -53,16 +53,16 @@ export default async function TradesPage({ params }: { params: Promise<{ locale:
           <div className="rounded-2xl bg-blue-200 dark:bg-blue-800/50 p-2.5">
             <Search className="h-6 w-6 text-blue-600 dark:text-blue-400" />
           </div>
-          <h2 className="text-lg sm:text-xl font-extrabold">Adopt Me Trading</h2>
+          <h2 className="text-lg sm:text-xl font-extrabold">{t('trades.seoTitle')}</h2>
         </div>
         <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-          Find the best Adopt Me trades in our real-time Roblox trade hub. Browse trading values from other players,
-          filter by <strong>Win</strong>, <strong>Lose</strong>, or <strong>Fair</strong>, and post your own trades.
-          All trades show accurate trading values so you know exactly what you&apos;re getting in 2026.
+          {t.rich('trades.seoDesc', {
+            strong: (chunks) => <strong>{chunks}</strong>,
+          })}
         </p>
         <div className="flex items-center gap-2 mt-3 text-xs text-muted-foreground">
           <Shield className="h-3.5 w-3.5 text-emerald-500" />
-          <span>Values updated daily for fair trades</span>
+          <span>{t('trades.seoUpdated')}</span>
         </div>
       </div>
     </div>

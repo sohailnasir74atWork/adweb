@@ -8,13 +8,15 @@ import { CommentsSection } from '@/components/feed/CommentsSection';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatTimeAgo } from '@/lib/utils/formatters';
+import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { id, locale } = await params;
   const post = await getPostById(id);
 
   if (!post) {
@@ -22,6 +24,7 @@ export async function generateMetadata({
   }
 
   const images = Array.isArray(post.imageUrl) ? post.imageUrl.filter(Boolean) : [];
+  const { canonical, languages } = getLocalizedAlternates(`/feed/${id}`, locale);
 
   return {
     title: `${post.displayName}'s Post — Adopt Me Feed`,
@@ -31,15 +34,18 @@ export async function generateMetadata({
       description: post.desc || 'Community post on Adopt Me Values',
       images: images.length > 0 ? [images[0]] : undefined,
     },
+    alternates: { canonical, languages },
   };
 }
 
 export default async function PostDetailPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }) {
-  const { id } = await params;
+  const { id, locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations({ locale });
   const post = await getPostById(id);
 
   if (!post) {
@@ -58,11 +64,11 @@ export default async function PostDetailPage({
       {/* Breadcrumbs */}
       <nav className="flex items-center gap-1 text-sm text-muted-foreground">
         <Link href="/" className="hover:text-foreground transition-colors">
-          Home
+          {t('nav.home')}
         </Link>
         <ChevronRight className="h-3.5 w-3.5" />
         <Link href="/feed" className="hover:text-foreground transition-colors">
-          Feed
+          {t('nav.feed')}
         </Link>
         <ChevronRight className="h-3.5 w-3.5" />
         <span className="text-foreground font-medium">Post</span>

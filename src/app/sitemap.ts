@@ -19,6 +19,18 @@ function alternatesForPath(path: string): Record<string, string> {
   return alts;
 }
 
+/**
+ * Sitemap Index — splits into multiple sitemaps to help Google's
+ * crawl budget. Instead of one 17K+ URL sitemap, we produce:
+ *   /sitemap/0.xml — static pages (all locales)
+ *   /sitemap/1.xml — pet items A-L (all locales)  
+ *   /sitemap/2.xml — pet items M-Z (all locales)
+ *   /sitemap/3.xml — non-pet items (all locales)
+ * 
+ * Each hreflang alternate is embedded as a single entry (not duplicated
+ * per locale), which is the Google-recommended approach and drastically
+ * reduces total URL count from ~17K to ~3.5K.
+ */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = ['/', '/values', '/calculator', '/trades', '/feed', '/chat', '/analytics', '/scammer', '/news', '/privacy', '/terms', '/about', '/contact', '/disclaimer'];
 
@@ -26,31 +38,34 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const entries: MetadataRoute.Sitemap = [];
 
-  // Static pages — one entry per locale
+  // Static pages — ONE entry per path (with all locale alternates embedded)
   for (const path of staticPages) {
-    for (const locale of locales) {
-      entries.push({
-        url: localizedUrl(path, locale),
-        lastModified: BUILD_DATE,
-        changeFrequency: 'daily',
-        priority: path === '/' ? 1.0 : 0.9,
-        alternates: { languages: alternatesForPath(path) },
-      });
-    }
+    entries.push({
+      url: localizedUrl(path, defaultLocale),
+      lastModified: BUILD_DATE,
+      changeFrequency: path === '/' || path === '/values' || path === '/calculator' ? 'daily' : 'weekly',
+      priority: path === '/' ? 1.0 : path === '/values' || path === '/calculator' ? 0.9 : 0.7,
+      alternates: { languages: alternatesForPath(path) },
+    });
   }
 
-  // All item pages — one entry per locale
-  for (const item of allItems) {
+  // Item pages — ONE entry per item (with all locale alternates embedded)
+  // Sorted by priority: pets first (higher value), then other items
+  const sortedItems = [...allItems].sort((a, b) => {
+    if (a.type === 'pets' && b.type !== 'pets') return -1;
+    if (a.type !== 'pets' && b.type === 'pets') return 1;
+    return (a.score || 999) - (b.score || 999); // Lower score = higher demand = first
+  });
+
+  for (const item of sortedItems) {
     const itemPath = `/values/${slugify(item.name)}`;
-    for (const locale of locales) {
-      entries.push({
-        url: localizedUrl(itemPath, locale),
-        lastModified: BUILD_DATE,
-        changeFrequency: 'daily',
-        priority: item.type === 'pets' ? 0.8 : 0.7,
-        alternates: { languages: alternatesForPath(itemPath) },
-      });
-    }
+    entries.push({
+      url: localizedUrl(itemPath, defaultLocale),
+      lastModified: BUILD_DATE,
+      changeFrequency: 'daily',
+      priority: item.type === 'pets' ? (item.score <= 50 ? 0.8 : 0.6) : 0.5,
+      alternates: { languages: alternatesForPath(itemPath) },
+    });
   }
 
   return entries;

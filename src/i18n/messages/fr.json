@@ -88,7 +88,10 @@
         "subtitle": "Parcourez les échanges ou créez le vôtre.",
         "createTrade": "Créer un Échange",
         "offering": "Offrant",
-        "lookingFor": "Recherchant"
+        "lookingFor": "Recherchant",
+        "seoTitle": "Échanges Adopt Me",
+        "seoDesc": "Trouvez les meilleurs échanges Adopt Me dans notre centre d'échanges en temps réel. Parcourez les valeurs d'échange d'autres joueurs, filtrez par <strong>Gagné</strong>, <strong>Perdu</strong> ou <strong>Équitable</strong>, et publiez vos propres échanges. Toutes les valeurs sont mises à jour quotidiennement pour 2026.",
+        "seoUpdated": "Valeurs mises à jour quotidiennement pour des échanges équitables"
     },
     "chat": {
         "title": "Chat",

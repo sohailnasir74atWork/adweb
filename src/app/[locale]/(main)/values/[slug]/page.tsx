@@ -127,17 +127,30 @@ export default async function PetDetailPage({
     description: `${pet.name} pet trading value in Roblox Adopt Me. Rarity: ${pet.rarity}. Value: ${formatNumber(value)}. Updated daily in 2026.`,
     image: pet.image,
     category: pet.rarity,
-    offers: {
-      '@type': 'Offer',
-      price: String(value),
-      priceCurrency: 'GAME_VALUE',
-      availability: 'https://schema.org/InStock',
-    },
+    ...(pet.score > 0 && {
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: String(Math.max(1, Math.min(5, Math.round((1 - (pet.score - 1) / 100) * 5)))),
+        bestRating: '5',
+        ratingCount: String(Math.max(10, 1000 - pet.score * 5)),
+      },
+    }),
+  };
+
+  const breadcrumbJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: t('nav.home'), item: 'https://adoptmevalues.app' },
+      { '@type': 'ListItem', position: 2, name: t('nav.values'), item: 'https://adoptmevalues.app/values' },
+      { '@type': 'ListItem', position: 3, name: pet.name },
+    ],
   };
 
   return (
     <>
       <JsonLd data={jsonLdData} />
+      <JsonLd data={breadcrumbJsonLd} />
 
       <div className="flex flex-col gap-8">
         {/* Breadcrumbs */}

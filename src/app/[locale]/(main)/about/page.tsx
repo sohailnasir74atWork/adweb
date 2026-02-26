@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { config } from '@/lib/constants/config';
 import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
+import { JsonLd } from '@/components/seo/JsonLd';
 import { Heart, TrendingUp, Calculator, Handshake, MessageCircle, Smartphone } from 'lucide-react';
 import { setRequestLocale } from 'next-intl/server';
 
@@ -38,8 +39,23 @@ const FEATURES = [
 ];
 
 export default function AboutPage() {
+    const orgJsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        name: config.appName,
+        url: config.domain,
+        logo: `${config.domain}/logo.webp`,
+        description: `${config.appName} is the #1 community-driven resource for Roblox Adopt Me players.`,
+        contactPoint: {
+            '@type': 'ContactPoint',
+            contactType: 'customer service',
+            email: config.supportEmail,
+        },
+    };
+
     return (
         <div className="mx-auto max-w-3xl w-full">
+            <JsonLd data={orgJsonLd} />
             <article className="prose dark:prose-invert max-w-none">
                 <h1>About Adopt Me Values</h1>
 

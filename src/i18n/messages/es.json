@@ -88,7 +88,10 @@
         "subtitle": "Explora intercambios o crea el tuyo.",
         "createTrade": "Crear Intercambio",
         "offering": "Ofreciendo",
-        "lookingFor": "Buscando"
+        "lookingFor": "Buscando",
+        "seoTitle": "Intercambios de Adopt Me",
+        "seoDesc": "Encuentra los mejores intercambios de Adopt Me en nuestro centro de intercambios en tiempo real de Roblox. Explora valores de otros jugadores, filtra por <strong>Ganancia</strong>, <strong>Pérdida</strong> o <strong>Justo</strong>, y publica tus propios intercambios. Todos los intercambios muestran valores precisos para 2026.",
+        "seoUpdated": "Valores actualizados diariamente para intercambios justos"
     },
     "chat": {
         "title": "Chat",
