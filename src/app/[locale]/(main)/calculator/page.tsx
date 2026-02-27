@@ -15,21 +15,20 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-const calculatorJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: 'Adopt Me Trade Calculator',
-  url: 'https://adoptmevalues.app/calculator',
-  description:
-    'Free Adopt Me trade calculator to check if your Roblox pet trade is fair. Compare values for Normal, Neon, Mega Neon, Fly, Ride, and Fly Ride pets.',
-  applicationCategory: 'GameApplication',
-  operatingSystem: 'Web',
-};
-
 export default async function CalculatorPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale });
+
+  const calculatorJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebApplication',
+    name: t('jsonLd.calculatorName'),
+    url: 'https://adoptmevalues.app/calculator',
+    description: t('jsonLd.calculatorDescription'),
+    applicationCategory: 'GameApplication',
+    operatingSystem: 'Web',
+  };
 
   const faqJsonLd = {
     '@context': 'https://schema.org',

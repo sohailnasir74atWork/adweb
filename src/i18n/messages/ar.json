@@ -156,6 +156,21 @@
         "analyticsTitle": "قيم تبادل Adopt Me 2026 — اتجاهات السوق والتحليل",
         "analyticsDescription": "تتبع قيم التبادل والاتجاهات وتحليلات سوق Roblox Adopt Me."
     },
+    "jsonLd": {
+        "websiteName": "قيم Adopt Me",
+        "websiteDescription": "قيم تبادل Adopt Me وحاسبة التبادل المجانية لـ Roblox. تحقق من قيمة كل حيوان محدثة يومياً في 2026.",
+        "calculatorName": "حاسبة تبادل Adopt Me",
+        "calculatorDescription": "حاسبة تبادل مجانية للتحقق مما إذا كان تبادل حيوانات Roblox Adopt Me عادلاً.",
+        "itemTitle": "قيمة {name} في Adopt Me 2026 — قيمة التبادل وأسعار النيون والميجا",
+        "itemTitleSimple": "قيمة {name} في Adopt Me 2026 — قيمة التبادل",
+        "itemDescription": "تحقق من أحدث قيمة تبادل {name} في Roblox Adopt Me. القيمة الحالية: {value}. {neonInfo} الندرة: {rarity}. محدث يومياً في 2026.",
+        "itemNeonInfo": "شاهد النيون ({neonValue})، الميجا نيون ({megaValue})، وأسعار Fly و Ride.",
+        "itemOgTitle": "قيمة تبادل {name} | قيم Adopt Me 2026",
+        "itemOgDescription": "{name} يساوي {value} في Adopt Me. {neonOg} تحقق من القيم يومياً.",
+        "itemNeonOg": "نيون: {neonValue}، ميجا: {megaValue}.",
+        "breadcrumbHome": "الرئيسية",
+        "breadcrumbValues": "القيم"
+    },
     "footer": {
         "privacy": "سياسة الخصوصية",
         "terms": "شروط الخدمة",

@@ -156,6 +156,21 @@
         "analyticsTitle": "Valores de Intercambio Adopt Me 2026 — Tendencias del Mercado y Análisis",
         "analyticsDescription": "Rastrea valores de intercambio de mascotas, tendencias y análisis del mercado de Roblox Adopt Me."
     },
+    "jsonLd": {
+        "websiteName": "Adopt Me Valores",
+        "websiteDescription": "Valores de intercambio de Adopt Me y calculadora de intercambios gratuita para Roblox. Consulta el valor de cada mascota actualizado diariamente en 2026.",
+        "calculatorName": "Calculadora de Intercambios Adopt Me",
+        "calculatorDescription": "Calculadora de intercambios gratuita para verificar si tu intercambio de mascotas en Roblox Adopt Me es justo.",
+        "itemTitle": "Valor de {name} en Adopt Me 2026 — Valor de Intercambio, Precios Neón y Mega",
+        "itemTitleSimple": "Valor de {name} en Adopt Me 2026 — Valor de Intercambio",
+        "itemDescription": "Consulta el último valor de intercambio de {name} en Roblox Adopt Me. Valor actual: {value}. {neonInfo} Rareza: {rarity}. Actualizado diariamente en 2026.",
+        "itemNeonInfo": "Ver Neón ({neonValue}), Mega Neón ({megaValue}), precios Fly y Ride.",
+        "itemOgTitle": "Valor de Intercambio de {name} | Adopt Me Valores 2026",
+        "itemOgDescription": "{name} vale {value} en Adopt Me. {neonOg} Consulta valores diariamente.",
+        "itemNeonOg": "Neón: {neonValue}, Mega: {megaValue}.",
+        "breadcrumbHome": "Inicio",
+        "breadcrumbValues": "Valores"
+    },
     "footer": {
         "privacy": "Política de Privacidad",
         "terms": "Términos de Servicio",

@@ -37,17 +37,20 @@ export async function generateMetadata({
     return { title: 'Pet Not Found' };
   }
 
+  const t = await getTranslations({ locale, namespace: 'jsonLd' });
   const value = getPetDefaultValue(pet);
   const isPet = isPetType(pet.type);
-  const neonInfo = isPet ? ` See Neon (${formatNumber(pet.nvalue)}), Mega Neon (${formatNumber(pet.mvalue)}), Fly, Ride prices and demand.` : '';
-  const ogNeon = isPet ? ` Neon: ${formatNumber(pet.nvalue)}, Mega: ${formatNumber(pet.mvalue)}.` : '';
+  const neonInfo = isPet ? t('itemNeonInfo', { neonValue: formatNumber(pet.nvalue), megaValue: formatNumber(pet.mvalue) }) : '';
+  const neonOg = isPet ? t('itemNeonOg', { neonValue: formatNumber(pet.nvalue), megaValue: formatNumber(pet.mvalue) }) : '';
   const { canonical, languages } = getLocalizedAlternates(`/values/${slug}`, locale);
   return {
-    title: `${pet.name} Value in Adopt Me 2026 — Trading Value${isPet ? ', Neon & Mega Prices' : ''}`,
-    description: `Check the latest ${pet.name} trading value in Roblox Adopt Me. Current value: ${formatNumber(value)}.${neonInfo} Rarity: ${pet.rarity}. Updated daily in 2026.`,
+    title: isPet
+      ? t('itemTitle', { name: pet.name })
+      : t('itemTitleSimple', { name: pet.name }),
+    description: t('itemDescription', { name: pet.name, value: formatNumber(value), neonInfo, rarity: pet.rarity }),
     openGraph: {
-      title: `${pet.name} Trading Value | Adopt Me Values 2026`,
-      description: `${pet.name} is worth ${formatNumber(value)} in Adopt Me.${ogNeon} Check trading values daily.`,
+      title: t('itemOgTitle', { name: pet.name }),
+      description: t('itemOgDescription', { name: pet.name, value: formatNumber(value), neonOg }),
       images: [pet.image],
     },
     alternates: { canonical, languages },
@@ -120,29 +123,23 @@ export default async function PetDetailPage({
   const typeLabel = pet.type.replace(/\b\w/g, (c) => c.toUpperCase());
   const rarityClass = RARITY_COLORS[pet.rarity.toLowerCase()] || RARITY_COLORS.common;
 
+  const tJsonLd = await getTranslations({ locale, namespace: 'jsonLd' });
   const jsonLdData = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: `${pet.name} — Adopt Me Roblox`,
-    description: `${pet.name} pet trading value in Roblox Adopt Me. Rarity: ${pet.rarity}. Value: ${formatNumber(value)}. Updated daily in 2026.`,
+    description: tJsonLd('itemDescription', { name: pet.name, value: formatNumber(value), neonInfo: isPet ? tJsonLd('itemNeonInfo', { neonValue: formatNumber(pet.nvalue), megaValue: formatNumber(pet.mvalue) }) : '', rarity: pet.rarity }),
     image: pet.image,
     category: pet.rarity,
-    ...(pet.score > 0 && {
-      aggregateRating: {
-        '@type': 'AggregateRating',
-        ratingValue: String(Math.max(1, Math.min(5, Math.round((1 - (pet.score - 1) / 100) * 5)))),
-        bestRating: '5',
-        ratingCount: String(Math.max(10, 1000 - pet.score * 5)),
-      },
-    }),
   };
 
+  const localizedBase = locale === 'en' ? 'https://adoptmevalues.app' : `https://adoptmevalues.app/${locale}`;
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: t('nav.home'), item: 'https://adoptmevalues.app' },
-      { '@type': 'ListItem', position: 2, name: t('nav.values'), item: 'https://adoptmevalues.app/values' },
+      { '@type': 'ListItem', position: 1, name: t('nav.home'), item: localizedBase },
+      { '@type': 'ListItem', position: 2, name: t('nav.values'), item: `${localizedBase}/values` },
       { '@type': 'ListItem', position: 3, name: pet.name },
     ],
   };

@@ -4,6 +4,7 @@ import { CreateTradeForm } from '@/components/trades/CreateTradeForm';
 export const metadata = {
   title: 'Post a Trade — Adopt Me Trading',
   description: 'Create and post your Adopt Me trade. Add the pets you have and the pets you want, then share with the community.',
+  robots: { index: false, follow: false },
 };
 
 export default function CreateTradePage() {

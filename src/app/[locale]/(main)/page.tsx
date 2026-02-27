@@ -15,23 +15,23 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-const homeJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebSite',
-  name: 'Adopt Me Values',
-  url: 'https://adoptmevalues.app',
-  description: 'Free Adopt Me trading values and trade calculator for Roblox. Check every pet value, neon, and mega neon price updated daily in 2026.',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: 'https://adoptmevalues.app/values?q={search_term_string}',
-    'query-input': 'required name=search_term_string',
-  },
-};
-
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale });
+
+  const homeJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: t('jsonLd.websiteName'),
+    url: 'https://adoptmevalues.app',
+    description: t('jsonLd.websiteDescription'),
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: 'https://adoptmevalues.app/values?q={search_term_string}',
+      'query-input': 'required name=search_term_string',
+    },
+  };
 
   const FEATURES = [
     {

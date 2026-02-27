@@ -156,6 +156,21 @@
         "analyticsTitle": "Adopt Me Trading Values 2026 — Market Trends & Pet Analytics",
         "analyticsDescription": "Track Adopt Me pet trading values, trending pets, and Roblox market analytics. See which pets are rising and falling in value."
     },
+    "jsonLd": {
+        "websiteName": "Adopt Me Values",
+        "websiteDescription": "Free Adopt Me trading values and trade calculator for Roblox. Check every pet value, neon, and mega neon price updated daily in 2026.",
+        "calculatorName": "Adopt Me Trade Calculator",
+        "calculatorDescription": "Free Adopt Me trade calculator to check if your Roblox pet trade is fair. Compare values for Normal, Neon, Mega Neon, Fly, Ride, and Fly Ride pets.",
+        "itemTitle": "{name} Value in Adopt Me 2026 — Trading Value, Neon & Mega Prices",
+        "itemTitleSimple": "{name} Value in Adopt Me 2026 — Trading Value",
+        "itemDescription": "Check the latest {name} trading value in Roblox Adopt Me. Current value: {value}. {neonInfo} Rarity: {rarity}. Updated daily in 2026.",
+        "itemNeonInfo": "See Neon ({neonValue}), Mega Neon ({megaValue}), Fly, Ride prices and demand.",
+        "itemOgTitle": "{name} Trading Value | Adopt Me Values 2026",
+        "itemOgDescription": "{name} is worth {value} in Adopt Me. {neonOg} Check trading values daily.",
+        "itemNeonOg": "Neon: {neonValue}, Mega: {megaValue}.",
+        "breadcrumbHome": "Home",
+        "breadcrumbValues": "Values"
+    },
     "footer": {
         "privacy": "Privacy Policy",
         "terms": "Terms of Service",

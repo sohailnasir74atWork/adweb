@@ -6,7 +6,6 @@ const STATIC_ASSETS = [
     '/icon-192.png',
     '/icon-512.png',
     '/logo.webp',
-    '/og-image.png',
 ];
 
 // Install: pre-cache static assets

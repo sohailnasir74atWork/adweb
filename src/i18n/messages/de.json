@@ -156,6 +156,21 @@
         "analyticsTitle": "Adopt Me Tauschwerte 2026 — Markttrends und Analyse",
         "analyticsDescription": "Verfolge Tauschwerte, Trends und Marktanalysen für Roblox Adopt Me."
     },
+    "jsonLd": {
+        "websiteName": "Adopt Me Werte",
+        "websiteDescription": "Kostenlose Adopt Me Tauschwerte und Tauschrechner für Roblox. Prüfe jeden Haustierwert, Neon und Mega Neon Preise täglich aktualisiert in 2026.",
+        "calculatorName": "Adopt Me Tauschrechner",
+        "calculatorDescription": "Kostenloser Adopt Me Tauschrechner um zu prüfen, ob dein Roblox Haustier-Tausch fair ist.",
+        "itemTitle": "{name} Wert in Adopt Me 2026 — Tauschwert, Neon & Mega Preise",
+        "itemTitleSimple": "{name} Wert in Adopt Me 2026 — Tauschwert",
+        "itemDescription": "Prüfe den aktuellen {name} Tauschwert in Roblox Adopt Me. Aktueller Wert: {value}. {neonInfo} Seltenheit: {rarity}. Täglich aktualisiert in 2026.",
+        "itemNeonInfo": "Siehe Neon ({neonValue}), Mega Neon ({megaValue}), Fly und Ride Preise.",
+        "itemOgTitle": "{name} Tauschwert | Adopt Me Werte 2026",
+        "itemOgDescription": "{name} ist {value} wert in Adopt Me. {neonOg} Prüfe Tauschwerte täglich.",
+        "itemNeonOg": "Neon: {neonValue}, Mega: {megaValue}.",
+        "breadcrumbHome": "Startseite",
+        "breadcrumbValues": "Werte"
+    },
     "footer": {
         "privacy": "Datenschutzrichtlinie",
         "terms": "Nutzungsbedingungen",
