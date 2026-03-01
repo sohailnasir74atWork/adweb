@@ -30,6 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/', '/values', '/calculator', '/trades', '/feed', '/chat',
     '/analytics', '/scammer', '/news', '/privacy', '/terms',
     '/about', '/contact', '/disclaimer',
+    '/blog', '/blog/silverback-gorilla-guide', '/blog/chocolate-chip-bat-dragon-backpack-guide',
   ];
 
   const allItems = await fetchPetDataServer();

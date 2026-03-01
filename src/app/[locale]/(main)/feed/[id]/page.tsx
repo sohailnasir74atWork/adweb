@@ -35,6 +35,7 @@ export async function generateMetadata({
       images: images.length > 0 ? [images[0]] : undefined,
     },
     alternates: { canonical, languages },
+    robots: { index: false, follow: true },
   };
 }
 

@@ -131,6 +131,14 @@ export default async function PetDetailPage({
     description: tJsonLd('itemDescription', { name: pet.name, value: formatNumber(value), neonInfo: isPet ? tJsonLd('itemNeonInfo', { neonValue: formatNumber(pet.nvalue), megaValue: formatNumber(pet.mvalue) }) : '', rarity: pet.rarity }),
     image: pet.image,
     category: pet.rarity,
+    brand: { '@type': 'Organization', name: 'Adopt Me (Roblox)' },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'USD',
+      price: '0',
+      availability: 'https://schema.org/InStock',
+      description: `Trading value: ${formatNumber(value)} in Adopt Me`,
+    },
   };
 
   const localizedBase = locale === 'en' ? 'https://adoptmevalues.app' : `https://adoptmevalues.app/${locale}`;

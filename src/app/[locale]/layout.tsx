@@ -69,17 +69,26 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
             description: t('homeDescription'),
             images: [
                 {
-                    url: "/og-image.png",
+                    url: "/og-banner.webp",
                     width: 1200,
                     height: 630,
-                    alt: t('homeTitle'),
+                    alt: "Adopt Me Values — Trade Calculator, Pet Values & Community Chat",
+                },
+                {
+                    url: "/og-portrait.webp",
+                    width: 630,
+                    height: 1200,
+                    alt: "Adopt Me Values App — Trade, Chat, Feeds & Fun",
                 },
             ],
         },
         twitter: {
             card: "summary_large_image",
+            site: "@adoptmevalues",
+            creator: "@adoptmevalues",
             title: t('homeTitle'),
             description: t('homeDescription'),
+            images: ["/og-banner.webp"],
         },
         icons: {
             icon: [
@@ -124,9 +133,9 @@ export default async function LocaleLayout({
                 <link rel="preconnect" href="https://adoptme.b-cdn.net" crossOrigin="anonymous" />
                 <link rel="dns-prefetch" href="https://firebasestorage.googleapis.com" />
                 <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-                <link rel="dns-prefetch" href="https://pagead2.googlesyndication.com" />
+                <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
                 <meta name="p:domain_verify" content="955b6494657c81a62dcad3a3c68caafb" />
-                <meta name="google-adsense-account" content="ca-pub-5740215782746766" />
+                <meta name="google-adsense-account" content="ca-pub-3701208411582706" />
             </head>
             <body
                 className={`${nunito.variable} ${nunitoSans.variable} antialiased`}
@@ -148,7 +157,7 @@ export default async function LocaleLayout({
 
                 {/* Google AdSense — lazy loaded for better performance */}
                 <Script
-                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5740215782746766"
+                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3701208411582706"
                     strategy="lazyOnload"
                     crossOrigin="anonymous"
                 />

@@ -19,7 +19,7 @@ export default function MainLayout({
           </aside>
 
           {/* Main content */}
-          <main className="flex-1 min-w-0 py-5 pb-20 lg:pb-6">
+          <main className="flex-1 min-w-0 py-5 pb-6">
             {children}
           </main>
 
@@ -33,7 +33,7 @@ export default function MainLayout({
       </div>
 
       {/* Full-width app banner above footer — visible on all screens */}
-      <div className="px-4 pb-20 lg:pb-6 max-w-xl mx-auto w-full xl:hidden">
+      <div className="px-4 pb-4 lg:pb-6 max-w-xl mx-auto w-full xl:hidden">
         <AppDownloadBanner />
       </div>
 

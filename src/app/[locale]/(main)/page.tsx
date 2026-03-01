@@ -90,9 +90,32 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     },
   ];
 
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: [
+      {
+        '@type': 'Question',
+        name: t('home.faqWhatTitle'),
+        acceptedAnswer: { '@type': 'Answer', text: t.raw('home.faqWhatDesc').replace(/<[^>]*>/g, '') },
+      },
+      {
+        '@type': 'Question',
+        name: t('home.faqTradeTitle'),
+        acceptedAnswer: { '@type': 'Answer', text: t.raw('home.faqTradeDesc').replace(/<[^>]*>/g, '') },
+      },
+      {
+        '@type': 'Question',
+        name: t('home.faqBrowseTitle'),
+        acceptedAnswer: { '@type': 'Answer', text: t.raw('home.faqBrowseDesc').replace(/<[^>]*>/g, '') },
+      },
+    ],
+  };
+
   return (
     <div className="flex flex-col gap-5 sm:gap-8">
       <JsonLd data={homeJsonLd} />
+      <JsonLd data={faqJsonLd} />
 
       {/* Hero */}
       <section className="text-center py-5 sm:py-10 lg:py-16 px-4">

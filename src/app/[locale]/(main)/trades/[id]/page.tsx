@@ -32,6 +32,7 @@ export async function generateMetadata({
       description: `Value: ${formatNumber(trade.hasTotal)} vs ${formatNumber(trade.wantsTotal)}`,
     },
     alternates: { canonical, languages },
+    robots: { index: false, follow: true },
   };
 }
 

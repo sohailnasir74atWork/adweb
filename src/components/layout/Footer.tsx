@@ -29,11 +29,12 @@ export function Footer() {
   ];
 
   return (
-    <footer className="hidden lg:block mt-auto">
+    <footer className="mt-auto">
       <div className="h-0.5 bg-gradient-to-r from-rose-500 via-violet-500 to-emerald-500" />
       <div className="bg-slate-950 text-white">
         <div className="mx-auto max-w-5xl px-6 py-6">
-          <div className="grid grid-cols-4 gap-8">
+          {/* Desktop layout */}
+          <div className="hidden lg:grid grid-cols-4 gap-8">
             {/* Brand + copyright */}
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2">
@@ -81,6 +82,24 @@ export function Footer() {
                 </a>
               </nav>
             </div>
+          </div>
+
+          {/* Mobile layout */}
+          <div className="lg:hidden flex flex-col gap-4">
+            <div className="flex items-center gap-2">
+              <Image src="/logo.webp" alt="Adopt Me Values" width={24} height={24} className="h-6 w-6 rounded-lg" />
+              <span className="font-extrabold text-sm tracking-tight">Adopt Me Values</span>
+            </div>
+            <nav className="flex flex-wrap gap-x-4 gap-y-1.5" aria-label="Footer links">
+              {LEGAL_LINKS.map((link) => (
+                <Link key={link.href} href={link.href} className="text-xs text-slate-400 hover:text-white transition-colors">
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+            <p className="text-[10px] text-slate-600 flex items-center gap-1">
+              © {new Date().getFullYear()} {config.appName} <Heart className="h-2.5 w-2.5 text-rose-500 fill-rose-500" /> Not affiliated with Roblox.
+            </p>
           </div>
         </div>
       </div>

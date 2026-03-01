@@ -30,6 +30,8 @@ export default async function CalculatorPage({ params }: { params: Promise<{ loc
     operatingSystem: 'Web',
   };
 
+  const stripTags = (s: string) => s.replace(/<[^>]*>/g, '');
+
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -37,17 +39,25 @@ export default async function CalculatorPage({ params }: { params: Promise<{ loc
       {
         '@type': 'Question',
         name: t('calculator.faqAccuracyTitle'),
-        acceptedAnswer: { '@type': 'Answer', text: t('calculator.faqAccuracyDesc') },
+        acceptedAnswer: { '@type': 'Answer', text: stripTags(t.raw('calculator.faqAccuracyDesc')) },
       },
       {
         '@type': 'Question',
         name: t('calculator.faqWinLoseTitle'),
-        acceptedAnswer: { '@type': 'Answer', text: t('calculator.faqWinLoseDesc', { win: t('calculator.win'), loss: t('calculator.loss'), fair: t('calculator.fairTrade') }) },
+        acceptedAnswer: {
+          '@type': 'Answer',
+          text: stripTags(
+            (t.raw('calculator.faqWinLoseDesc') as string)
+              .replace('{win}', t('calculator.win'))
+              .replace('{loss}', t('calculator.loss'))
+              .replace('{fair}', t('calculator.fairTrade'))
+          ),
+        },
       },
       {
         '@type': 'Question',
         name: t('calculator.faqNeonTitle'),
-        acceptedAnswer: { '@type': 'Answer', text: t('calculator.faqNeonDesc') },
+        acceptedAnswer: { '@type': 'Answer', text: stripTags(t.raw('calculator.faqNeonDesc')) },
       },
     ],
   };
