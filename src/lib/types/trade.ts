@@ -35,9 +35,18 @@ export interface Trade {
   robloxUsernameVerified?: boolean;
   hasRecentGameWin?: boolean;
   lastGameWinAt?: number | null;
+  // Reactions map: userId -> emoji (e.g. { "abc123": "✅" })
+  reactions?: Record<string, string>;
 }
 
 export type TradeStatus = Trade['status'];
+
+export const TRADE_REACTIONS = [
+  { emoji: '✅', label: 'Fair' },
+  { emoji: '❌', label: 'Lose' },
+  { emoji: '👍', label: 'OK' },
+  { emoji: '🔥', label: 'W' },
+] as const;
 
 export const TRADE_STATUS_LABELS: Record<TradeStatus, string> = {
   w: 'Win',

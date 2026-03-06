@@ -2,21 +2,23 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Star, Zap, ThumbsUp, Trash2, Loader2 } from 'lucide-react';
+import { ArrowRight, Star, Zap, Trash2, Loader2, MessageCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card } from '@/components/ui/card';
 import { PetImage } from '@/components/shared/PetImage';
 import { formatNumber } from '@/lib/utils/formatters';
 import { formatTimeAgo } from '@/lib/utils/formatters';
-import { deleteTrade } from '@/lib/firebase/firestore';
+import { deleteTrade, toggleTradeReaction } from '@/lib/firebase/firestore';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import type { Trade, TradeItem, TradeStatus } from '@/lib/types/trade';
+import { TRADE_REACTIONS } from '@/lib/types/trade';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 interface TradeCardProps {
   trade: Trade;
   onDeleted?: (tradeId: string) => void;
+  onReaction?: (tradeId: string, newReactions: Record<string, string>) => void;
 }
 
 const STATUS_STYLES: Record<TradeStatus, { bg: string; text: string; label: string }> = {
@@ -28,18 +30,15 @@ const STATUS_STYLES: Record<TradeStatus, { bg: string; text: string; label: stri
 function parseVariantBadges(item: TradeItem) {
   const badges: { label: string; className: string }[] = [];
   const vt = (item.valueType || 'd').split('_')[0];
-  // Value type badge — D (default), N (neon), M (mega)
   if (vt === 'n') badges.push({ label: 'N', className: 'bg-green-500 text-white' });
   else if (vt === 'm') badges.push({ label: 'M', className: 'bg-purple-500 text-white' });
   else badges.push({ label: 'D', className: 'bg-emerald-500 text-white' });
-  // Modifier badges — F (fly), R (ride) shown separately
   if (item.isFly) badges.push({ label: 'F', className: 'bg-blue-500 text-white' });
   if (item.isRide) badges.push({ label: 'R', className: 'bg-amber-500 text-white' });
   return badges;
 }
 
 function TradeItemsRow({ items, total, side }: { items: Trade['hasItems']; total: number; side: 'has' | 'wants' }) {
-  // Empty side — show "Give Offer" instead of 0
   if (!items || items.length === 0) {
     return (
       <div className="flex-1 min-w-0 flex flex-col items-center justify-center py-2">
@@ -52,7 +51,6 @@ function TradeItemsRow({ items, total, side }: { items: Trade['hasItems']; total
 
   return (
     <div className="flex-1 min-w-0 flex flex-col items-center gap-2">
-      {/* Total chip — above images */}
       <span className={cn(
         'text-xs font-extrabold px-3 py-1 rounded-full',
         side === 'has'
@@ -62,7 +60,6 @@ function TradeItemsRow({ items, total, side }: { items: Trade['hasItems']; total
         {formatNumber(total)}
       </span>
 
-      {/* Pet images row */}
       <div className="flex flex-wrap gap-1.5 justify-center">
         {items.slice(0, 4).map((item, i) => {
           const badges = parseVariantBadges(item);
@@ -90,7 +87,7 @@ function TradeItemsRow({ items, total, side }: { items: Trade['hasItems']; total
   );
 }
 
-export function TradeCard({ trade, onDeleted }: TradeCardProps) {
+export function TradeCard({ trade, onDeleted, onReaction }: TradeCardProps) {
   const currentUser = useAuthStore((s) => s.user);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -126,6 +123,31 @@ export function TradeCard({ trade, onDeleted }: TradeCardProps) {
     e.preventDefault();
     e.stopPropagation();
     setShowConfirm(false);
+  };
+
+  const handleReaction = (emoji: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!currentUser?.id) {
+      toast.error('Sign in to do this action');
+      return;
+    }
+
+    const reactionMap = { ...(trade.reactions || {}) };
+    const isActive = reactionMap[currentUser.id] === emoji;
+
+    // Optimistic update
+    if (isActive) {
+      delete reactionMap[currentUser.id];
+    } else {
+      reactionMap[currentUser.id] = emoji;
+    }
+    onReaction?.(trade.id, reactionMap);
+
+    // Background Firestore sync
+    toggleTradeReaction(trade.id, currentUser.id, emoji, isActive).catch((err) => {
+      console.error('Failed to toggle reaction:', err);
+    });
   };
 
   return (
@@ -164,7 +186,6 @@ export function TradeCard({ trade, onDeleted }: TradeCardProps) {
                 PRO
               </Badge>
             )}
-            {/* Delete button for own trades */}
             {isOwn && !showConfirm && (
               <button
                 onClick={handleDeleteClick}
@@ -220,13 +241,58 @@ export function TradeCard({ trade, onDeleted }: TradeCardProps) {
           <p className="text-xs text-muted-foreground mt-2 line-clamp-1">{trade.description}</p>
         )}
 
-        {/* Footer: rating */}
-        {trade.ratingCount > 0 && (
-          <div className="flex items-center gap-1 mt-2 text-[10px] text-muted-foreground">
-            <ThumbsUp className="h-3 w-3" />
-            <span>{trade.rating} ({trade.ratingCount})</span>
+        {/* Social Actions Row — reactions + chat */}
+        <div className="flex items-center justify-between mt-2.5 pt-2 border-t border-border/50">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            {TRADE_REACTIONS.map(({ emoji }) => {
+              const reactionMap = trade.reactions || {};
+              const count = Object.values(reactionMap).filter((r) => r === emoji).length;
+              const isActive = currentUser?.id ? reactionMap[currentUser.id] === emoji : false;
+              return (
+                <button
+                  key={emoji}
+                  onClick={(e) => handleReaction(emoji, e)}
+                  className={cn(
+                    'inline-flex items-center gap-0.5 px-2 py-1 rounded-full text-xs transition-all',
+                    'bg-muted/60 hover:bg-muted',
+                    isActive && 'bg-indigo-500/15 dark:bg-indigo-500/25 ring-1 ring-indigo-400/50',
+                  )}
+                >
+                  <span className="text-sm leading-none">{emoji}</span>
+                  {count > 0 && (
+                    <span className={cn(
+                      'text-[10px] font-semibold tabular-nums',
+                      isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-muted-foreground',
+                    )}>
+                      {count}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
           </div>
-        )}
+
+          {/* Chat button — hidden for own trades */}
+          {!isOwn && (
+            currentUser?.id ? (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.location.href = `/chat/dm/${trade.userId}`; }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-bold transition-colors shadow-sm"
+              >
+                <MessageCircle className="h-3 w-3" />
+                Chat
+              </button>
+            ) : (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toast.error('Sign in to do this action'); }}
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-bold transition-colors shadow-sm"
+              >
+                <MessageCircle className="h-3 w-3" />
+                Chat
+              </button>
+            )
+          )}
+        </div>
       </Card>
     </Link>
   );

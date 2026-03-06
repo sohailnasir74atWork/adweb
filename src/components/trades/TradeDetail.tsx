@@ -1,12 +1,17 @@
 'use client';
 
-import { ArrowRight, Star, Zap, Share2, Flag, ThumbsUp } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import Link from 'next/link';
+import { ArrowRight, Star, Zap, Share2, Flag, MessageCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { PetImage } from '@/components/shared/PetImage';
 import { formatNumber, formatTimeAgo } from '@/lib/utils/formatters';
+import { toggleTradeReaction } from '@/lib/firebase/firestore';
+import { useAuthStore } from '@/lib/store/useAuthStore';
 import type { Trade, TradeStatus } from '@/lib/types/trade';
+import { TRADE_REACTIONS } from '@/lib/types/trade';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
@@ -60,9 +65,13 @@ function ItemsGrid({ items, total, side }: { items: Trade['hasItems']; total: nu
   );
 }
 
-export function TradeDetail({ trade }: TradeDetailProps) {
+export function TradeDetail({ trade: initialTrade }: TradeDetailProps) {
+  const currentUser = useAuthStore((s) => s.user);
+  const [trade, setTrade] = useState(initialTrade);
   const statusStyle = STATUS_STYLES[trade.status];
   const timestamp = trade.timestamp?.toDate ? trade.timestamp.toDate() : new Date(trade.timestamp as unknown as number);
+
+  const isOwn = currentUser?.id === trade.userId;
 
   const handleShare = async () => {
     const url = `${window.location.origin}/trades/${trade.id}`;
@@ -73,6 +82,29 @@ export function TradeDetail({ trade }: TradeDetailProps) {
       toast.error('Failed to copy link');
     }
   };
+
+  const handleReaction = useCallback((emoji: string) => {
+    if (!currentUser?.id) {
+      toast.error('Sign in to do this action');
+      return;
+    }
+
+    const reactionMap = { ...(trade.reactions || {}) };
+    const isActive = reactionMap[currentUser.id] === emoji;
+
+    // Optimistic update
+    if (isActive) {
+      delete reactionMap[currentUser.id];
+    } else {
+      reactionMap[currentUser.id] = emoji;
+    }
+    setTrade((prev) => ({ ...prev, reactions: reactionMap }));
+
+    // Background Firestore sync
+    toggleTradeReaction(trade.id, currentUser.id, emoji, isActive).catch((err) => {
+      console.error('Failed to toggle reaction:', err);
+    });
+  }, [trade, currentUser?.id]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -128,16 +160,37 @@ export function TradeDetail({ trade }: TradeDetailProps) {
         </Card>
       )}
 
-      {/* Rating */}
-      {trade.ratingCount > 0 && (
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <ThumbsUp className="h-4 w-4" />
-          <span>{trade.rating} rating from {trade.ratingCount} votes</span>
-        </div>
-      )}
+      {/* Reactions row */}
+      <div className="flex items-center gap-2 flex-wrap">
+        {TRADE_REACTIONS.map(({ emoji, label }) => {
+          const reactionMap = trade.reactions || {};
+          const count = Object.values(reactionMap).filter((r) => r === emoji).length;
+          const isActive = currentUser?.id ? reactionMap[currentUser.id] === emoji : false;
+          return (
+            <button
+              key={emoji}
+              onClick={() => handleReaction(emoji)}
+              className={cn(
+                'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-all border',
+                'bg-muted/60 hover:bg-muted border-transparent',
+                isActive && 'bg-indigo-500/15 dark:bg-indigo-500/25 ring-1 ring-indigo-400/50 border-indigo-400/30',
+              )}
+              title={label}
+            >
+              <span className="text-base leading-none">{emoji}</span>
+              <span className={cn(
+                'text-xs font-semibold tabular-nums',
+                isActive ? 'text-indigo-600 dark:text-indigo-400' : 'text-muted-foreground',
+              )}>
+                {count}
+              </span>
+            </button>
+          );
+        })}
+      </div>
 
       {/* Actions */}
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <Button variant="outline" size="sm" onClick={handleShare} className="gap-1.5">
           <Share2 className="h-4 w-4" />
           Share
@@ -146,6 +199,22 @@ export function TradeDetail({ trade }: TradeDetailProps) {
           <Flag className="h-4 w-4" />
           Report
         </Button>
+        {/* Chat button — hidden for own trades */}
+        {!isOwn && (
+          currentUser?.id ? (
+            <Link href={`/chat/dm/${trade.userId}`}>
+              <Button size="sm" className="gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white">
+                <MessageCircle className="h-4 w-4" />
+                Chat
+              </Button>
+            </Link>
+          ) : (
+            <Button size="sm" className="gap-1.5 bg-emerald-500 hover:bg-emerald-600 text-white" onClick={() => toast.error('Sign in to do this action')}>
+              <MessageCircle className="h-4 w-4" />
+              Chat
+            </Button>
+          )
+        )}
       </div>
     </div>
   );

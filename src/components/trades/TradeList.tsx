@@ -189,6 +189,13 @@ export function TradeList({ initialTrades }: TradeListProps) {
     setTrades((prev) => prev.filter((t) => t.id !== tradeId));
   }, []);
 
+  // Update reactions optimistically in local state
+  const handleReaction = useCallback((tradeId: string, newReactions: Record<string, string>) => {
+    setTrades((prev) =>
+      prev.map((t) => (t.id === tradeId ? { ...t, reactions: newReactions } : t)),
+    );
+  }, []);
+
   return (
     <div className="flex flex-col gap-4">
       {/* Filter tabs */}
@@ -231,7 +238,7 @@ export function TradeList({ initialTrades }: TradeListProps) {
         <>
           <div className="flex flex-col gap-2">
             {trades.map((trade) => (
-              <TradeCard key={trade.id} trade={trade} onDeleted={handleTradeDeleted} />
+              <TradeCard key={trade.id} trade={trade} onDeleted={handleTradeDeleted} onReaction={handleReaction} />
             ))}
           </div>
 

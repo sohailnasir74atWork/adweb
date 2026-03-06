@@ -17,6 +17,7 @@ import {
   type QuerySnapshot,
   type Unsubscribe,
   serverTimestamp,
+  deleteField,
 } from 'firebase/firestore';
 import { firestore } from './config';
 import type { Trade } from '@/lib/types/trade';
@@ -129,6 +130,21 @@ export async function updateTrade(tradeId: string, updates: Partial<Trade>): Pro
 
 export async function deleteTrade(tradeId: string): Promise<void> {
   await deleteDoc(doc(firestore, 'trades_new', tradeId));
+}
+
+/** Toggle a reaction emoji on a trade (matches sibling RN project) */
+export async function toggleTradeReaction(
+  tradeId: string,
+  userId: string,
+  emoji: string,
+  isActive: boolean,
+): Promise<void> {
+  const tradeRef = doc(firestore, 'trades_new', tradeId);
+  if (isActive) {
+    await updateDoc(tradeRef, { [`reactions.${userId}`]: deleteField() });
+  } else {
+    await updateDoc(tradeRef, { [`reactions.${userId}`]: emoji });
+  }
 }
 
 export async function deletePost(postId: string): Promise<void> {
