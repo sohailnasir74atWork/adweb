@@ -34,7 +34,13 @@
         "subtitle": "All Adopt Me trading values updated daily for 2026. Click any pet to see full value details including Neon, Mega Neon, Fly, and Ride prices.",
         "searchPlaceholder": "Search for a pet...",
         "filterAll": "All",
-        "noResults": "No pets found matching your search."
+        "noResults": "No pets found matching your search.",
+        "faqHowTitle": "How Are Adopt Me Pet Values Calculated?",
+        "faqHowDesc": "Our Adopt Me trading values are calculated from <strong>real trade data</strong> submitted by thousands of community traders. We analyze trade frequency, demand ratios, and market trends to assign each pet a fair value. Values are updated daily to reflect the latest Roblox Adopt Me trading market in 2026. Every potion variant — No Potion, Fly, Ride, and Fly Ride — has its own separate value.",
+        "faqRarestTitle": "What Are the Most Valuable Pets in Adopt Me?",
+        "faqRarestDesc": "The most valuable pets in Adopt Me 2026 include the <strong>Blue Dog</strong>, <strong>Pink Cat</strong>, <strong>Shadow Dragon</strong>, <strong>Frost Dragon</strong>, <strong>Bat Dragon</strong>, and <strong>Giraffe</strong>. Limited pets from retired eggs (Safari Egg, Jungle Egg, Farm Egg) tend to have the highest values. Click any pet above to see its full trading value, Neon price, and Mega Neon price.",
+        "faqNeonTitle": "What's the Difference Between Neon and Mega Neon Values?",
+        "faqNeonDesc": "A <strong>Neon pet</strong> is made by combining 4 fully-grown versions of the same pet at the Neon Cave — it glows in one color. A <strong>Mega Neon</strong> requires 4 full-grown Neon pets and cycles through rainbow colors. Mega Neons are significantly rarer and more valuable. On our value list, every pet shows its Normal, Neon, and Mega Neon trading values separately."
     },
     "detail": {
         "defaultValue": "Default Value",
@@ -91,7 +97,11 @@
         "lookingFor": "Looking For",
         "seoTitle": "Adopt Me Trading",
         "seoDesc": "Find the best Adopt Me trades in our real-time Roblox trade hub. Browse trading values from other players, filter by <strong>Win</strong>, <strong>Lose</strong>, or <strong>Fair</strong>, and post your own trades. All trades show accurate trading values so you know exactly what you're getting in 2026.",
-        "seoUpdated": "Values updated daily for fair trades"
+        "seoUpdated": "Values updated daily for fair trades",
+        "faqFairTitle": "How to Make Fair Trades in Adopt Me",
+        "faqFairDesc": "A fair trade is one where both sides give roughly equal value. Use our <link>Trade Calculator</link> to check the value of each pet before accepting. Look at Normal, Neon, and Mega Neon values, and always consider potion status — a No Potion Legendary is often worth more than a Fly Ride version.",
+        "faqBestTitle": "Tips for Getting Better Trades",
+        "faqBestDesc": "<strong>Trade up gradually</strong> — don't try to jump from a Common pet to a Legendary in one trade. Bundle lower-value pets together to offer fair value. Watch the <link2>Market Analytics</link2> to spot pets that are rising in value and trade for them before they peak. Patience is the best trading strategy!"
     },
     "chat": {
         "title": "Chat",
@@ -99,11 +109,17 @@
         "groups": "Groups",
         "inbox": "Inbox",
         "signInToSend": "Sign in to send messages",
-        "typeMessage": "Type a message..."
+        "typeMessage": "Type a message...",
+        "faqRoomsTitle": "Adopt Me Trading Chat Rooms",
+        "faqRoomsDesc": "Our <strong>real-time trading chat</strong> lets you connect with Roblox Adopt Me traders instantly. Join public trading groups to discuss values, post offers, and find trade partners. Every group is moderated to keep the community safe for players of all ages.",
+        "faqFindTitle": "How to Find Traders in Adopt Me",
+        "faqFindDesc": "Looking for someone to trade with? Browse our <strong>active chat groups</strong> where players post their offers in real-time. You can also send <strong>private messages</strong> to negotiate trades directly. Check a player's username in our <link>Scammer Database</link> before trading for extra safety."
     },
     "feed": {
         "title": "Community Feed",
-        "createPost": "Create Post"
+        "createPost": "Create Post",
+        "seoTitle": "Adopt Me Community",
+        "seoDesc": "Welcome to the Adopt Me community feed — share your <strong>best trades</strong>, show off your <strong>Neon and Mega Neon pets</strong>, post your pet collection screenshots, and connect with other Roblox players. Like and comment on posts from traders around the world."
     },
     "scammer": {
         "title": "Scammer Database",
@@ -114,7 +130,9 @@
         "tip1": "Never trust \"trust trades\" — always use the trade window",
         "tip2": "Check usernames in our database before trading high-value pets",
         "tip3": "Report scammers to help protect other players",
-        "tip4": "Never share personal information during trades"
+        "tip4": "Never share personal information during trades",
+        "faqSpotTitle": "How to Spot a Scam in Adopt Me",
+        "faqSpotDesc": "The most common Adopt Me scams include <strong>trust trades</strong> (asking you to give a pet for free with a promise to return it), <strong>fake giveaways</strong>, and <strong>age swaps</strong> (swapping a pet with a lower-age version at the last second). Always double-check the trade window before accepting, and never trade outside the official Roblox trade system."
     },
     "news": {
         "title": "News & Updates",
@@ -206,6 +224,7 @@
         "about": "About",
         "contact": "Contact",
         "disclaimer": "Disclaimer",
+        "deleteAccount": "Delete Account",
         "explore": "Explore",
         "legal": "Legal",
         "apps": "Apps"

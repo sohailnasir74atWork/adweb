@@ -178,7 +178,7 @@ function fixItemImages<T extends { image: string }>(items: T[] | undefined): T[]
   return items.map((item) => ({ ...item, image: fixImagePath(item.image) }));
 }
 
-type TabKey = 'overview' | 'changes' | 'movers' | 'demand' | 'predictions';
+type TabKey = 'overview' | 'changes' | 'movers' | 'demand' | 'supply' | 'predictions';
 type ChangesFilter = 'all' | 'up' | 'down';
 
 /* ---------- Component ---------- */
@@ -270,6 +270,7 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
     { key: 'changes', label: 'Changes', emoji: '📊' },
     { key: 'movers', label: 'Movers', emoji: '🚀' },
     { key: 'demand', label: 'Demand', emoji: '🔥' },
+    { key: 'supply', label: 'D vs S', emoji: '⚖️' },
     { key: 'predictions', label: 'Predict', emoji: '🔮' },
   ];
 
@@ -282,7 +283,7 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
             className={cn(
-              'tap-target flex items-center gap-2 whitespace-nowrap rounded-2xl px-5 py-2.5 text-sm font-bold transition-all',
+              'tap-target flex items-center gap-1 lg:gap-2 whitespace-nowrap rounded-2xl px-3 lg:px-5 py-1.5 lg:py-2.5 text-xs lg:text-sm font-bold transition-all flex-shrink-0',
               activeTab === tab.key
                 ? 'bg-app-primary text-white shadow-md'
                 : 'bg-muted text-muted-foreground hover:bg-accent',
@@ -363,9 +364,9 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
                 <Flame className="h-5 w-5 text-orange-500" />
                 <h2 className="font-extrabold text-base">Most Traded</h2>
               </div>
-              <div className="flex flex-col gap-2">
-                {analytics.topTraded.slice(0, 10).map((item, i) => (
-                  <ItemRow key={`traded-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {analytics.topTraded.map((item, i) => (
+                  <ItemTag key={`traded-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
                 ))}
               </div>
             </Card>
@@ -378,9 +379,9 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
                 <Eye className="h-5 w-5 text-violet-500" />
                 <h2 className="font-extrabold text-base">Most Wanted</h2>
               </div>
-              <div className="flex flex-col gap-2">
-                {analytics.topWanted.slice(0, 10).map((item, i) => (
-                  <ItemRow key={`wanted-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {analytics.topWanted.map((item, i) => (
+                  <ItemTag key={`wanted-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
                 ))}
               </div>
             </Card>
@@ -393,9 +394,9 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
                 <Package className="h-5 w-5 text-blue-500" />
                 <h2 className="font-extrabold text-base">Most Offered</h2>
               </div>
-              <div className="flex flex-col gap-2">
-                {analytics.topOffered.slice(0, 10).map((item, i) => (
-                  <ItemRow key={`offered-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {analytics.topOffered.map((item, i) => (
+                  <ItemTag key={`offered-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
                 ))}
               </div>
             </Card>
@@ -442,9 +443,9 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
                 <h2 className="font-extrabold text-base">Value Updates</h2>
                 <span className="text-xs text-muted-foreground ml-auto">{filteredChanges.length} items</span>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
                 {filteredChanges.map((c, i) => (
-                  <ChangeRow key={`change-${i}`} change={c} />
+                  <ChangeTag key={`change-${i}`} change={c} index={i} />
                 ))}
               </div>
             </Card>
@@ -468,9 +469,9 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
                 <TrendingUp className="h-5 w-5 text-emerald-500" />
                 <h2 className="font-extrabold text-base">🚀 Rising Demand</h2>
               </div>
-              <div className="flex flex-col gap-2">
-                {analytics.topMovers.slice(0, 10).map((item, i) => (
-                  <ItemRow
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {analytics.topMovers.map((item, i) => (
+                  <ItemTag
                     key={`mover-${i}`}
                     item={item}
                     index={i}
@@ -489,9 +490,9 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
                 <TrendingDown className="h-5 w-5 text-red-500" />
                 <h2 className="font-extrabold text-base">📉 Falling Demand</h2>
               </div>
-              <div className="flex flex-col gap-2">
-                {analytics.topLosers.slice(0, 10).map((item, i) => (
-                  <ItemRow
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {analytics.topLosers.map((item, i) => (
+                  <ItemTag
                     key={`loser-${i}`}
                     item={item}
                     index={i}
@@ -528,9 +529,9 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
                   <p className="text-[11px] text-muted-foreground">Highest demand pets</p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                {analytics.topWanted.slice(0, 15).map((item, i) => (
-                  <ItemRow key={`wanted-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {analytics.topWanted.map((item, i) => (
+                  <ItemTag key={`wanted-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
                 ))}
               </div>
             </Card>
@@ -546,16 +547,30 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
                   <p className="text-[11px] text-muted-foreground">Highest supply pets</p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                {analytics.topOffered.slice(0, 15).map((item, i) => (
-                  <ItemRow key={`offered-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {analytics.topOffered.map((item, i) => (
+                  <ItemTag key={`offered-${i}`} item={item} index={i} badge={`${(item.count || 0) * VM}x`} />
                 ))}
               </div>
             </Card>
           )}
 
-          {/* Demand vs Supply Ratios */}
-          {analytics.demandSupplyRatios && analytics.demandSupplyRatios.length > 0 && (
+          {/* No data fallback */}
+          {(!analytics.topWanted || analytics.topWanted.length === 0) &&
+            (!analytics.topOffered || analytics.topOffered.length === 0) && (
+              <div className="text-center py-12">
+                <p className="text-4xl mb-2">🔥</p>
+                <p className="font-bold">No demand data yet</p>
+                <p className="text-sm text-muted-foreground">Check back after more trades happen.</p>
+              </div>
+            )}
+        </>
+      )}
+
+      {/* ═══ DEMAND VS SUPPLY TAB ═══ */}
+      {activeTab === 'supply' && (
+        <>
+          {analytics.demandSupplyRatios && analytics.demandSupplyRatios.length > 0 ? (
             <Card className="p-4 rounded-2xl border-l-4 border-l-violet-500">
               <div className="flex items-center gap-2 mb-4">
                 <BarChart3 className="h-5 w-5 text-violet-500" />
@@ -564,42 +579,38 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
                   <p className="text-[11px] text-muted-foreground">Want-to-offer ratio</p>
                 </div>
               </div>
-              <div className="flex flex-col gap-2">
-                {analytics.demandSupplyRatios.slice(0, 15).map((item, i) => {
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                {analytics.demandSupplyRatios.map((item, i) => {
                   const signalColor = item.signal === 'rising'
-                    ? 'text-emerald-600 dark:text-emerald-400'
+                    ? 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30'
                     : item.signal === 'falling'
-                      ? 'text-red-600 dark:text-red-400'
-                      : 'text-amber-600 dark:text-amber-400';
+                      ? 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30'
+                      : 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30';
+                  const colorClass = CARD_COLORS[i % CARD_COLORS.length];
                   return (
-                    <div key={`ds-${i}`} className="flex items-center gap-2.5 rounded-2xl border p-2.5">
-                      <PetImage src={item.image} alt={item.name} size={36} />
+                    <div key={`ds-${i}`} className={cn('flex items-center gap-2 rounded-xl border p-2 transition-shadow hover:shadow-md', colorClass)}>
+                      <PetImage src={item.image} alt={item.name} size={32} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold truncate">{item.name}</p>
-                        <p className="text-[11px] text-muted-foreground">
+                        <p className="text-xs font-bold truncate">{item.name}</p>
+                        <p className="text-[10px] text-muted-foreground">
                           {item.demand || 0} want · {item.supply || 0} offer
                         </p>
                       </div>
-                      <div className={cn('text-sm font-extrabold', signalColor)}>
+                      <span className={cn('text-[10px] font-extrabold px-1.5 py-0.5 rounded-full flex-shrink-0', signalColor)}>
                         {(item.ratio || 0).toFixed(1)}x
-                      </div>
+                      </span>
                     </div>
                   );
                 })}
               </div>
             </Card>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-4xl mb-2">⚖️</p>
+              <p className="font-bold">No supply data yet</p>
+              <p className="text-sm text-muted-foreground">Check back after more trades happen.</p>
+            </div>
           )}
-
-          {/* No data fallback */}
-          {(!analytics.topWanted || analytics.topWanted.length === 0) &&
-            (!analytics.topOffered || analytics.topOffered.length === 0) &&
-            (!analytics.demandSupplyRatios || analytics.demandSupplyRatios.length === 0) && (
-              <div className="text-center py-12">
-                <p className="text-4xl mb-2">🔥</p>
-                <p className="font-bold">No demand data yet</p>
-                <p className="text-sm text-muted-foreground">Check back after more trades happen.</p>
-              </div>
-            )}
         </>
       )}
 
@@ -613,7 +624,7 @@ export function AnalyticsDashboard({ ssrAnalyticsRaw, ssrChangesRaw }: Analytics
                 <h2 className="font-extrabold text-base">Price Predictions</h2>
               </div>
               <div className="flex flex-col gap-2">
-                {analytics.predictions.slice(0, 20).map((item, i) => {
+                {analytics.predictions.map((item, i) => {
                   const pred = (item as unknown as Record<string, unknown>).prediction as string || '';
                   const conf = (item as unknown as Record<string, unknown>).confidence as number || 0;
                   const isRise = pred.includes('rise');
@@ -732,23 +743,35 @@ function HourlyBarChart({ data, peakHour }: { data: number[]; peakHour?: number 
   );
 }
 
-function ItemRow({ item, index, badge, badgeColor }: {
+const CARD_COLORS = [
+  'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-800',
+  'bg-violet-50 dark:bg-violet-950/30 border-violet-200 dark:border-violet-800',
+  'bg-pink-50 dark:bg-pink-950/30 border-pink-200 dark:border-pink-800',
+  'bg-amber-50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800',
+  'bg-emerald-50 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-800',
+  'bg-cyan-50 dark:bg-cyan-950/30 border-cyan-200 dark:border-cyan-800',
+  'bg-rose-50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800',
+  'bg-indigo-50 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-800',
+];
+
+function ItemTag({ item, index, badge, badgeColor }: {
   item: AnalyticsItem; index: number; badge: string; badgeColor?: string;
 }) {
   const medals = ['🥇', '🥈', '🥉'];
   const rank = index < 3 ? medals[index] : `#${index + 1}`;
+  const colorClass = CARD_COLORS[index % CARD_COLORS.length];
 
   return (
-    <div className={cn('flex items-center gap-2.5 rounded-2xl p-2.5', index % 2 === 0 && 'bg-muted/40')}>
-      <span className={cn('text-sm font-bold w-7 text-center', index < 3 ? 'text-lg' : 'text-muted-foreground')}>
+    <div className={cn('flex items-center gap-2 rounded-xl border p-2 transition-shadow hover:shadow-md', colorClass)}>
+      <span className={cn('text-xs font-bold w-6 text-center flex-shrink-0', index < 3 ? 'text-base' : 'text-muted-foreground')}>
         {rank}
       </span>
-      <PetImage src={item.image} alt={item.name} size={36} />
+      <PetImage src={item.image} alt={item.name} size={32} />
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold truncate">{item.name}</p>
-        <p className="text-[11px] text-muted-foreground capitalize">{item.type || 'pet'}</p>
+        <p className="text-xs font-bold truncate">{item.name}</p>
+        <p className="text-[10px] text-muted-foreground capitalize">{item.type || 'pet'}</p>
       </div>
-      <span className={cn('text-xs font-extrabold px-2.5 py-1 rounded-full',
+      <span className={cn('text-[10px] font-extrabold px-1.5 py-0.5 rounded-full flex-shrink-0',
         badgeColor || 'text-app-primary bg-app-primary/10'
       )}>
         {badge}
@@ -757,21 +780,23 @@ function ItemRow({ item, index, badge, badgeColor }: {
   );
 }
 
-function ChangeRow({ change }: { change: NormalizedChange }) {
+function ChangeTag({ change, index }: { change: NormalizedChange; index: number }) {
   const isUp = change.direction === 'up';
+  const colorClass = CARD_COLORS[index % CARD_COLORS.length];
+
   return (
-    <div className="flex items-center gap-2.5 rounded-2xl border p-2.5">
-      <PetImage src={change.image} alt={change.name} size={36} />
+    <div className={cn('flex items-center gap-2 rounded-xl border p-2 transition-shadow hover:shadow-md', colorClass)}>
+      <PetImage src={change.image} alt={change.name} size={32} />
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold truncate">{change.name}</p>
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-xs font-bold truncate">{change.name}</p>
+        <p className="text-[10px] text-muted-foreground">
           {formatNumber(change.oldVal)} → {formatNumber(change.newVal)}
         </p>
       </div>
-      <div className={cn('flex items-center gap-0.5 text-sm font-extrabold',
+      <div className={cn('flex items-center gap-0.5 text-xs font-extrabold flex-shrink-0',
         isUp ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
       )}>
-        {isUp ? <ArrowUpRight className="h-4 w-4" /> : <ArrowDownRight className="h-4 w-4" />}
+        {isUp ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}
         {Math.abs(change.pct)}%
       </div>
     </div>

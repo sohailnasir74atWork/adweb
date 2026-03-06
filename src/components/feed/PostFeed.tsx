@@ -15,18 +15,17 @@ import { Timestamp } from 'firebase/firestore';
 
 const CLIENT_PAGE_SIZE = 10;
 
-type FilterTab = 'all' | 'mine' | 'showcase' | 'meme' | 'looking for trade' | 'discussion' | 'scam alert' | 'real or fake' | 'need help';
+type FilterTab = 'all' | 'mine' | 'Scam Alert' | 'Looking for Trade' | 'Discussion' | 'Real or Fake' | 'Need Help' | 'Misc';
 
 const FILTER_TABS: { value: FilterTab; label: string }[] = [
   { value: 'all', label: 'All' },
   { value: 'mine', label: '🧑 My Posts' },
-  { value: 'showcase', label: '🎨 Showcase' },
-  { value: 'meme', label: '😂 Meme' },
-  { value: 'looking for trade', label: '🔄 Trading' },
-  { value: 'discussion', label: '💬 Discussion' },
-  { value: 'scam alert', label: '🚨 Scam Alert' },
-  { value: 'real or fake', label: '❓ Real or Fake' },
-  { value: 'need help', label: '🆘 Help' },
+  { value: 'Looking for Trade', label: '🔄 Trading' },
+  { value: 'Discussion', label: '💬 Discussion' },
+  { value: 'Scam Alert', label: '🚨 Scam Alert' },
+  { value: 'Real or Fake', label: '❓ Real or Fake' },
+  { value: 'Need Help', label: '🆘 Help' },
+  { value: 'Misc', label: '📌 Misc' },
 ];
 
 interface PostFeedProps {

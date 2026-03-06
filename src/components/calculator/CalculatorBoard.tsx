@@ -67,16 +67,16 @@ export function CalculatorBoard() {
 
       {/* Summary — always visible */}
       {(hasItems.length > 0 || wantsItems.length > 0) && (
-        <div className="sticky top-16 z-10 bg-background/95 backdrop-blur-sm rounded-2xl border p-3 shadow-sm">
-          <div className="flex items-center justify-between gap-3">
+        <div className="sticky top-16 z-10 bg-background/95 backdrop-blur-sm rounded-xl sm:rounded-2xl border p-1.5 sm:p-3 shadow-sm">
+          <div className="flex items-center justify-between gap-1 sm:gap-3">
             <div className="text-center flex-1">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">You ({hasItems.length})</p>
-              <p className="text-sm font-extrabold text-app-has">{formatNumber(hasTotal)}</p>
+              <p className="text-[7px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-bold">You ({hasItems.length})</p>
+              <p className="text-[9px] sm:text-sm font-extrabold text-app-has">{formatNumber(hasTotal)}</p>
             </div>
             <TradeResult result={result} percentage={resultPercentage} hasTotal={hasTotal} wantsTotal={wantsTotal} compact />
             <div className="text-center flex-1">
-              <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Them ({wantsItems.length})</p>
-              <p className="text-sm font-extrabold text-app-want">{formatNumber(wantsTotal)}</p>
+              <p className="text-[7px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Them ({wantsItems.length})</p>
+              <p className="text-[9px] sm:text-sm font-extrabold text-app-want">{formatNumber(wantsTotal)}</p>
             </div>
           </div>
           <ValueBar hasTotal={hasTotal} wantsTotal={wantsTotal} />
@@ -86,20 +86,20 @@ export function CalculatorBoard() {
       {/* Two sides — always side by side */}
       <div className="grid grid-cols-2 gap-3">
         {/* HAS / Offering side */}
-        <div className="rounded-2xl border-2 border-app-has/40 bg-app-has/5 p-2.5 sm:p-3">
-          <div className="flex items-center justify-between mb-2">
+        <div className="rounded-2xl border-2 border-app-has/40 bg-app-has/5 p-1.5 sm:p-3">
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
             <div>
-              <h3 className="text-sm font-extrabold text-app-has">Your Pets</h3>
-              <p className="text-[10px] text-muted-foreground">
+              <h3 className="text-[7px] sm:text-sm font-extrabold text-app-has"><span className="sm:hidden">You</span><span className="hidden sm:inline">Your Pets</span></h3>
+              <p className="text-[7px] sm:text-[10px] text-muted-foreground">
                 Total: <span className="font-semibold text-app-has">{formatNumber(hasTotal)}</span>
               </p>
             </div>
             <Button
               size="sm"
               onClick={() => setSelectorSide('has')}
-              className="bg-app-has hover:bg-app-has/90 text-white gap-1 rounded-xl font-bold h-8 px-3 text-xs"
+              className="bg-app-has hover:bg-app-has/90 text-white gap-0.5 rounded-lg sm:rounded-xl font-bold h-5 sm:h-8 px-1.5 sm:px-3 text-[8px] sm:text-xs"
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5" />
               Add
             </Button>
           </div>
@@ -113,7 +113,7 @@ export function CalculatorBoard() {
             </button>
           ) : (
             <div className="max-h-[420px] overflow-y-auto overflow-x-hidden pr-0.5">
-              <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-4 gap-1 sm:gap-1.5">
+              <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-px sm:gap-1.5">
                 {hasItems.map((item, i) => (
                   <CalculatorPetCard
                     key={`has-${i}-${item.pet.id}`}
@@ -125,7 +125,7 @@ export function CalculatorBoard() {
                 ))}
                 <button
                   onClick={() => setSelectorSide('has')}
-                  className="flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-xl border-2 border-dashed border-app-has/30 p-2 sm:p-3 text-muted-foreground hover:border-app-has/50 hover:bg-app-has/5 transition-colors min-h-[60px] sm:min-h-[80px]"
+                  className="flex flex-col items-center justify-center gap-0.5 rounded-xl border-2 border-dashed border-app-has/30 p-2 text-muted-foreground hover:border-app-has/50 hover:bg-app-has/5 transition-colors min-h-[50px] sm:min-h-[70px]"
                 >
                   <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
                   <span className="text-[9px] sm:text-[10px]">Add</span>
@@ -136,20 +136,20 @@ export function CalculatorBoard() {
         </div>
 
         {/* WANTS / Looking For side */}
-        <div className="rounded-2xl border-2 border-app-want/40 bg-app-want/5 p-2.5 sm:p-3">
-          <div className="flex items-center justify-between mb-2">
+        <div className="rounded-2xl border-2 border-app-want/40 bg-app-want/5 p-1.5 sm:p-3">
+          <div className="flex items-center justify-between mb-1 sm:mb-2">
             <div>
-              <h3 className="text-sm font-extrabold text-app-want">Their Pets</h3>
-              <p className="text-[10px] text-muted-foreground">
+              <h3 className="text-[7px] sm:text-sm font-extrabold text-app-want"><span className="sm:hidden">Them</span><span className="hidden sm:inline">Their Pets</span></h3>
+              <p className="text-[7px] sm:text-[10px] text-muted-foreground">
                 Total: <span className="font-semibold text-app-want">{formatNumber(wantsTotal)}</span>
               </p>
             </div>
             <Button
               size="sm"
               onClick={() => setSelectorSide('wants')}
-              className="bg-app-want hover:bg-app-want/90 text-white gap-1 rounded-xl font-bold h-8 px-3 text-xs"
+              className="bg-app-want hover:bg-app-want/90 text-white gap-0.5 rounded-lg sm:rounded-xl font-bold h-5 sm:h-8 px-1.5 sm:px-3 text-[8px] sm:text-xs"
             >
-              <Plus className="h-3.5 w-3.5" />
+              <Plus className="h-2.5 w-2.5 sm:h-3.5 sm:w-3.5" />
               Add
             </Button>
           </div>
@@ -163,7 +163,7 @@ export function CalculatorBoard() {
             </button>
           ) : (
             <div className="max-h-[420px] overflow-y-auto overflow-x-hidden pr-0.5">
-              <div className="grid grid-cols-3 sm:grid-cols-2 md:grid-cols-4 gap-1 sm:gap-1.5">
+              <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 gap-px sm:gap-1.5">
                 {wantsItems.map((item, i) => (
                   <CalculatorPetCard
                     key={`wants-${i}-${item.pet.id}`}
@@ -175,7 +175,7 @@ export function CalculatorBoard() {
                 ))}
                 <button
                   onClick={() => setSelectorSide('wants')}
-                  className="flex flex-col items-center justify-center gap-0.5 sm:gap-1 rounded-xl border-2 border-dashed border-app-want/30 p-2 sm:p-3 text-muted-foreground hover:border-app-want/50 hover:bg-app-want/5 transition-colors min-h-[60px] sm:min-h-[80px]"
+                  className="flex flex-col items-center justify-center gap-0.5 rounded-xl border-2 border-dashed border-app-want/30 p-2 text-muted-foreground hover:border-app-want/50 hover:bg-app-want/5 transition-colors min-h-[50px] sm:min-h-[70px]"
                 >
                   <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
                   <span className="text-[9px] sm:text-[10px]">Add</span>

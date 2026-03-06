@@ -57,11 +57,11 @@ export function TradeResult({ result, percentage, hasTotal, wantsTotal, compact 
 
   if (compact) {
     return (
-      <div className={cn('flex flex-col items-center rounded-xl px-4 py-1.5', config.bg)}>
-        <Icon className={cn('h-5 w-5', config.text)} />
-        <p className={cn('text-sm font-extrabold', config.text)}>{config.label}</p>
+      <div className={cn('flex flex-col items-center rounded-lg sm:rounded-xl px-2 sm:px-4 py-1 sm:py-1.5', config.bg)}>
+        <Icon className={cn('h-3.5 w-3.5 sm:h-5 sm:w-5', config.text)} />
+        <p className={cn('text-[9px] sm:text-sm font-extrabold', config.text)}>{config.label}</p>
         {percentage > 0 && (
-          <p className={cn('text-[10px] font-bold', config.text)}>{percentage.toFixed(1)}%</p>
+          <p className={cn('text-[7px] sm:text-[10px] font-bold', config.text)}>{percentage.toFixed(1)}%</p>
         )}
       </div>
     );

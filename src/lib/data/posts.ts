@@ -10,6 +10,7 @@ export interface ServerPost {
     imageUrl: string[];
     desc: string;
     likes: Record<string, boolean>;
+    reactions?: Record<string, string>;
     commentCount: number;
     createdAt: number; // epoch ms (serializable)
     selectedTags: string[];
@@ -37,6 +38,7 @@ export async function fetchPostsServer(count = 5): Promise<ServerPost[]> {
                         { fieldPath: 'imageUrl' },
                         { fieldPath: 'desc' },
                         { fieldPath: 'likes' },
+                        { fieldPath: 'reactions' },
                         { fieldPath: 'commentCount' },
                         { fieldPath: 'createdAt' },
                         { fieldPath: 'selectedTags' },
@@ -97,6 +99,16 @@ export async function fetchPostsServer(count = 5): Promise<ServerPost[]> {
                     }
                 }
 
+                // Parse reactions map
+                const reactionsMap = fields.reactions?.mapValue as Record<string, unknown> | undefined;
+                const reactions: Record<string, string> = {};
+                if (reactionsMap?.fields) {
+                    const reactionFields = reactionsMap.fields as Record<string, Record<string, unknown>>;
+                    for (const [uid, val] of Object.entries(reactionFields)) {
+                        if (val.stringValue) reactions[uid] = val.stringValue as string;
+                    }
+                }
+
                 // Parse selectedTags array
                 const tagsArr = fields.selectedTags?.arrayValue as Record<string, unknown> | undefined;
                 const selectedTags: string[] = [];
@@ -122,6 +134,7 @@ export async function fetchPostsServer(count = 5): Promise<ServerPost[]> {
                     imageUrl,
                     desc: (fields.desc?.stringValue as string) || '',
                     likes,
+                    reactions: Object.keys(reactions).length > 0 ? reactions : undefined,
                     commentCount: parseInt(String(fields.commentCount?.integerValue || '0'), 10),
                     createdAt,
                     selectedTags,

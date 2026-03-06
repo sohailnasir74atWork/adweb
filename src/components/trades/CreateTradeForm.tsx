@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { PetImage } from '@/components/shared/PetImage';
 import { PetSelector } from '@/components/calculator/PetSelector';
+import { TradeResult } from '@/components/calculator/TradeResult';
+import { ValueBar } from '@/components/calculator/ValueBar';
 import { usePetData } from '@/lib/hooks/usePetData';
 import { useAuthStore } from '@/lib/store/useAuthStore';
 import { createTrade } from '@/lib/firebase/firestore';
@@ -60,7 +62,7 @@ export function CreateTradeForm() {
 
   const hasTotal = hasItems.reduce((s, i) => s + i.value, 0);
   const wantsTotal = wantsItems.reduce((s, i) => s + i.value, 0);
-  const { status } = getTradeResult(hasTotal, wantsTotal);
+  const { status, percentage } = getTradeResult(hasTotal, wantsTotal);
 
   const addPet = (pet: Pet, valueType: BadgeValueType = 'd', isFly = false, isRide = false) => {
     const value = calcPetValue(pet, valueType, isFly, isRide);
@@ -240,6 +242,24 @@ export function CreateTradeForm() {
         />
       </div>
 
+      {/* Trade summary — win/lose/fair */}
+      {hasItems.length > 0 && wantsItems.length > 0 && (
+        <div className="rounded-xl sm:rounded-2xl border p-1.5 sm:p-3 bg-background/95 shadow-sm">
+          <div className="flex items-center justify-between gap-1 sm:gap-3">
+            <div className="text-center flex-1">
+              <p className="text-[7px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-bold">You ({hasItems.length})</p>
+              <p className="text-[9px] sm:text-sm font-extrabold text-app-has">{formatNumber(hasTotal)}</p>
+            </div>
+            <TradeResult result={status} percentage={percentage} hasTotal={hasTotal} wantsTotal={wantsTotal} compact />
+            <div className="text-center flex-1">
+              <p className="text-[7px] sm:text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Them ({wantsItems.length})</p>
+              <p className="text-[9px] sm:text-sm font-extrabold text-app-want">{formatNumber(wantsTotal)}</p>
+            </div>
+          </div>
+          <ValueBar hasTotal={hasTotal} wantsTotal={wantsTotal} />
+        </div>
+      )}
+
       {/* Description */}
       <div>
         <label className="text-sm font-medium mb-1.5 block">Description (optional)</label>
@@ -361,64 +381,54 @@ function PetColumn({
           {items.map((item, i) => (
             <div
               key={`${item.pet.id}-${i}`}
-              className="relative flex flex-col items-center gap-1 rounded-xl border bg-card p-2 group"
+              onClick={() => onRemove(i)}
+              className="relative flex flex-col items-center rounded-[3px] sm:rounded-xl border bg-card p-1 pb-3 sm:p-1.5 sm:pb-4 group text-center cursor-pointer hover:border-destructive/50 transition-colors"
             >
-              <button
-                onClick={() => onRemove(i)}
-                className="absolute top-0.5 right-0.5 h-5 w-5 rounded-full bg-destructive text-white text-[10px] flex items-center justify-center opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
-              >
-                ×
-              </button>
-              <PetImage src={item.pet.image} alt={item.pet.name} size={40} />
-              <p className="text-[10px] font-medium truncate max-w-[50px]">{item.pet.name}</p>
-              {/* 5-badge system: D/N/M (exclusive) + F/R (toggles) - matches RN */}
-              <div className="flex gap-0.5">
-                {(['D', 'N', 'M'] as const).map((badge) => (
+              {/* Pet image */}
+              <PetImage src={item.pet.image} alt={item.pet.name} size={36} className="sm:w-14 sm:h-14" />
+
+              {/* Active badges only — bottom-right corner, overlapping */}
+              <div className="absolute bottom-1 right-1 flex z-10">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const cycle: Record<string, 'D' | 'N' | 'M'> = { d: 'N', n: 'M', m: 'D' };
+                    onUpdate(i, cycle[item.valueType] || 'D');
+                  }}
+                  title="Click to change variant"
+                  className={cn(
+                    'h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center text-[5px] sm:text-[8px] font-extrabold rounded-full shadow-sm transition-all text-white border-2 border-card',
+                    item.valueType === 'd' && 'bg-emerald-500',
+                    item.valueType === 'n' && 'bg-green-500',
+                    item.valueType === 'm' && 'bg-purple-500',
+                  )}
+                >
+                  {item.valueType.toUpperCase()}
+                </button>
+                {item.isFly && (
                   <button
-                    key={badge}
-                    onClick={() => onUpdate(i, badge)}
-                    className={cn(
-                      'w-6 h-5 text-[8px] font-extrabold rounded transition-all',
-                      item.valueType === badge.toLowerCase()
-                        ? cn(
-                          'text-white ring-1 ring-offset-1 ring-offset-background ring-current',
-                          badge === 'D' && 'bg-emerald-500',
-                          badge === 'N' && 'bg-green-500',
-                          badge === 'M' && 'bg-purple-500',
-                        )
-                        : 'bg-muted text-muted-foreground hover:bg-accent',
-                    )}
+                    onClick={(e) => { e.stopPropagation(); onUpdate(i, 'F'); }}
+                    title="Remove Fly"
+                    className="h-4 w-4 sm:h-5 sm:w-5 -ml-1.5 flex items-center justify-center text-[5px] sm:text-[8px] font-extrabold rounded-full shadow-sm text-white bg-blue-500 border-2 border-card"
                   >
-                    {badge}
+                    F
                   </button>
-                ))}
-                {(['F', 'R'] as const).map((badge) => {
-                  const isActive = badge === 'F' ? item.isFly : item.isRide;
-                  return (
-                    <button
-                      key={badge}
-                      onClick={() => onUpdate(i, badge)}
-                      className={cn(
-                        'w-6 h-5 text-[8px] font-extrabold rounded transition-all',
-                        isActive
-                          ? cn(
-                            'text-white ring-1 ring-offset-1 ring-offset-background ring-current',
-                            badge === 'F' && 'bg-blue-500',
-                            badge === 'R' && 'bg-emerald-500',
-                          )
-                          : 'bg-muted text-muted-foreground hover:bg-accent',
-                      )}
-                    >
-                      {badge}
-                    </button>
-                  );
-                })}
+                )}
+                {item.isRide && (
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onUpdate(i, 'R'); }}
+                    title="Remove Ride"
+                    className="h-4 w-4 sm:h-5 sm:w-5 -ml-1.5 flex items-center justify-center text-[5px] sm:text-[8px] font-extrabold rounded-full shadow-sm text-white bg-amber-500 border-2 border-card"
+                  >
+                    R
+                  </button>
+                )}
               </div>
-              <p className="text-[10px] font-bold text-app-primary">{formatNumber(item.value)}</p>
             </div>
           ))}
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 }

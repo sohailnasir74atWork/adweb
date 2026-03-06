@@ -34,7 +34,13 @@
         "subtitle": "Todos los valores de intercambio de Adopt Me actualizados diariamente para 2026. Haz clic en cualquier mascota para ver detalles completos incluyendo precios Neón, Mega Neón, Fly y Ride.",
         "searchPlaceholder": "Buscar una mascota...",
         "filterAll": "Todos",
-        "noResults": "No se encontraron mascotas con tu búsqueda."
+        "noResults": "No se encontraron mascotas con tu búsqueda.",
+        "faqHowTitle": "¿Cómo se Calculan los Valores de Mascotas en Adopt Me?",
+        "faqHowDesc": "Nuestros valores de intercambio de Adopt Me se calculan a partir de <strong>datos reales de intercambios</strong> enviados por miles de jugadores. Analizamos la frecuencia de intercambio, la proporción de demanda y las tendencias del mercado para asignar un valor justo a cada mascota. Los valores se actualizan diariamente para reflejar el mercado de Roblox Adopt Me en 2026. Cada variante de poción — Sin Poción, Volar, Montar y Volar/Montar — tiene su propio valor.",
+        "faqRarestTitle": "¿Cuáles Son las Mascotas Más Valiosas en Adopt Me?",
+        "faqRarestDesc": "Las mascotas más valiosas en Adopt Me 2026 incluyen el <strong>Perro Azul</strong>, <strong>Gato Rosa</strong>, <strong>Dragón de las Sombras</strong>, <strong>Dragón de Hielo</strong>, <strong>Dragón Murciélago</strong> y la <strong>Jirafa</strong>. Las mascotas limitadas de huevos retirados tienden a tener los valores más altos. Haz clic en cualquier mascota arriba para ver su valor completo.",
+        "faqNeonTitle": "¿Cuál es la Diferencia Entre Valores Neón y Mega Neón?",
+        "faqNeonDesc": "Una <strong>mascota Neón</strong> se hace combinando 4 versiones adultas de la misma mascota en la Cueva Neón — brilla en un color. Un <strong>Mega Neón</strong> requiere 4 mascotas Neón adultas y cambia entre colores del arcoíris. Los Mega Neón son significativamente más raros y valiosos. En nuestra lista, cada mascota muestra sus valores Normal, Neón y Mega Neón por separado."
     },
     "detail": {
         "defaultValue": "Valor Base",
@@ -91,7 +97,11 @@
         "lookingFor": "Buscando",
         "seoTitle": "Intercambios de Adopt Me",
         "seoDesc": "Encuentra los mejores intercambios de Adopt Me en nuestro centro de intercambios en tiempo real de Roblox. Explora valores de otros jugadores, filtra por <strong>Ganancia</strong>, <strong>Pérdida</strong> o <strong>Justo</strong>, y publica tus propios intercambios. Todos los intercambios muestran valores precisos para 2026.",
-        "seoUpdated": "Valores actualizados diariamente para intercambios justos"
+        "seoUpdated": "Valores actualizados diariamente para intercambios justos",
+        "faqFairTitle": "Cómo Hacer Intercambios Justos en Adopt Me",
+        "faqFairDesc": "Un intercambio justo es aquel donde ambos lados dan un valor aproximadamente igual. Usa nuestra <link>Calculadora de Intercambios</link> para verificar el valor de cada mascota antes de aceptar. Mira los valores Normal, Neón y Mega Neón, y siempre considera el estado de poción.",
+        "faqBestTitle": "Consejos para Mejores Intercambios",
+        "faqBestDesc": "<strong>Sube de valor gradualmente</strong> — no intentes saltar de una mascota Común a una Legendaria en un solo intercambio. Agrupa mascotas de menor valor juntas. Observa las <link2>Analíticas del Mercado</link2> para detectar mascotas que están subiendo de valor. ¡La paciencia es la mejor estrategia!"
     },
     "chat": {
         "title": "Chat",
@@ -99,11 +109,17 @@
         "groups": "Grupos",
         "inbox": "Bandeja",
         "signInToSend": "Inicia sesión para enviar mensajes",
-        "typeMessage": "Escribe un mensaje..."
+        "typeMessage": "Escribe un mensaje...",
+        "faqRoomsTitle": "Salas de Chat de Intercambio de Adopt Me",
+        "faqRoomsDesc": "Nuestro <strong>chat de intercambio en tiempo real</strong> te permite conectar con comerciantes de Roblox Adopt Me al instante. Únete a grupos de intercambio público para discutir valores, publicar ofertas y encontrar socios de intercambio.",
+        "faqFindTitle": "Cómo Encontrar Comerciantes en Adopt Me",
+        "faqFindDesc": "¿Buscas a alguien con quien intercambiar? Explora nuestros <strong>grupos activos</strong> donde los jugadores publican sus ofertas en tiempo real. También puedes enviar <strong>mensajes privados</strong> para negociar directamente. Verifica el nombre de usuario en nuestra <link>Base de Datos de Estafadores</link> antes de intercambiar."
     },
     "feed": {
         "title": "Feed de la Comunidad",
-        "createPost": "Crear Publicación"
+        "createPost": "Crear Publicación",
+        "seoTitle": "Comunidad Adopt Me",
+        "seoDesc": "Bienvenido al feed de la comunidad de Adopt Me — comparte tus <strong>mejores intercambios</strong>, muestra tus <strong>mascotas Neón y Mega Neón</strong>, publica capturas de tu colección y conecta con otros jugadores de Roblox."
     },
     "scammer": {
         "title": "Base de Datos de Estafadores",
@@ -114,7 +130,9 @@
         "tip1": "Nunca confíes en \"intercambios de confianza\" — siempre usa la ventana de intercambio",
         "tip2": "Verifica nombres de usuario en nuestra base de datos antes de intercambiar mascotas de alto valor",
         "tip3": "Reporta estafadores para ayudar a proteger a otros jugadores",
-        "tip4": "Nunca compartas información personal durante intercambios"
+        "tip4": "Nunca compartas información personal durante intercambios",
+        "faqSpotTitle": "Cómo Detectar una Estafa en Adopt Me",
+        "faqSpotDesc": "Las estafas más comunes en Adopt Me incluyen los <strong>intercambios de confianza</strong> (pedir que des una mascota gratis con promesa de devolver), <strong>sorteos falsos</strong> y <strong>cambios de edad</strong> (cambiar una mascota por una de menor edad en el último segundo). Siempre verifica la ventana de intercambio antes de aceptar."
     },
     "news": {
         "title": "Noticias y Actualizaciones",
@@ -206,6 +224,7 @@
         "about": "Acerca de",
         "contact": "Contacto",
         "disclaimer": "Aviso Legal",
+        "deleteAccount": "Eliminar Cuenta",
         "explore": "Explorar",
         "legal": "Legal",
         "apps": "Apps"

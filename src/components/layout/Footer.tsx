@@ -26,6 +26,7 @@ export function Footer() {
     { href: '/about', label: t('footer.about') },
     { href: '/contact', label: t('footer.contact') },
     { href: '/disclaimer', label: t('footer.disclaimer') },
+    { href: '/delete-account', label: t('footer.deleteAccount') },
   ];
 
   return (

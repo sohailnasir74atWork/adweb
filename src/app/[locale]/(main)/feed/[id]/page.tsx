@@ -60,6 +60,42 @@ export default async function PostDetailPage({
   const images = Array.isArray(post.imageUrl) ? post.imageUrl.filter(Boolean) : [];
   const likeCount = post.likes ? Object.keys(post.likes).length : 0;
 
+  // Merge old likes + new reactions (matching PostCard logic)
+  const mergedReactionCount = (() => {
+    const map: Record<string, string> = {};
+    if (post.likes) {
+      Object.keys(post.likes).forEach((uid) => {
+        if (!post.reactions?.[uid]) map[uid] = '❤️';
+      });
+    }
+    if (post.reactions) {
+      Object.entries(post.reactions).forEach(([uid, emoji]) => {
+        map[uid] = emoji;
+      });
+    }
+    return Object.keys(map).length;
+  })();
+
+  // Group reactions by emoji for display
+  const reactionGroups = (() => {
+    const map: Record<string, string> = {};
+    if (post.likes) {
+      Object.keys(post.likes).forEach((uid) => {
+        if (!post.reactions?.[uid]) map[uid] = '❤️';
+      });
+    }
+    if (post.reactions) {
+      Object.entries(post.reactions).forEach(([uid, emoji]) => {
+        map[uid] = emoji;
+      });
+    }
+    const counts: Record<string, number> = {};
+    Object.values(map).forEach((emoji) => {
+      counts[emoji] = (counts[emoji] || 0) + 1;
+    });
+    return Object.entries(counts).sort((a, b) => b[1] - a[1]);
+  })();
+
   return (
     <div className="flex flex-col gap-6 max-w-2xl mx-auto">
       {/* Breadcrumbs */}
@@ -152,7 +188,21 @@ export default async function PostDetailPage({
         <div className="p-4">
           {post.desc && <p className="text-sm mb-3">{post.desc}</p>}
           <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <span>{likeCount} likes</span>
+            <span className="flex items-center gap-1.5">
+              {reactionGroups.length > 0 ? (
+                <>
+                  {reactionGroups.slice(0, 4).map(([emoji, count]) => (
+                    <span key={emoji} className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-muted/60 text-[10px]">
+                      <span className="text-xs leading-none">{emoji}</span>
+                      <span className="font-semibold">{count}</span>
+                    </span>
+                  ))}
+                  <span className="ml-0.5">{mergedReactionCount} reactions</span>
+                </>
+              ) : (
+                <span>0 reactions</span>
+              )}
+            </span>
             <span>{post.commentCount || 0} comments</span>
           </div>
         </div>

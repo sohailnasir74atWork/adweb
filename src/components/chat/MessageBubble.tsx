@@ -110,7 +110,7 @@ export function MessageBubble({ message, onDelete, isDM }: MessageBubbleProps) {
 
           <div
             className={cn(
-              'rounded-2xl px-3 py-2 text-sm break-words',
+              'rounded-2xl px-3 py-2 text-xs lg:text-sm break-words',
               isOwn
                 ? 'bg-app-primary text-white rounded-br-md'
                 : 'bg-muted rounded-bl-md',

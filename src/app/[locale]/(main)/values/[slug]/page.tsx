@@ -141,7 +141,7 @@ export default async function PetDetailPage({
     },
   };
 
-  const localizedBase = locale === 'en' ? 'https://adoptmevalues.app' : `https://adoptmevalues.app/${locale}`;
+  const localizedBase = locale === 'en' ? 'https://www.adoptmevalues.app' : `https://www.adoptmevalues.app/${locale}`;
   const breadcrumbJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',

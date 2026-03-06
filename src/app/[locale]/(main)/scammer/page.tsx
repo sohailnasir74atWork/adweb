@@ -11,6 +11,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
         title: t('scammerTitle'),
         description: t('scammerDescription'),
         alternates: { canonical, languages },
+        openGraph: {
+            title: t('scammerTitle'),
+            description: t('scammerDescription'),
+        },
+        twitter: {
+            title: t('scammerTitle'),
+            description: t('scammerDescription'),
+        },
     };
 }
 
@@ -45,6 +53,12 @@ export default async function ScammerPage({ params }: { params: Promise<{ locale
                     <li>{t('scammer.tip3')}</li>
                     <li>{t('scammer.tip4')}</li>
                 </ul>
+                <h3>{t('scammer.faqSpotTitle')}</h3>
+                <p>
+                    {t.rich('scammer.faqSpotDesc', {
+                        strong: (chunks) => <strong>{chunks}</strong>,
+                    })}
+                </p>
             </section>
         </div>
     );

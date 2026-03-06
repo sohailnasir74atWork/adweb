@@ -34,7 +34,13 @@
         "subtitle": "Toutes les valeurs d'échange Adopt Me mises à jour quotidiennement pour 2026. Cliquez sur n'importe quel animal pour voir les détails complets incluant les prix Néon, Méga Néon, Fly et Ride.",
         "searchPlaceholder": "Rechercher un animal...",
         "filterAll": "Tous",
-        "noResults": "Aucun animal trouvé correspondant à votre recherche."
+        "noResults": "Aucun animal trouvé correspondant à votre recherche.",
+        "faqHowTitle": "Comment les Valeurs des Animaux Adopt Me Sont-Elles Calculées ?",
+        "faqHowDesc": "Nos valeurs d'échange Adopt Me sont calculées à partir de <strong>données réelles d'échanges</strong> soumises par des milliers de joueurs. Nous analysons la fréquence des échanges, les ratios de demande et les tendances du marché pour attribuer une valeur juste à chaque animal. Les valeurs sont mises à jour quotidiennement pour refléter le marché Roblox Adopt Me en 2026.",
+        "faqRarestTitle": "Quels Sont les Animaux les Plus Précieux dans Adopt Me ?",
+        "faqRarestDesc": "Les animaux les plus précieux dans Adopt Me 2026 incluent le <strong>Chien Bleu</strong>, le <strong>Chat Rose</strong>, le <strong>Dragon des Ombres</strong>, le <strong>Dragon de Givre</strong>, le <strong>Dragon Chauve-souris</strong> et la <strong>Girafe</strong>. Les animaux limités des œufs retirés ont tendance à avoir les valeurs les plus élevées. Cliquez sur n'importe quel animal ci-dessus pour voir sa valeur complète.",
+        "faqNeonTitle": "Quelle Est la Différence Entre les Valeurs Néon et Méga Néon ?",
+        "faqNeonDesc": "Un <strong>animal Néon</strong> est créé en combinant 4 versions adultes du même animal dans la Caverne Néon — il brille d'une couleur. Un <strong>Méga Néon</strong> nécessite 4 animaux Néon adultes et change entre les couleurs de l'arc-en-ciel. Les Méga Néons sont significativement plus rares et plus précieux."
     },
     "detail": {
         "defaultValue": "Valeur par Défaut",
@@ -91,7 +97,11 @@
         "lookingFor": "Recherchant",
         "seoTitle": "Échanges Adopt Me",
         "seoDesc": "Trouvez les meilleurs échanges Adopt Me dans notre centre d'échanges en temps réel. Parcourez les valeurs d'échange d'autres joueurs, filtrez par <strong>Gagné</strong>, <strong>Perdu</strong> ou <strong>Équitable</strong>, et publiez vos propres échanges. Toutes les valeurs sont mises à jour quotidiennement pour 2026.",
-        "seoUpdated": "Valeurs mises à jour quotidiennement pour des échanges équitables"
+        "seoUpdated": "Valeurs mises à jour quotidiennement pour des échanges équitables",
+        "faqFairTitle": "Comment Faire des Échanges Équitables dans Adopt Me",
+        "faqFairDesc": "Un échange équitable est celui où les deux côtés donnent une valeur à peu près égale. Utilisez notre <link>Calculateur d'Échanges</link> pour vérifier la valeur de chaque animal avant d'accepter. Regardez les valeurs Normal, Néon et Méga Néon, et considérez toujours le statut des potions.",
+        "faqBestTitle": "Conseils pour de Meilleurs Échanges",
+        "faqBestDesc": "<strong>Montez en valeur progressivement</strong> — n'essayez pas de sauter d'un animal Commun à un Légendaire en un seul échange. Regroupez des animaux de moindre valeur ensemble. Surveillez les <link2>Analyses du Marché</link2> pour repérer les animaux en hausse de valeur. La patience est la meilleure stratégie !"
     },
     "chat": {
         "title": "Chat",
@@ -99,11 +109,17 @@
         "groups": "Groupes",
         "inbox": "Boîte de Réception",
         "signInToSend": "Connectez-vous pour envoyer des messages",
-        "typeMessage": "Tapez un message..."
+        "typeMessage": "Tapez un message...",
+        "faqRoomsTitle": "Salles de Chat d'Échange Adopt Me",
+        "faqRoomsDesc": "Notre <strong>chat d'échange en temps réel</strong> vous permet de vous connecter instantanément avec des commerçants Roblox Adopt Me. Rejoignez des groupes d'échange publics pour discuter des valeurs, publier des offres et trouver des partenaires d'échange.",
+        "faqFindTitle": "Comment Trouver des Commerçants dans Adopt Me",
+        "faqFindDesc": "Vous cherchez quelqu'un avec qui échanger ? Parcourez nos <strong>groupes actifs</strong> où les joueurs publient leurs offres en temps réel. Vous pouvez aussi envoyer des <strong>messages privés</strong> pour négocier directement. Vérifiez le nom d'utilisateur dans notre <link>Base de Données des Arnaqueurs</link> avant d'échanger."
     },
     "feed": {
         "title": "Fil Communautaire",
-        "createPost": "Créer un Post"
+        "createPost": "Créer un Post",
+        "seoTitle": "Communauté Adopt Me",
+        "seoDesc": "Bienvenue dans le fil de la communauté Adopt Me — partagez vos <strong>meilleurs échanges</strong>, montrez vos <strong>animaux Néon et Méga Néon</strong>, publiez des captures d'écran de votre collection et connectez-vous avec d'autres joueurs Roblox."
     },
     "scammer": {
         "title": "Base de Données des Arnaqueurs",
@@ -114,7 +130,9 @@
         "tip1": "Ne faites jamais confiance aux \"échanges de confiance\" — utilisez toujours la fenêtre d'échange",
         "tip2": "Vérifiez les noms d'utilisateur dans notre base de données avant d'échanger des animaux de haute valeur",
         "tip3": "Signalez les arnaqueurs pour aider à protéger les autres joueurs",
-        "tip4": "Ne partagez jamais d'informations personnelles lors des échanges"
+        "tip4": "Ne partagez jamais d'informations personnelles lors des échanges",
+        "faqSpotTitle": "Comment Repérer une Arnaque dans Adopt Me",
+        "faqSpotDesc": "Les arnaques les plus courantes dans Adopt Me incluent les <strong>échanges de confiance</strong> (demander de donner un animal gratuitement avec promesse de retour), les <strong>faux concours</strong> et les <strong>échanges d'âge</strong> (échanger un animal contre une version de plus bas âge au dernier moment). Vérifiez toujours la fenêtre d'échange avant d'accepter."
     },
     "news": {
         "title": "Nouvelles et Mises à Jour",
@@ -206,6 +224,7 @@
         "about": "À Propos",
         "contact": "Contact",
         "disclaimer": "Avertissement",
+        "deleteAccount": "Supprimer le Compte",
         "explore": "Explorer",
         "legal": "Juridique",
         "apps": "Applications"

@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
             "adopt me neon values",
             "adopt me mega neon values",
         ],
-        metadataBase: new URL("https://adoptmevalues.app"),
+        metadataBase: new URL("https://www.adoptmevalues.app"),
         openGraph: {
             type: "website",
             locale: ogLocaleMap[locale] || 'en_US',

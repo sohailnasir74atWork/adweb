@@ -19,6 +19,7 @@ import {
 import { database } from './config';
 import type { User } from '@/lib/types/user';
 import type { Message, ChatMetaData, GroupMetaData } from '@/lib/types/chat';
+import { getCommunityChannelPath, isCommunityRoom } from '@/lib/constants/chatChannels';
 import {
   doc,
   getDoc,
@@ -135,14 +136,14 @@ export async function getOnlineUsersWithData(limit = 50): Promise<User[]> {
 // Group chat path: group_messages/{groupId}/messages/{timestamp}
 // ============================================
 
-const COMMUNITY_ROOM_ID = 'community';
 const GROUP_INITIAL_PAGE = 20;
 const GROUP_PAGE_SIZE = 20;
 
 function getGroupMessagesPath(groupId: string): string {
-  return groupId === COMMUNITY_ROOM_ID
-    ? 'chat_new'
-    : `group_messages/${groupId}/messages`;
+  // Check all community channels: community → chat_new, community_es → chat_es, etc.
+  const communityPath = getCommunityChannelPath(groupId);
+  if (communityPath) return communityPath;
+  return `group_messages/${groupId}/messages`;
 }
 
 export async function loadGroupMessages(
@@ -205,12 +206,11 @@ export async function sendGroupChatMessage(
 ): Promise<void> {
   const msgPath = getGroupMessagesPath(groupId);
 
-  if (groupId === COMMUNITY_ROOM_ID) {
-    // Community chat: use push() for key (matches RN app's chatRef.push())
+  if (isCommunityRoom(groupId)) {
+    // Community chat (any language): use push() for key (matches RN app's chatRef.push())
     // and serverTimestamp() for timestamp (matches RN app's database.ServerValue.TIMESTAMP)
     const messagesRef = ref(database, msgPath);
     const newMsgRef = push(messagesRef);
-
 
     await set(newMsgRef, {
       ...messageData,

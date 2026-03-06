@@ -9,6 +9,7 @@ export interface Post {
   imageUrl: string[]; // Array of BunnyCDN URLs
   desc: string;
   likes: Record<string, boolean>; // { [userId]: true }
+  reactions?: Record<string, string>; // { [userId]: emoji } — new reaction system
   commentCount: number;
   createdAt: Timestamp;
   selectedTags: string[];

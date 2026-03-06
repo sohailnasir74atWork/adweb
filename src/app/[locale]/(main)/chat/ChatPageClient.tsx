@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { MessageCircle, Smartphone, Search, Inbox as InboxIcon, Users, X } from 'lucide-react';
@@ -9,6 +9,8 @@ import { useMediaQuery } from '@/lib/hooks/useMediaQuery';
 import { useTranslations } from 'next-intl';
 import { config } from '@/lib/constants/config';
 import { cn } from '@/lib/utils';
+import { CHAT_CHANNELS, channelToRoomId, type ChatChannel } from '@/lib/constants/chatChannels';
+import { ChannelSwitcher } from '@/components/chat/ChannelSwitcher';
 
 const ChatRoomList = dynamic(() => import('@/components/chat/ChatRoomList').then(m => ({ default: m.ChatRoomList })), {
   loading: () => <div className="flex flex-col gap-2 p-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}</div>,
@@ -29,21 +31,54 @@ export function ChatPageClient() {
   const isDesktop = useMediaQuery('(min-width: 1024px)');
   const [mobileTab, setMobileTab] = useState<MobileTab>('chat');
   const [hasMounted, setHasMounted] = useState(false);
+  const [activeChannel, setActiveChannel] = useState<ChatChannel>(CHAT_CHANNELS[0]);
   const t = useTranslations('chat');
 
   useEffect(() => { setHasMounted(true); }, []);
 
+  const handleChannelChange = useCallback((channel: ChatChannel) => {
+    setActiveChannel(channel);
+  }, []);
+
   if (!hasMounted) return null;
 
+  const roomId = channelToRoomId(activeChannel.id);
+
   if (isDesktop) {
-    return <DesktopLayout t={t} />;
+    return (
+      <DesktopLayout
+        t={t}
+        roomId={roomId}
+        activeChannel={activeChannel}
+        onChannelChange={handleChannelChange}
+      />
+    );
   }
 
-  return <MobileLayout activeTab={mobileTab} onTabChange={setMobileTab} t={t} />;
+  return (
+    <MobileLayout
+      activeTab={mobileTab}
+      onTabChange={setMobileTab}
+      t={t}
+      roomId={roomId}
+      activeChannel={activeChannel}
+      onChannelChange={handleChannelChange}
+    />
+  );
 }
 
 /* ─── Desktop — same three-panel layout ─── */
-function DesktopLayout({ t }: { t: ReturnType<typeof useTranslations<'chat'>> }) {
+function DesktopLayout({
+  t,
+  roomId,
+  activeChannel,
+  onChannelChange,
+}: {
+  t: ReturnType<typeof useTranslations<'chat'>>;
+  roomId: string;
+  activeChannel: ChatChannel;
+  onChannelChange: (channel: ChatChannel) => void;
+}) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
@@ -60,7 +95,7 @@ function DesktopLayout({ t }: { t: ReturnType<typeof useTranslations<'chat'>> })
       <div className="rounded-xl bg-gradient-to-r from-violet-100 to-fuchsia-100 dark:from-violet-950/40 dark:to-fuchsia-950/40 ring-1 ring-violet-200 dark:ring-violet-800 px-4 py-3 flex items-center gap-3">
         <Smartphone className="h-5 w-5 text-violet-600 dark:text-violet-400 flex-shrink-0" />
         <p className="text-xs sm:text-sm text-muted-foreground flex-1">
-          For the full chat experience — pet lists creation, group creation, image sharing & more —{' '}
+          For the full chat experience — pet lists creation, group creation, image sharing &amp; more —{' '}
           <Link href={config.iosLink} target="_blank" className="text-violet-600 dark:text-violet-400 font-bold hover:underline">download the app</Link>!
         </p>
       </div>
@@ -72,16 +107,17 @@ function DesktopLayout({ t }: { t: ReturnType<typeof useTranslations<'chat'>> })
             <h2 className="text-sm font-bold">Chat Rooms</h2>
           </div>
           <div className="p-2">
-            <ChatRoomList activeRoomId="community" />
+            <ChatRoomList activeRoomId={roomId} />
           </div>
           <div className="border-t p-3">
             <UserSearch />
           </div>
         </div>
 
-        {/* Main chat */}
+        {/* Main chat with channel switcher */}
         <div className="rounded-xl border overflow-hidden flex flex-col">
-          <ChatRoom roomId="community" roomName="Community Chat" />
+          <ChannelSwitcher activeChannelId={activeChannel.id} onChannelChange={onChannelChange} />
+          <ChatRoom roomId={roomId} />
         </div>
 
         {/* Inbox */}
@@ -98,15 +134,21 @@ function MobileLayout({
   activeTab,
   onTabChange,
   t,
+  roomId,
+  activeChannel,
+  onChannelChange,
 }: {
   activeTab: MobileTab;
   onTabChange: (tab: MobileTab) => void;
   t: ReturnType<typeof useTranslations<'chat'>>;
+  roomId: string;
+  activeChannel: ChatChannel;
+  onChannelChange: (channel: ChatChannel) => void;
 }) {
   return (
     <div className={cn(
       'flex flex-col',
-      activeTab === 'chat' ? 'h-[calc(100vh-120px)]' : '',
+      activeTab === 'chat' ? 'h-[calc(100vh-180px)]' : '',
     )}>
       {/* ── Header ── */}
       <div className="flex items-center justify-between px-1 pb-3">
@@ -143,29 +185,29 @@ function MobileLayout({
       </div>
 
       {/* ── Tab bar ── */}
-      <div className="flex gap-1 mb-3 px-1">
+      <div className="flex gap-1 mb-2 px-1">
         <button
           onClick={() => onTabChange('chat')}
           className={cn(
-            'flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all',
+            'flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-xs font-bold transition-all',
             activeTab === 'chat'
               ? 'bg-purple-500 text-white shadow-md shadow-purple-500/25'
               : 'bg-muted text-muted-foreground hover:bg-accent',
           )}
         >
-          <MessageCircle className="h-4 w-4" />
+          <MessageCircle className="h-3.5 w-3.5" />
           {t('title')}
         </button>
         <button
           onClick={() => onTabChange('groups')}
           className={cn(
-            'flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-sm font-bold transition-all',
+            'flex-1 flex items-center justify-center gap-1 py-1.5 rounded-xl text-xs font-bold transition-all',
             activeTab === 'groups'
               ? 'bg-purple-500 text-white shadow-md shadow-purple-500/25'
               : 'bg-muted text-muted-foreground hover:bg-accent',
           )}
         >
-          <Users className="h-4 w-4" />
+          <Users className="h-3.5 w-3.5" />
           {t('groups')}
         </button>
       </div>
@@ -174,7 +216,10 @@ function MobileLayout({
       <div className="flex-1 min-h-0 flex flex-col">
         {activeTab === 'chat' && (
           <div className="flex-1 min-h-0 flex flex-col rounded-2xl border overflow-hidden bg-card">
-            <ChatRoom roomId="community" roomName="Community Chat" />
+            <div className="flex-shrink-0">
+              <ChannelSwitcher activeChannelId={activeChannel.id} onChannelChange={onChannelChange} />
+            </div>
+            <ChatRoom roomId={roomId} />
           </div>
         )}
 

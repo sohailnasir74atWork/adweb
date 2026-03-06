@@ -34,7 +34,13 @@
         "subtitle": "Alle Adopt Me Tauschwerte täglich aktualisiert für 2026. Klicke auf ein Haustier für vollständige Wertdetails einschließlich Neon, Mega Neon, Fly und Ride Preise.",
         "searchPlaceholder": "Suche ein Haustier...",
         "filterAll": "Alle",
-        "noResults": "Keine Haustiere gefunden, die deiner Suche entsprechen."
+        "noResults": "Keine Haustiere gefunden, die deiner Suche entsprechen.",
+        "faqHowTitle": "Wie Werden Adopt Me Haustier-Werte Berechnet?",
+        "faqHowDesc": "Unsere Adopt Me Tauschwerte werden aus <strong>echten Tauschdaten</strong> berechnet, die von Tausenden von Spielern eingereicht werden. Wir analysieren Tauschhäufigkeit, Nachfrageverhältnisse und Markttrends, um jedem Haustier einen fairen Wert zuzuweisen. Die Werte werden täglich aktualisiert für den Roblox Adopt Me Markt 2026.",
+        "faqRarestTitle": "Was Sind die Wertvollsten Haustiere in Adopt Me?",
+        "faqRarestDesc": "Die wertvollsten Haustiere in Adopt Me 2026 sind der <strong>Blaue Hund</strong>, die <strong>Rosa Katze</strong>, der <strong>Schattendrache</strong>, der <strong>Frostdrache</strong>, der <strong>Fledermausdrache</strong> und die <strong>Giraffe</strong>. Limitierte Haustiere aus zurückgezogenen Eiern haben tendenziell die höchsten Werte. Klicke oben auf ein Haustier für den vollständigen Wert.",
+        "faqNeonTitle": "Was Ist der Unterschied Zwischen Neon- und Mega-Neon-Werten?",
+        "faqNeonDesc": "Ein <strong>Neon-Haustier</strong> wird durch Kombination von 4 ausgewachsenen Versionen desselben Haustiers in der Neon-Höhle erstellt — es leuchtet in einer Farbe. Ein <strong>Mega Neon</strong> benötigt 4 ausgewachsene Neon-Haustiere und wechselt durch Regenbogenfarben. Mega Neons sind deutlich seltener und wertvoller."
     },
     "detail": {
         "defaultValue": "Standardwert",
@@ -91,7 +97,11 @@
         "lookingFor": "Sucht nach",
         "seoTitle": "Adopt Me Tauschhandel",
         "seoDesc": "Finde die besten Adopt Me Trades in unserem Echtzeit-Handelszentrum. Durchsuche Tauschwerte anderer Spieler, filtere nach <strong>Gewinn</strong>, <strong>Verlust</strong> oder <strong>Fair</strong>, und erstelle deine eigenen Trades. Alle Werte werden täglich für 2026 aktualisiert.",
-        "seoUpdated": "Werte werden täglich für faire Trades aktualisiert"
+        "seoUpdated": "Werte werden täglich für faire Trades aktualisiert",
+        "faqFairTitle": "Wie Man Faire Trades in Adopt Me Macht",
+        "faqFairDesc": "Ein fairer Trade ist einer, bei dem beide Seiten ungefähr gleichen Wert geben. Nutze unseren <link>Trade-Rechner</link>, um den Wert jedes Haustiers vor dem Akzeptieren zu prüfen. Beachte Normal-, Neon- und Mega-Neon-Werte und den Trankstatus.",
+        "faqBestTitle": "Tipps für Bessere Trades",
+        "faqBestDesc": "<strong>Steigere den Wert schrittweise</strong> — versuche nicht, von einem Gewöhnlichen zu einem Legendären in einem Trade zu springen. Bündle Haustiere mit niedrigerem Wert. Beobachte die <link2>Marktanalysen</link2>, um Haustiere zu finden, die im Wert steigen. Geduld ist die beste Strategie!"
     },
     "chat": {
         "title": "Chat",
@@ -99,11 +109,17 @@
         "groups": "Gruppen",
         "inbox": "Posteingang",
         "signInToSend": "Melde dich an, um Nachrichten zu senden",
-        "typeMessage": "Nachricht eingeben..."
+        "typeMessage": "Nachricht eingeben...",
+        "faqRoomsTitle": "Adopt Me Handelschat-Räume",
+        "faqRoomsDesc": "Unser <strong>Echtzeit-Handelschat</strong> lässt dich sofort mit Roblox Adopt Me Händlern verbinden. Tritt öffentlichen Handelsgruppen bei, um Werte zu diskutieren, Angebote zu posten und Handelspartner zu finden.",
+        "faqFindTitle": "Wie Man Händler in Adopt Me Findet",
+        "faqFindDesc": "Suchst du jemanden zum Tauschen? Durchsuche unsere <strong>aktiven Gruppen</strong>, wo Spieler ihre Angebote in Echtzeit posten. Du kannst auch <strong>private Nachrichten</strong> senden, um direkt zu verhandeln. Überprüfe den Benutzernamen in unserer <link>Betrüger-Datenbank</link> vor dem Tauschen."
     },
     "feed": {
         "title": "Community Feed",
-        "createPost": "Beitrag erstellen"
+        "createPost": "Beitrag erstellen",
+        "seoTitle": "Adopt Me Community",
+        "seoDesc": "Willkommen im Adopt Me Community-Feed — teile deine <strong>besten Trades</strong>, zeige deine <strong>Neon- und Mega-Neon-Haustiere</strong>, poste Screenshots deiner Sammlung und verbinde dich mit anderen Roblox-Spielern."
     },
     "scammer": {
         "title": "Betrüger-Datenbank",
@@ -114,7 +130,9 @@
         "tip1": "Vertraue niemals \"Vertrauens-Tauschen\" — nutze immer das Tauschfenster",
         "tip2": "Überprüfe Benutzernamen in unserer Datenbank, bevor du hochwertige Haustiere tauschst",
         "tip3": "Melde Betrüger, um andere Spieler zu schützen",
-        "tip4": "Teile niemals persönliche Informationen bei Tauschgeschäften"
+        "tip4": "Teile niemals persönliche Informationen bei Tauschgeschäften",
+        "faqSpotTitle": "Wie Man Betrug in Adopt Me Erkennt",
+        "faqSpotDesc": "Die häufigsten Adopt Me Betrügereien umfassen <strong>Vertrauenshandel</strong> (um ein Haustier kostenlos bitten mit Rückgabeversprechen), <strong>gefälschte Gewinnspiele</strong> und <strong>Alterswechsel</strong> (Austausch eines Haustiers gegen eine jüngere Version in letzter Sekunde). Überprüfe immer das Handelsfenster vor dem Akzeptieren."
     },
     "news": {
         "title": "Neuigkeiten und Updates",
@@ -206,6 +224,7 @@
         "about": "Über Uns",
         "contact": "Kontakt",
         "disclaimer": "Haftungsausschluss",
+        "deleteAccount": "Konto Löschen",
         "explore": "Entdecken",
         "legal": "Rechtliches",
         "apps": "Apps"

@@ -9,6 +9,6 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ['/api/', '/profile/', '/settings', '/chat/dm/'],
       },
     ],
-    sitemap: 'https://adoptmevalues.app/sitemap.xml',
+    sitemap: 'https://www.adoptmevalues.app/sitemap.xml',
   };
 }

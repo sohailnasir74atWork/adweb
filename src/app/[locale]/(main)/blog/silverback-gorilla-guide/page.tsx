@@ -31,16 +31,16 @@ export default async function SilverbackGorillaArticle({ params }: { params: Pro
         '@type': 'Article',
         headline: 'Silverback Gorilla in Adopt Me — Complete Guide: Value, How to Get, Neon & Mega Neon (2026)',
         description: 'Everything you need to know about the Legendary Silverback Gorilla in Adopt Me 2026.',
-        image: 'https://adoptmevalues.app/blog-silverback-gorilla.webp',
+        image: 'https://www.adoptmevalues.app/blog-silverback-gorilla.webp',
         datePublished: '2026-02-28',
         dateModified: '2026-02-28',
-        author: { '@type': 'Organization', name: 'Adopt Me Values', url: 'https://adoptmevalues.app' },
+        author: { '@type': 'Organization', name: 'Adopt Me Values', url: 'https://www.adoptmevalues.app' },
         publisher: {
             '@type': 'Organization',
             name: 'Adopt Me Values',
-            logo: { '@type': 'ImageObject', url: 'https://adoptmevalues.app/logo.webp' },
+            logo: { '@type': 'ImageObject', url: 'https://www.adoptmevalues.app/logo.webp' },
         },
-        mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://adoptmevalues.app/blog/silverback-gorilla-guide' },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': 'https://www.adoptmevalues.app/blog/silverback-gorilla-guide' },
         keywords: ['Silverback Gorilla', 'Adopt Me', 'Legendary Pet', 'Roblox', 'Crystal Egg', 'Basic Egg', 'Neon', 'Mega Neon', 'Trading Value', '2026'],
     };
 
@@ -61,8 +61,8 @@ export default async function SilverbackGorillaArticle({ params }: { params: Pro
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://adoptmevalues.app' },
-            { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://adoptmevalues.app/blog' },
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.adoptmevalues.app' },
+            { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://www.adoptmevalues.app/blog' },
             { '@type': 'ListItem', position: 3, name: 'Silverback Gorilla Guide' },
         ],
     };

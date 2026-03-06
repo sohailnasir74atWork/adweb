@@ -3,7 +3,7 @@ import { fetchPetDataServer } from '@/lib/data/pets';
 import { slugify } from '@/lib/utils/slugify';
 import { locales, defaultLocale } from '@/i18n/config';
 
-const DOMAIN = 'https://adoptmevalues.app';
+const DOMAIN = 'https://www.adoptmevalues.app';
 const BUILD_DATE = new Date();
 
 function localizedUrl(path: string, locale: string): string {
@@ -31,6 +31,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/analytics', '/scammer', '/news', '/privacy', '/terms',
     '/about', '/contact', '/disclaimer',
     '/blog', '/blog/silverback-gorilla-guide', '/blog/chocolate-chip-bat-dragon-backpack-guide',
+    '/blog/sea-turtle-guide', '/blog/blue-whale-guide', '/blog/mexican-wolf-guide',
+    '/blog/black-rhino-guide', '/blog/black-tiger-guide', '/blog/kakapo-guide',
+    '/blog/galapagos-sea-lion-guide', '/blog/california-condor-guide',
   ];
 
   const allItems = await fetchPetDataServer();

@@ -1,6 +1,6 @@
 export const config = {
   appName: 'Adopt Me Values Calculator',
-  domain: 'https://adoptmevalues.app',
+  domain: 'https://www.adoptmevalues.app',
   supportEmail: 'thesolanalabs@gmail.com',
 
   // Firebase

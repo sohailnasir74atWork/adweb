@@ -12,6 +12,14 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
     title: t('calculatorTitle'),
     description: t('calculatorDescription'),
     alternates: { canonical, languages },
+    openGraph: {
+      title: t('calculatorTitle'),
+      description: t('calculatorDescription'),
+    },
+    twitter: {
+      title: t('calculatorTitle'),
+      description: t('calculatorDescription'),
+    },
   };
 }
 
@@ -24,7 +32,7 @@ export default async function CalculatorPage({ params }: { params: Promise<{ loc
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
     name: t('jsonLd.calculatorName'),
-    url: 'https://adoptmevalues.app/calculator',
+    url: 'https://www.adoptmevalues.app/calculator',
     description: t('jsonLd.calculatorDescription'),
     applicationCategory: 'GameApplication',
     operatingSystem: 'Web',

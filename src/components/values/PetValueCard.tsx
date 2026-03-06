@@ -5,6 +5,7 @@ import { PetImage } from '@/components/shared/PetImage';
 import { type Pet, getPetDefaultValue } from '@/lib/types/pet';
 import { formatNumber } from '@/lib/utils/formatters';
 import { slugify } from '@/lib/utils/slugify';
+import { useAnalytics, getDemandScore, getHotStatus } from '@/lib/hooks/useAnalytics';
 
 const RARITY_BG: Record<string, string> = {
   legendary: 'from-amber-100 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/10 ring-amber-200/60 dark:ring-amber-700/40',
@@ -30,6 +31,9 @@ export function PetValueCard({ pet }: PetValueCardProps) {
   const value = getPetDefaultValue(pet);
   const bgClass = RARITY_BG[pet.rarity.toLowerCase()] || RARITY_BG.common;
   const textClass = RARITY_TEXT[pet.rarity.toLowerCase()] || RARITY_TEXT.common;
+  const { demandMap, hotMap } = useAnalytics();
+  const demand = getDemandScore(pet.name, demandMap);
+  const hot = getHotStatus(pet.name, hotMap);
 
   return (
     <Link href={`/values/${slugify(pet.name)}`} prefetch={false}>
@@ -44,6 +48,20 @@ export function PetValueCard({ pet }: PetValueCardProps) {
           <p className={`text-[10px] font-bold uppercase tracking-wider mt-0.5 ${textClass}`}>
             {pet.rarity}
           </p>
+          {(demand || hot) && (
+            <div className="flex items-center justify-center gap-1 mt-1">
+              {demand && (
+                <span className={`inline-flex items-center gap-0.5 text-[8px] font-bold px-1.5 py-0.5 rounded-full ${demand.score >= 8 ? 'bg-orange-200 dark:bg-orange-900/40 text-orange-700 dark:text-orange-300' : 'bg-orange-100 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400'}`}>
+                  🔥 {demand.label}
+                </span>
+              )}
+              {hot && (
+                <span className="inline-flex items-center gap-0.5 text-[8px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400">
+                  📈 +{hot.pct}%
+                </span>
+              )}
+            </div>
+          )}
         </div>
         <div className="text-center mt-auto pt-1">
           <p className="text-lg sm:text-xl font-extrabold text-app-primary leading-none">{formatNumber(value)}</p>

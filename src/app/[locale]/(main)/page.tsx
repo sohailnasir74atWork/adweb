@@ -3,6 +3,7 @@ import { Calculator, TrendingUp, Handshake, MessageCircle, BarChart3, Newspaper,
 import { JsonLd } from '@/components/seo/JsonLd';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { getLocalizedAlternates } from '@/lib/utils/seoHelpers';
+import BlogChipSlider from '@/components/home/BlogChipSlider';
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -24,11 +25,11 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: t('jsonLd.websiteName'),
-    url: 'https://adoptmevalues.app',
+    url: 'https://www.adoptmevalues.app',
     description: t('jsonLd.websiteDescription'),
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://adoptmevalues.app/values?q={search_term_string}',
+      target: 'https://www.adoptmevalues.app/values?q={search_term_string}',
       'query-input': 'required name=search_term_string',
     },
   };
@@ -142,6 +143,9 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </Link>
         </div>
       </section>
+
+      {/* Blog Chip Slider */}
+      <BlogChipSlider />
 
       {/* Feature Cards */}
       <section className="px-1">

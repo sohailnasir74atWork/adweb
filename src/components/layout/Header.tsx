@@ -24,9 +24,11 @@ import {
   Newspaper,
   LogIn,
   Home,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { UserMenu } from '@/components/auth/UserMenu';
-import { useState } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 
 export function Header() {
@@ -36,6 +38,11 @@ export function Header() {
   const pathname = usePathname();
   const [sheetOpen, setSheetOpen] = useState(false);
   const t = useTranslations();
+
+  // Scroll state for YouTube-style arrows
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   const NAV_LINKS = [
     { href: '/', label: t('nav.home'), icon: Home },
@@ -56,10 +63,36 @@ export function Header() {
   const isActive = (href: string) =>
     href === '/' ? pathname === '/' || (pathname.split('/').length === 2 && pathname !== '/') : pathname.includes(href);
 
+  const checkScroll = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 2);
+    setCanScrollRight(el.scrollLeft < el.scrollWidth - el.clientWidth - 2);
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    checkScroll();
+    el.addEventListener('scroll', checkScroll, { passive: true });
+    const ro = new ResizeObserver(checkScroll);
+    ro.observe(el);
+    return () => {
+      el.removeEventListener('scroll', checkScroll);
+      ro.disconnect();
+    };
+  }, [checkScroll]);
+
+  const scroll = (dir: 'left' | 'right') => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir === 'left' ? -200 : 200, behavior: 'smooth' });
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="mx-auto flex h-14 sm:h-16 max-w-7xl items-center justify-between px-4">
-        {/* Left: Logo + Nav */}
+      {/* Top row: Logo + Actions */}
+      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-3">
           {isMobile && (
             <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
@@ -109,28 +142,6 @@ export function Header() {
               Adopt Me Values
             </span>
           </Link>
-
-          {/* Desktop nav links */}
-          <nav className="hidden lg:flex items-center gap-0.5 ml-6">
-            {NAV_LINKS.filter((l) => l.href !== '/').map((link) => {
-              const active = isActive(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  aria-current={active ? 'page' : undefined}
-                  className={cn(
-                    'tap-target px-3 py-1.5 text-sm font-semibold rounded-full transition-colors',
-                    active
-                      ? 'bg-app-primary/10 text-app-primary'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-accent/50',
-                  )}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-          </nav>
         </div>
 
         {/* Right: Theme toggle + User */}
@@ -158,6 +169,68 @@ export function Header() {
               </Button>
             </Link>
           )}
+        </div>
+      </div>
+
+      {/* Bottom row: YouTube-style scrollable chip bar (desktop) */}
+      <div className="hidden lg:block border-t border-border/40">
+        <div className="mx-auto max-w-7xl relative">
+          {/* Left arrow */}
+          {canScrollLeft && (
+            <div className="absolute left-0 top-0 bottom-0 z-10 flex items-center">
+              <div className="h-full w-16 bg-gradient-to-r from-background via-background/80 to-transparent flex items-center pl-1">
+                <button
+                  onClick={() => scroll('left')}
+                  className="h-8 w-8 rounded-full bg-background border shadow-sm flex items-center justify-center hover:bg-accent transition-colors"
+                  aria-label="Scroll left"
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Right arrow */}
+          {canScrollRight && (
+            <div className="absolute right-0 top-0 bottom-0 z-10 flex items-center">
+              <div className="h-full w-16 bg-gradient-to-l from-background via-background/80 to-transparent flex items-center justify-end pr-1">
+                <button
+                  onClick={() => scroll('right')}
+                  className="h-8 w-8 rounded-full bg-background border shadow-sm flex items-center justify-center hover:bg-accent transition-colors"
+                  aria-label="Scroll right"
+                >
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Scrollable chips */}
+          <div
+            ref={scrollRef}
+            className="flex items-center gap-1.5 overflow-x-auto no-scrollbar px-4 py-2"
+          >
+            {NAV_LINKS.map((link) => {
+              const Icon = link.icon;
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? 'page' : undefined}
+                  className={cn(
+                    'flex items-center gap-1.5 whitespace-nowrap px-4 py-1.5 text-sm font-semibold rounded-lg transition-all border',
+                    active
+                      ? 'bg-foreground text-background border-foreground'
+                      : 'bg-transparent text-foreground border-border hover:bg-accent',
+                  )}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </div>
     </header>

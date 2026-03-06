@@ -1,6 +1,6 @@
 import { locales, defaultLocale } from '@/i18n/config';
 
-const DOMAIN = 'https://adoptmevalues.app';
+const DOMAIN = 'https://www.adoptmevalues.app';
 
 /**
  * Generate locale-aware canonical URL and hreflang alternates for SEO.

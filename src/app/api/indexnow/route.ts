@@ -3,7 +3,7 @@ import { fetchPetDataServer } from '@/lib/data/pets';
 import { slugify } from '@/lib/utils/slugify';
 import { locales, defaultLocale } from '@/i18n/config';
 
-const DOMAIN = 'https://adoptmevalues.app';
+const DOMAIN = 'https://www.adoptmevalues.app';
 const INDEXNOW_KEY = 'b4d7e2a1c8f5039d';
 const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow';
 
